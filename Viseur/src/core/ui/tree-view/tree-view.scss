@@ -1,0 +1,68 @@
+@import "src/core/mixins";
+@import "src/core/fontAwesome";
+@import "src/core/fonts";
+@import "src/core/colors";
+
+.tree-view {
+    list-style-type: none;
+    margin-left: 0;
+
+    & ul {
+        list-style-type: none;
+        margin-left: 1em;
+        margin-bottom: 0.25em;
+    }
+
+    & li.tree-view-node > header {
+        color: $black;
+        font-size: 1em;
+        font-weight: normal;
+        @extend .font-monospace;
+
+        @include dark-mode {
+            color: $white;
+        }
+
+        &:before {
+            @include icon(square);
+            color: $dark-gray;
+        }
+
+        & .node-key-value-spacer {
+            color: $dark-gray;
+        }
+
+        &.inspect-expandable {
+            cursor: zoom-in;
+
+            &:before {
+                @include icon(plus-square);
+            }
+
+            &.expanded {
+                cursor: zoom-out;
+
+                &:before {
+                    @include icon(minus-square);
+                }
+
+                & + ul:empty {
+                    &:before, &:after {
+                        color: $gray;
+                        @extend .font-monospace;
+                    }
+
+                    &:before {
+                        @include icon(square-o);
+                    }
+
+                    &:after {
+                        content: "Empty";
+                        font-style: italic;
+                        margin-left: 0.5em;
+                    }
+                }
+            }
+        }
+    }
+}

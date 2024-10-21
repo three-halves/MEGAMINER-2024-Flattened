@@ -1,0 +1,24 @@
+language: node_js
+
+script:
+  # run units tests
+  - npm test
+
+before_deploy:
+  # remove the dist built
+  - rm -rf dist/
+  # run webpack to build the static pages to deploy in production mode
+  - npm run build:prod
+  # file to tell GitHub pages not to try to run jekyll stuff (can break urls)
+  - touch dist/.nojekyll
+  # github pages needs this file so it knows vis.siggame.io is the domain name
+  - echo vis.siggame.io >> dist/CNAME
+
+deploy:
+  provider: pages
+  skip-cleanup: true
+  verbose: true
+  local-dir: dist/
+  github-token: $GITHUB_TOKEN
+  on:
+    branch: master
