@@ -1,0 +1,103 @@
+_parentDatas:
+- twoPlayer
+- turnBased
+- tiled
+
+Game:
+  name: Magomachy
+  description: Wizards fight to the death.
+  attributes:
+    wizards:
+      description: List of wizards.
+      type: Wizard[]
+    
+Player:~
+  attributes:
+    wizard:
+      description: The specific wizard owned by the player.
+      type: Wizard?
+    health:
+      description: The amount of health this player has.
+      type: int
+    aether:
+      description: The amount of spell resources this Player has.
+      type: int
+    attack:
+      description: The attack value of the player.
+      type: int
+    defense:
+      description: The defense value of the player.
+      type: int
+    speed:
+      description: The speed of the player.
+      type: int
+
+Tile:
+  attributes:
+    wizard:
+      description: The Wizard on this Tile if present, otherwise null.
+      type: Wizard?
+    object:
+      description: The Item on this Tile if present, otherwise null.
+      type: Item?
+
+Item:
+  description: Objects that help the players.
+  attributes:
+    tile:
+      description: The Tile this Item is on.
+      type: Item!
+    
+Wizard:
+  description: The wizard default.
+  attributes:
+    owner:
+      description: The Player that owns and can control this Unit, or null if the Unit is neutral.
+      type: Player?
+    specialty:
+      description: Specific type of Wizard.
+      type: const string = "aggressive" | "defensive" | "sustaining" | "strategic"
+    attack:
+      description: The attack value of the player.
+      type: int
+    defense:
+      description: The defense value of the player.
+      type: int
+    aether:
+      description: The amount of spell resources this Player has.
+      type: int
+    health:
+      description: The amount of health this player has.
+      type: int
+    speed:
+      description: The speed of the player.
+      type: int
+    x:
+      type: int
+      description: The x coordinate of the wizard.
+    y:
+      type: int
+      description: The y coordinate of the wizard.
+AI:
+  functions:
+    # this argument exists mostly as a template for creer templates for an AI function with arguments, and that returns nothing
+    Move:
+      description: This is called whenever your wizard makes a move.
+      arguments:
+      - type: Wizard!
+        name: wizard
+        description: Wizard moves.
+      returns:
+        type: int
+        description: Eight cardinal directions.
+        default: -1
+    Action:
+      description: This is called whenever your wizard selects an action.
+      arguments:
+      - type: Wizard!
+        name: wizard
+        description: Wizard performs action.
+      returns:
+        type: int
+        description: Three of the choices a Wizard can make as an action.
+        default: -1

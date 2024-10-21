@@ -1,0 +1,12 @@
+# Editors & IDEs
+.idea/
+.vscode/
+
+# Git
+.git/
+
+# NodeJS & NPM
+node_modules/
+
+# creer templates
+.creer/
