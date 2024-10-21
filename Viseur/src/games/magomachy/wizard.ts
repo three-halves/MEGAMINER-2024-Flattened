@@ -12,8 +12,8 @@ import { MagomachyDelta, WizardState } from "./state-interfaces";
 
 // <<-- Creer-Merge: should-render -->>
 // Set this variable to `true`, if this class should render.
-const SHOULD_RENDER = undefined;
-// <<-- /Creer-Merge: should-render -->>
+const SHOULD_RENDER = true;
+// <<-- /Creer-Merge: shouldn-render -->>
 
 /**
  * An object in the game. The most basic class that all game classes should inherit from automatically.
@@ -28,6 +28,14 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
 
     /** The next state of the Wizard (dt = 1). */
     public next: WizardState | undefined;
+
+    // nested dictionary of wizard sprites, organized by specialty and direction
+    // currently only a dictionary by specialty, direction needs to be added to creer file
+    public sprites: { [specialty: string]: PIXI.Sprite };
+
+    public type: string;
+
+    public typeSuffix: string;
 
     // <<-- Creer-Merge: variables -->>
     // You can add additional member variables here
@@ -47,6 +55,19 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
 
         // <<-- Creer-Merge: constructor -->>
         // You can initialize your new Wizard here.
+        this.container.setParent(this.game.layers.game);
+
+        this.type = state.specialty;
+        this.typeSuffix = state.specialty.substring(0, 2);
+
+        const hide = { visible: false };
+        this.sprites = {
+            aggressive: this.addSprite.wiz_ag_s(hide),
+            defensive: this.addSprite.wiz_de_s(hide),
+            sustaining: this.addSprite.wiz_su_s(hide),
+            strategic: this.addSprite.wiz_st_s(hide),
+        };
+
         // <<-- /Creer-Merge: constructor -->>
     }
 
@@ -76,6 +97,13 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
 
         // <<-- Creer-Merge: render -->>
         // render where the Wizard is
+        // eslint-disable-next-line no-console
+        // eslint-disable-next-line no-console
+        const sprite = this.sprites[this.type];
+        sprite.visible = true;
+        sprite.x = current.x;
+        sprite.y = current.y;
+
         // <<-- /Creer-Merge: render -->>
     }
 

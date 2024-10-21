@@ -28,6 +28,7 @@ class Tile(GameObject):
         self._tile_north = None
         self._tile_south = None
         self._tile_west = None
+        self._type = ""
         self._wizard = None
         self._x = 0
         self._y = 0
@@ -61,6 +62,12 @@ class Tile(GameObject):
         """games.magomachy.tile.Tile or None: The Tile to the 'West' of this one (x-1, y). None if out of bounds of the map.
         """
         return self._tile_west
+
+    @property
+    def type(self) -> str:
+        """str: The type of Tile this is (i.e Grass, Wall).
+        """
+        return self._type
 
     @property
     def wizard(self) -> Optional['games.magomachy.wizard.Wizard']:

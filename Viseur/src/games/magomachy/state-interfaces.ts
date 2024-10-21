@@ -262,6 +262,12 @@ export interface TileState extends GameObjectState {
     tileWest: TileState;
 
     /**
+     * The type of Tile this is (i.e Grass, Wall).
+     *
+     */
+    type: string;
+
+    /**
      * The Wizard on this Tile if present, otherwise null.
      *
      */

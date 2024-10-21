@@ -57,6 +57,11 @@ export class Tile extends GameObject {
     public readonly tileWest!: Tile | undefined;
 
     /**
+     * The type of Tile this is (i.e Grass, Wall).
+     */
+    public readonly type!: string;
+
+    /**
      * The Wizard on this Tile if present, otherwise null.
      */
     public readonly wizard!: Wizard | undefined;

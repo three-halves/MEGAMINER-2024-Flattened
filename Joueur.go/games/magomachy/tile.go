@@ -36,6 +36,9 @@ type Tile interface {
 	// Value can be returned as a nil pointer.
 	TileWest() Tile
 
+	// Type is the type of Tile this is (i.e Grass, Wall).
+	Type() string
+
 	// Wizard is the Wizard on this Tile if present, otherwise nil.
 	//
 	// Value can be returned as a nil pointer.

@@ -64,6 +64,11 @@ public:
     const Tile& tile_west;
 
     /// <summary>
+    /// The type of Tile this is (i.e Grass, Wall).
+    /// </summary>
+    const std::string& type;
+
+    /// <summary>
     /// The Wizard on this Tile if present, otherwise null.
     /// </summary>
     const Wizard& wizard;

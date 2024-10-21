@@ -34,6 +34,7 @@ class Tile extends GameObject {
     this.tileNorth = null;
     this.tileSouth = null;
     this.tileWest = null;
+    this.type = '';
     this.wizard = null;
     this.x = 0;
     this.y = 0;
@@ -113,6 +114,20 @@ class Tile extends GameObject {
 
   set tileWest(value) {
     client.gameManager.setMemberValue(this, 'tileWest', value);
+  }
+
+
+  /**
+   * The type of Tile this is (i.e Grass, Wall).
+   *
+   * @type {string}
+   */
+  get type() {
+    return client.gameManager.getMemberValue(this, 'type');
+  }
+
+  set type(value) {
+    client.gameManager.setMemberValue(this, 'type', value);
   }
 
 

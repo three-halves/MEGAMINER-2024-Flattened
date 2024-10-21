@@ -51,6 +51,11 @@ public class Tile extends GameObject {
     public Tile tileWest;
 
     /**
+     * The type of Tile this is (i.e Grass, Wall).
+     */
+    public String type;
+
+    /**
      * The Wizard on this Tile if present, otherwise null.
      */
     public Wizard wizard;

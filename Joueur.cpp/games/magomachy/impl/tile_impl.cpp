@@ -32,6 +32,7 @@ Tile_::Tile_(std::initializer_list<std::pair<std::string, Any&&>> init) :
         {"tileNorth", Any{std::decay<decltype(tile_north)>::type{}}},
         {"tileSouth", Any{std::decay<decltype(tile_south)>::type{}}},
         {"tileWest", Any{std::decay<decltype(tile_west)>::type{}}},
+        {"type", Any{std::decay<decltype(type)>::type{}}},
         {"wizard", Any{std::decay<decltype(wizard)>::type{}}},
         {"x", Any{std::decay<decltype(x)>::type{}}},
         {"y", Any{std::decay<decltype(y)>::type{}}},
@@ -41,6 +42,7 @@ Tile_::Tile_(std::initializer_list<std::pair<std::string, Any&&>> init) :
     tile_north(variables_["tileNorth"].as<std::decay<decltype(tile_north)>::type>()),
     tile_south(variables_["tileSouth"].as<std::decay<decltype(tile_south)>::type>()),
     tile_west(variables_["tileWest"].as<std::decay<decltype(tile_west)>::type>()),
+    type(variables_["type"].as<std::decay<decltype(type)>::type>()),
     wizard(variables_["wizard"].as<std::decay<decltype(wizard)>::type>()),
     x(variables_["x"].as<std::decay<decltype(x)>::type>()),
     y(variables_["y"].as<std::decay<decltype(y)>::type>())

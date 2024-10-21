@@ -46,6 +46,11 @@ namespace Joueur.cs.Games.Magomachy
         public Magomachy.Tile TileWest { get; protected set; }
 
         /// <summary>
+        /// The type of Tile this is (i.e Grass, Wall).
+        /// </summary>
+        public string Type { get; protected set; }
+
+        /// <summary>
         /// The Wizard on this Tile if present, otherwise null.
         /// </summary>
         public Magomachy.Wizard Wizard { get; protected set; }

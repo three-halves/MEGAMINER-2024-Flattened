@@ -12,7 +12,7 @@ import { MagomachyDelta, TileState } from "./state-interfaces";
 
 // <<-- Creer-Merge: should-render -->>
 // Set this variable to `true`, if this class should render.
-const SHOULD_RENDER = undefined;
+const SHOULD_RENDER = true;
 // <<-- /Creer-Merge: should-render -->>
 
 /**
@@ -28,6 +28,12 @@ export class Tile extends makeRenderable(GameObject, SHOULD_RENDER) {
 
     /** The next state of the Tile (dt = 1). */
     public next: TileState | undefined;
+
+    public grass: PIXI.Sprite;
+
+    public wall: PIXI.Sprite;
+
+    public type: string;
 
     // <<-- Creer-Merge: variables -->>
     // You can add additional member variables here
@@ -47,6 +53,14 @@ export class Tile extends makeRenderable(GameObject, SHOULD_RENDER) {
 
         // <<-- Creer-Merge: constructor -->>
         // You can initialize your new Tile here.
+        this.container.setParent(this.game.layers.background);
+
+        const hide = { visible: false };
+        this.grass = this.addSprite.grass(hide);
+        this.wall = this.addSprite.wall(hide);
+
+        this.container.position.set(state.x, state.y);
+        this.type = state.type;
         // <<-- /Creer-Merge: constructor -->>
     }
 
@@ -76,6 +90,8 @@ export class Tile extends makeRenderable(GameObject, SHOULD_RENDER) {
 
         // <<-- Creer-Merge: render -->>
         // render where the Tile is
+        this.grass.visible = this.type === "grass";
+        this.wall.visible = this.type === "wall";
         // <<-- /Creer-Merge: render -->>
     }
 

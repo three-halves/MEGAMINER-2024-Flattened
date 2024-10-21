@@ -11,7 +11,7 @@ Game:
       description: List of wizards.
       type: Wizard[]
     
-Player:~
+Player:
   attributes:
     wizard:
       description: The specific wizard owned by the player.
@@ -40,6 +40,9 @@ Tile:
     object:
       description: The Item on this Tile if present, otherwise null.
       type: Item?
+    type:
+      description: The type of Tile this is (i.e Grass, Wall).
+      type: string
 
 Item:
   description: Objects that help the players.

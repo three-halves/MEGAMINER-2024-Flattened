@@ -43,6 +43,11 @@ export class Tile extends GameObject implements BaseTile {
     public readonly tileWest?: Tile;
 
     /**
+     * The type of Tile this is (i.e Grass, Wall).
+     */
+    public type!: string;
+
+    /**
      * The Wizard on this Tile if present, otherwise undefined.
      */
     public wizard?: Wizard;

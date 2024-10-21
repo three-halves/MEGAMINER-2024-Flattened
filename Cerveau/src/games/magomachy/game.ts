@@ -6,6 +6,8 @@ import { MagomachyGameSettingsManager } from "./game-settings";
 import { Player } from "./player";
 import { Tile } from "./tile";
 import { Wizard } from "./wizard";
+import { floor, random } from "lodash";
+import { CoreminerGameManager } from "../coreminer";
 
 // <<-- Creer-Merge: imports -->>
 // any additional imports you want can be placed here safely between creer runs
@@ -102,6 +104,21 @@ export class MagomachyGame extends BaseClasses.Game {
 
         // <<-- Creer-Merge: constructor -->>
         // setup any thing you need here
+
+
+        // init map for testing
+        for (let i = 0; i < this.mapWidth * this.mapHeight; i++) {
+            const x = i % this.mapWidth;
+            const y = floor(i / this.mapWidth);
+            this.tiles[i].type =
+                x === 0 || x === 9 || y === 0 || y === 9 ? "wall" : "grass";
+        }
+
+        // init wizards for testing
+        this.manager.create.wizard({ x: 1, y: 4, specialty: "aggressive" });
+
+        this.manager.create.wizard({ x: 8, y: 4, specialty: "sustaining" });
+
         // <<-- /Creer-Merge: constructor -->>
     }
 

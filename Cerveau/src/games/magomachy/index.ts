@@ -199,6 +199,11 @@ export interface TileProperties {
     tileWest?: Tile;
 
     /**
+     * The type of Tile this is (i.e Grass, Wall).
+     */
+    type?: string;
+
+    /**
      * The Wizard on this Tile if present, otherwise undefined.
      */
     wizard?: Wizard;
@@ -610,6 +615,9 @@ export const Namespace = makeNamespace({
                     gameObjectClass: Tile,
                     nullable: true,
                 },
+                type: {
+                    typeName: "string",
+                },
                 wizard: {
                     typeName: "gameObject",
                     gameObjectClass: Wizard,
@@ -668,5 +676,5 @@ export const Namespace = makeNamespace({
         },
     },
     gameVersion:
-        "7e4209e4378ecb736bd3bcca015d81c33a466dbe23f47e4f0fdb78ce997209da",
+        "2253f2c43d650502bf62e0375cd0448402699c1ac9347c81dce8b93f202cdac8",
 });

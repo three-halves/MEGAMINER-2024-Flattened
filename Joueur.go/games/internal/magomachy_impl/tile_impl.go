@@ -16,6 +16,7 @@ type TileImpl struct {
 	tileNorthImpl magomachy.Tile
 	tileSouthImpl magomachy.Tile
 	tileWestImpl  magomachy.Tile
+	typeImpl      string
 	wizardImpl    magomachy.Wizard
 	xImpl         int64
 	yImpl         int64
@@ -60,6 +61,11 @@ func (tileImpl *TileImpl) TileWest() magomachy.Tile {
 	return tileImpl.tileWestImpl
 }
 
+// Type returns the type of Tile this is (i.e Grass, Wall).
+func (tileImpl *TileImpl) Type() string {
+	return tileImpl.typeImpl
+}
+
 // Wizard returns the Wizard on this Tile if present, otherwise nil.
 //
 // Value can be returned as a nil pointer.
@@ -86,6 +92,7 @@ func (tileImpl *TileImpl) InitImplDefaults() {
 	tileImpl.tileNorthImpl = nil
 	tileImpl.tileSouthImpl = nil
 	tileImpl.tileWestImpl = nil
+	tileImpl.typeImpl = ""
 	tileImpl.wizardImpl = nil
 	tileImpl.xImpl = 0
 	tileImpl.yImpl = 0
@@ -129,6 +136,9 @@ func (tileImpl *TileImpl) DeltaMerge(
 		return true, nil
 	case "tileWest":
 		tileImpl.tileWestImpl = magomachyDeltaMerge.Tile(delta)
+		return true, nil
+	case "type":
+		tileImpl.typeImpl = magomachyDeltaMerge.String(delta)
 		return true, nil
 	case "wizard":
 		tileImpl.wizardImpl = magomachyDeltaMerge.Wizard(delta)
