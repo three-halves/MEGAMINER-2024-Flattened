@@ -92,6 +92,7 @@ export class Tile extends makeRenderable(GameObject, SHOULD_RENDER) {
         // render where the Tile is
         this.grass.visible = this.type === "grass";
         this.wall.visible = this.type === "wall";
+
         // <<-- /Creer-Merge: render -->>
     }
 

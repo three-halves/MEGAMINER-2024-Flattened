@@ -110,14 +110,30 @@ export class MagomachyGame extends BaseClasses.Game {
         for (let i = 0; i < this.mapWidth * this.mapHeight; i++) {
             const x = i % this.mapWidth;
             const y = floor(i / this.mapWidth);
+
+            // this.manager.create.tile({});
+
             this.tiles[i].type =
-                x === 0 || x === 9 || y === 0 || y === 9 ? "wall" : "grass";
+                x === 0 ||
+                x === this.mapWidth - 1 ||
+                y === 0 ||
+                y === this.mapHeight - 1
+                    ? "wall"
+                    : "grass";
         }
 
         // init wizards for testing
-        this.manager.create.wizard({ x: 1, y: 4, specialty: "aggressive" });
+        this.manager.create.wizard({
+            x: 1,
+            y: floor(this.mapHeight / 2),
+            specialty: "aggressive",
+        });
 
-        this.manager.create.wizard({ x: 8, y: 4, specialty: "sustaining" });
+        this.manager.create.wizard({
+            x: this.mapWidth - 2,
+            y: floor(this.mapHeight / 2),
+            specialty: "sustaining",
+        });
 
         // <<-- /Creer-Merge: constructor -->>
     }
