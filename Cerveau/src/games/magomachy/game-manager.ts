@@ -82,7 +82,7 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
         // <<-- Creer-Merge: primary-win-conditions -->>
         // Add logic here checking for the primary win condition(s)
         const killedOff = this.game.players.filter(
-            (p) => p.health <= 0 || p.aether <= 0)
+            (p) => p.health() <= 0 || p.aether() <= 0)
         );
 
         if (killedOff.length == 2) {
@@ -116,8 +116,8 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
         const players = this.game.players.slice();
 
         // 1. Most health
-        players.sort((a,b) => b.health - a.health);
-        if (players[0].health > players[1].health) {
+        players.sort((a,b) => b.health() - a.health());
+        if (players[0].health() > players[1].health()) {
             this.declareWinner(
                 '${reason}: Had the highest health',
                 players[0],
@@ -129,8 +129,8 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
         }
 
         // 2. Most aether
-        players.sort((a,b) => b.aether - a.aether);
-        if (players[0].aether > players[1].aether) {
+        players.sort((a,b) => b.aether() - a.aether());
+        if (players[0].aether() > players[1].aether()) {
             this.declareWinner(
                 '${reason}: Had the highest aether',
                 players[0],
