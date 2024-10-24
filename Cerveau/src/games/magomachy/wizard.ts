@@ -105,6 +105,101 @@ export class Wizard extends GameObject {
     // NOTE: Client AIs cannot call these functions, those must be defined
     // in the creer file.
 
+    // SIGH
+    // I'm gonna store the spells here initially, but they will
+    // have to be copied into the right place after the creer
+    // program is run again.
+    /**
+     * Invalidation function for cast. Try to find a reason why the passed in
+     * parameters are invalid, and return a human readable string telling them
+     * why it is invalid.
+     * 
+     * @param player - The player that called this.
+     * @param spellName - The name of the spell to cast.
+     * @param tile - The Tile to aim the spell toward.
+     * @returns If the arguments are invalid, return a string explaining to
+     * human players why it is invalid. If it is valid return nothing, or an
+     * object with new arguments to us in the actual function.
+     */
+    protected invalidateCast(
+        player: Player,
+        spellName: string,
+        tile: Tile,
+    ): void | string | WizardCastArgs {
+        // NOTE: RE ADD THE CREER MERGE COMMENT HERE
+
+        const reason = this.invalidate(player, true);
+        if (reason) {
+            return reason;
+        }
+
+        if (!this.tile) {
+           throw new Error('${this} has no Tile to target!');
+        }
+
+        // Calculate distance of target tile
+        const dx = this.tile.x - tile.x;
+        const dy = this.tile.y - tile.y;
+        const distSq = dx * dx + dy * dy;
+
+        // And now handle each spell in its own case
+        switch(spellName) {
+            case "Punch": {
+                if (!tile.wizard) {
+                    return 'Curses! The enemy wizard isn't at ${tile}!';
+                }
+                if (tile.wizard == this) {
+                    return 'You're a wizard, why would you be dumb enough to punch yourself?!';
+                }
+                if (distSq > 1) {
+                    return '${tile} is too far away for your wimpy wizard arms to reach!';
+                }
+            }
+            default: {
+                throw new error("I've never heard of that spell...");
+            }
+        }
+
+        // TODO: literally all the other cases,
+        // One per spell. Yeah. Have fun.
+        // Things I can think of:
+        // - Casting spell on themself.
+        // - Missing tile.
+        // - Not in range.
+        // - Don't have access to the spell.
+        // - No target on tile.
+    }
+
+    /**
+     * Casts a spell on a Tile in range.
+     * 
+     * @param player: The player that called this.
+     * @param spellName: The name of the spell to cast.
+     * @param tile: The Tile to aim the spell toward.
+     * @returns True if successfully cast, false otherwise.
+     */
+    protected async attack(
+        player: Player,
+        spellName: string,
+        tile: Tile,
+    ): Promise<boolean> {
+        // ADD THE CREER MERGE COMMENT HERE TOO AUUGHH
+
+        // Process each spell separately
+        switch(spellName) { 
+            case "Punch": {
+                // Throws a crappy wizard punch within 1 range.
+                tile.wizard.health -= 1;
+                break; 
+            } 
+            default: { 
+                throw new Error("invalid spell cast");
+                break; 
+            } 
+        }
+
+        return true;
+    }
     // <<-- /Creer-Merge: public-functions -->>
 
     // <<-- Creer-Merge: protected-private-functions -->>
