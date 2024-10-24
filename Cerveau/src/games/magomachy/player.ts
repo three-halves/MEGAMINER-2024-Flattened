@@ -117,6 +117,13 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
     // Any public functions can go here for other things in the game to use.
     // NOTE: Client AIs cannot call these functions, those must be defined
     // in the creer file.
+    public health(): number {
+        return this.wizard.health;
+    }
+
+    public aether(): number {
+        return this.wizard.aether;
+    }
 
     // <<-- /Creer-Merge: public-functions -->>
 
