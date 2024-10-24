@@ -178,7 +178,7 @@ export class Wizard extends GameObject {
      * @param tile: The Tile to aim the spell toward.
      * @returns True if successfully cast, false otherwise.
      */
-    protected async attack(
+    protected async cast(
         player: Player,
         spellName: string,
         tile: Tile,
