@@ -200,11 +200,93 @@ export class Wizard extends GameObject {
 
         return true;
     }
+
+    /**
+     * Invalidation function for move. Try to find a reason why the passed in
+     * parameters are invalid, and return a human readable string telling them
+     * why it is invalid.
+     * 
+     * @param player: The player that called this.
+     * @param tile: The Tile that this Wizard should move to.
+     * @returns If the arguments are invalid, return a string explainig to
+     * human players why it is invalid. If it is valid return nothing, or an
+     * object with new arguments to use in the actual function.
+     */
+    protected invalidateMove(
+        player: Player,
+        tile: Tile,
+    ): void | string | WizardMoveArgs {
+        // COMMENT MERGE CREER HERE
+
+        const reason = this.invalidate(player);
+        if (reason) {
+            return reason;
+        }
+
+        // TODO: add variables tracking whether unit moved/cast spell or not each turn
+        if (!this.tile) {
+            throw new Error('${this} has no Tile!');
+        }
+
+        // Calculate distance of target tile
+        const dx = this.tile.x - tile.x;
+        const dy = this.tile.y - tile.y;
+        const distSq = dx * dx + dy * dy;
+
+        if (distSq > this.speed ** 2) {
+            return '${tile} is too far away to reach this turn!';
+        }
+
+        if (tile.type === "wall") {
+            return '${this} can't phase through walls! (Yet...)';
+        }
+
+        if (tile.wizard) {
+            return '${tile} is occupied by a wizard!';
+        }
+    }
+
+    /**
+     * Moves this Wizard from its current Tile to another empty Tile.
+     *
+     * @param player - The player that called this.
+     * @param tile - The Tile this Wizard should move to.
+     * @returns True if it moved, false otherwise.
+     */
+    protected async move(player: Player, tile: Tile): Promise<boolean> {
+        if (!this.tile) {
+            throw new Error('${this} has no Tile to move from!');
+        }
+
+        this.tile.wizard = undefined;
+        this.tile = tile;
+        tile.wizard = this;
+        // TODO: UPDATE VARIABLE STATING HOW MUCH MOVEMENT LEFT
+
+        return true;
+    }
+        
     // <<-- /Creer-Merge: public-functions -->>
 
     // <<-- Creer-Merge: protected-private-functions -->>
 
     // Any additional protected or pirate methods can go here.
-
+    /**
+     * Trues to invalidate args for an action function
+     *
+     * @param player - The player calling the action.
+     * @returns The rason this is invalid, undefined if it looks valid so far.
+     */
+    private invalidate(
+        player: Player,
+    ): string | undefined {
+        if (!player || player != this.game.currentPlayer) {
+            return 'It is not your turn, young ${player}!';
+        }
+        if (this.owner != player) {
+            return 'Wrong wizard, ${player}.';
+        }
+    }
+    
     // <<-- /Creer-Merge: protected-private-functions -->>
 }
