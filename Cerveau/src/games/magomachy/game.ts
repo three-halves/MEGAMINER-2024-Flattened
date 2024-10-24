@@ -123,6 +123,9 @@ export class MagomachyGame extends BaseClasses.Game {
         }
 
         // init wizards for testing
+        // NOTE FROM STEVEN: PLZ CHANGE X AND Y TO A TILE, THANK YOU
+        // ALSO CAN YOU ASSIGN THE WIZARDS TO THE PLAYERS HERE
+        // AND THEN GIVE THEM THEIR STARTING HEALTH/AETHER
         this.manager.create.wizard({
             x: 1,
             y: floor(this.mapHeight / 2),

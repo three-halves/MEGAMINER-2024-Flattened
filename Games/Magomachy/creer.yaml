@@ -16,21 +16,6 @@ Player:
     wizard:
       description: The specific wizard owned by the player.
       type: Wizard?
-    health:
-      description: The amount of health this player has.
-      type: int
-    aether:
-      description: The amount of spell resources this Player has.
-      type: int
-    attack:
-      description: The attack value of the player.
-      type: int
-    defense:
-      description: The defense value of the player.
-      type: int
-    speed:
-      description: The speed of the player.
-      type: int
 
 Tile:
   attributes:
@@ -50,6 +35,9 @@ Item:
     tile:
       description: The Tile this Item is on.
       type: Item!
+    form:
+      description: The type of Item this is.
+      type: string!
     
 Wizard:
   description: The wizard default.
@@ -75,12 +63,48 @@ Wizard:
     speed:
       description: The speed of the player.
       type: int
+    direction:
+      description: The direction this Wizard is facing.
+      type: int
+    hasMoved:
+      description: Whether or not this Wizard has moved this turn.
+      type: boolean
+    hasCast:
+      description: Whether or not this Wizard has cast a spell this turn.
+      type: boolean
     x:
       type: int
       description: The x coordinate of the wizard.
     y:
       type: int
       description: The y coordinate of the wizard.
+    tile:
+      type: Tile?
+      description: The Tile that this Wizard is on.
+  functions:
+    cast:
+      description: Casts a spell on a Tile in range.
+      arguments:
+      - name: spellName
+        type: string!
+        description: The name of the spell to cast.
+      - name: tile
+        type: Tile!
+        description: The Tile to aim the spell toward.
+      returns:
+        type: boolean
+        description: True if successfully cast, false otherwise.
+        invalidValue: false
+    move:
+      description: Moves this Wizard from its current Tile to another empty Tile.
+      arguments:
+      - name: tile
+        type: Tile!
+        description: The Tile this Wizard should move to.
+      returns:
+        type: boolean
+        description: True if it moved, false otherwise.
+        invalidValue: false
 AI:
   functions:
     # this argument exists mostly as a template for creer templates for an AI function with arguments, and that returns nothing
