@@ -5,9 +5,6 @@ import { GameObject } from "./game-object";
 import { MagomachyGameSettingsManager } from "./game-settings";
 import { Player } from "./player";
 import { Tile } from "./tile";
-import { Wizard } from "./wizard";
-import { floor, random } from "lodash";
-import { CoreminerGameManager } from "../coreminer";
 
 // <<-- Creer-Merge: imports -->>
 // any additional imports you want can be placed here safely between creer runs
@@ -78,9 +75,9 @@ export class MagomachyGame extends BaseClasses.Game {
     public readonly timeAddedPerTurn!: number;
 
     /**
-     * List of wizards.
+     * List of wizard choices.
      */
-    public wizards!: Wizard[];
+    public wizards!: string[];
 
     // <<-- Creer-Merge: attributes -->>
 

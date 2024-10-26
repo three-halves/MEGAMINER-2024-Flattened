@@ -10,7 +10,6 @@ import { BaseGame } from "../../joueur/base-game";
 import { GameObject } from "./game-object";
 import { Player } from "./player";
 import { Tile } from "./tile";
-import { Wizard } from "./wizard";
 
 // <<-- Creer-Merge: imports -->>
 // any additional imports you want can be placed here safely between creer runs
@@ -76,9 +75,9 @@ export class Game extends BaseGame {
     public readonly timeAddedPerTurn!: number;
 
     /**
-     * List of wizards.
+     * List of wizard choices.
      */
-    public readonly wizards!: Wizard[];
+    public readonly wizards!: string[];
 
     /**
      * Gets the Tile at a specified (x, y) position

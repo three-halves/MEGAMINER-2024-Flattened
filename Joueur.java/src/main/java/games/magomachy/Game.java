@@ -71,9 +71,9 @@ public class Game extends BaseGame {
     public double timeAddedPerTurn;
 
     /**
-     * List of wizards.
+     * List of wizard choices.
      */
-    public List<Wizard> wizards;
+    public List<String> wizards;
 
 
     // <<-- Creer-Merge: fields -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
@@ -83,7 +83,7 @@ public class Game extends BaseGame {
     /**
      * The hash of the game version we have locally. Used to compare to the game server's game version.
      */
-    public final static String gameVersion = "2253f2c43d650502bf62e0375cd0448402699c1ac9347c81dce8b93f202cdac8";
+    public final static String gameVersion = "77505b71a8b9f75455f9f5fec932c1959810e1ad9f6ddce1fab318c55b71b79f";
 
 
     /**
@@ -95,7 +95,7 @@ public class Game extends BaseGame {
 
         this.players = new ArrayList<Player>();
         this.tiles = new ArrayList<Tile>();
-        this.wizards = new ArrayList<Wizard>();
+        this.wizards = new ArrayList<String>();
     }
 
     /**

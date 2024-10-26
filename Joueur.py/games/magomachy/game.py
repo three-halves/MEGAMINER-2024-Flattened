@@ -113,8 +113,8 @@ class Game(BaseGame):
         return self._time_added_per_turn
 
     @property
-    def wizards(self) -> List['games.magomachy.wizard.Wizard']:
-        """list[games.magomachy.wizard.Wizard]: List of wizards.
+    def wizards(self) -> List[str]:
+        """list[str]: List of wizard choices.
         """
         return self._wizards
 

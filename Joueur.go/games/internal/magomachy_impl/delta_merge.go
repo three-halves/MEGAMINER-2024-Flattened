@@ -16,10 +16,10 @@ type DeltaMerge interface {
 	Tile(interface{}) magomachy.Tile
 	Wizard(interface{}) magomachy.Wizard
 
+	ArrayOfInt(*[]int64, interface{}) []int64
 	ArrayOfPlayer(*[]magomachy.Player, interface{}) []magomachy.Player
 	ArrayOfString(*[]string, interface{}) []string
 	ArrayOfTile(*[]magomachy.Tile, interface{}) []magomachy.Tile
-	ArrayOfWizard(*[]magomachy.Wizard, interface{}) []magomachy.Wizard
 	MapOfStringToGameObject(*map[string]magomachy.GameObject, interface{}) map[string]magomachy.GameObject
 }
 
@@ -112,6 +112,18 @@ func (deltaMergeImpl *DeltaMergeImpl) Wizard(delta interface{}) magomachy.Wizard
 
 // -- Deep Deltas -- \\
 
+// ArrayOfInt delta attempts to merge
+// deep structures of this type.
+func (deltaMergeImpl *DeltaMergeImpl) ArrayOfInt(state *[]int64, delta interface{}) []int64 {
+	deltaList, listLength := (*deltaMergeImpl).ToDeltaArray(delta)
+	newArray := make([]int64, listLength) // resize array with new copy
+	copy(newArray, *state)
+	for deltaIndex, deltaValue := range deltaList {
+		newArray[deltaIndex] = deltaMergeImpl.Int(deltaValue)
+	}
+	return newArray
+}
+
 // ArrayOfPlayer delta attempts to merge
 // deep structures of this type.
 func (deltaMergeImpl *DeltaMergeImpl) ArrayOfPlayer(state *[]magomachy.Player, delta interface{}) []magomachy.Player {
@@ -144,18 +156,6 @@ func (deltaMergeImpl *DeltaMergeImpl) ArrayOfTile(state *[]magomachy.Tile, delta
 	copy(newArray, *state)
 	for deltaIndex, deltaValue := range deltaList {
 		newArray[deltaIndex] = deltaMergeImpl.Tile(deltaValue)
-	}
-	return newArray
-}
-
-// ArrayOfWizard delta attempts to merge
-// deep structures of this type.
-func (deltaMergeImpl *DeltaMergeImpl) ArrayOfWizard(state *[]magomachy.Wizard, delta interface{}) []magomachy.Wizard {
-	deltaList, listLength := (*deltaMergeImpl).ToDeltaArray(delta)
-	newArray := make([]magomachy.Wizard, listLength) // resize array with new copy
-	copy(newArray, *state)
-	for deltaIndex, deltaValue := range deltaList {
-		newArray[deltaIndex] = deltaMergeImpl.Wizard(deltaValue)
 	}
 	return newArray
 }

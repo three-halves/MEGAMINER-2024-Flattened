@@ -11,7 +11,19 @@ import (
 type ItemImpl struct {
 	GameObjectImpl
 
-	tileImpl magomachy.Item
+	formImpl     string
+	lifetimeImpl int64
+	tileImpl     magomachy.Item
+}
+
+// Form returns the type of Item this is.
+func (itemImpl *ItemImpl) Form() string {
+	return itemImpl.formImpl
+}
+
+// Lifetime returns how many turns this item has existed for.
+func (itemImpl *ItemImpl) Lifetime() int64 {
+	return itemImpl.lifetimeImpl
 }
 
 // Tile returns the Tile this Item is on.
@@ -23,6 +35,8 @@ func (itemImpl *ItemImpl) Tile() magomachy.Item {
 func (itemImpl *ItemImpl) InitImplDefaults() {
 	itemImpl.GameObjectImpl.InitImplDefaults()
 
+	itemImpl.formImpl = ""
+	itemImpl.lifetimeImpl = 0
 	itemImpl.tileImpl = nil
 }
 
@@ -50,6 +64,12 @@ func (itemImpl *ItemImpl) DeltaMerge(
 	}
 
 	switch attribute {
+	case "form":
+		itemImpl.formImpl = magomachyDeltaMerge.String(delta)
+		return true, nil
+	case "lifetime":
+		itemImpl.lifetimeImpl = magomachyDeltaMerge.Int(delta)
+		return true, nil
 	case "tile":
 		itemImpl.tileImpl = magomachyDeltaMerge.Item(delta)
 		return true, nil

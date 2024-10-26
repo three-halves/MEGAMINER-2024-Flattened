@@ -39,29 +39,9 @@ class Player_ : public Game_object_
 public:
 
     /// <summary>
-    /// The amount of spell resources this Player has.
-    /// </summary>
-    const int& aether;
-
-    /// <summary>
-    /// The attack value of the player.
-    /// </summary>
-    const int& attack;
-
-    /// <summary>
     /// What type of client this is, e.g. 'Python', 'JavaScript', or some other language. For potential data mining purposes.
     /// </summary>
     const std::string& client_type;
-
-    /// <summary>
-    /// The defense value of the player.
-    /// </summary>
-    const int& defense;
-
-    /// <summary>
-    /// The amount of health this player has.
-    /// </summary>
-    const int& health;
 
     /// <summary>
     /// If the player lost the game or not.
@@ -89,11 +69,6 @@ public:
     const std::string& reason_won;
 
     /// <summary>
-    /// The speed of the player.
-    /// </summary>
-    const int& speed;
-
-    /// <summary>
     /// The amount of time (in ns) remaining for this AI to send commands.
     /// </summary>
     const double& time_remaining;
@@ -112,6 +87,12 @@ public:
     // You can add additional member variables here. None of them will be tracked or updated by the server.
     // <<-- /Creer-Merge: member variables -->>
 
+
+    /// <summary>
+    /// this is called when you need to pick your wizard class.
+    /// </summary>
+    /// <param name="wizard_class"> The class of wizard the player wants. </param>
+    bool choose_wizard(const std::string& wizard_class);
 
 
    // <<-- Creer-Merge: methods -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.

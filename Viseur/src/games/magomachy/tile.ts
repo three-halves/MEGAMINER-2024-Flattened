@@ -29,12 +29,6 @@ export class Tile extends makeRenderable(GameObject, SHOULD_RENDER) {
     /** The next state of the Tile (dt = 1). */
     public next: TileState | undefined;
 
-    public grass: PIXI.Sprite;
-
-    public wall: PIXI.Sprite;
-
-    public type: string;
-
     // <<-- Creer-Merge: variables -->>
     // You can add additional member variables here
     // <<-- /Creer-Merge: variables -->>

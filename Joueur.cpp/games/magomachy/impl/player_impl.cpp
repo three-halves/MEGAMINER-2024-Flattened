@@ -24,35 +24,53 @@ namespace cpp_client
 namespace magomachy
 {
 
+bool Player_::choose_wizard(const std::string& wizard_class)
+{
+    std::string order = R"({"event": "run", "data": {"functionName": "chooseWizard", "caller": {"id": ")";
+    order += this->id + R"("}, "args": {)";
+
+    order += std::string("\"wizardClass\":") + std::string("\"") + wizard_class + "\"";
+
+    order += "}}}";
+    Magomachy::instance()->send(order);
+    //Go until not a delta
+    std::unique_ptr<Any> info;
+    //until a not bool is seen (i.e., the delta has been processed)
+    do
+    {
+        info = Magomachy::instance()->handle_response();
+    } while(info->type() == typeid(bool));
+    auto doc = info->as<rapidjson::Document*>();
+    auto loc = doc->FindMember("data");
+    if(loc == doc->MemberEnd())
+    {
+       return {};
+    }
+    auto& val = loc->value;
+    Any to_return;
+    morph_any(to_return, val);
+    return to_return.as<bool>();
+}
+
 
 Player_::Player_(std::initializer_list<std::pair<std::string, Any&&>> init) :
     Game_object_{
-        {"aether", Any{std::decay<decltype(aether)>::type{}}},
-        {"attack", Any{std::decay<decltype(attack)>::type{}}},
         {"clientType", Any{std::decay<decltype(client_type)>::type{}}},
-        {"defense", Any{std::decay<decltype(defense)>::type{}}},
-        {"health", Any{std::decay<decltype(health)>::type{}}},
         {"lost", Any{std::decay<decltype(lost)>::type{}}},
         {"name", Any{std::decay<decltype(name)>::type{}}},
         {"opponent", Any{std::decay<decltype(opponent)>::type{}}},
         {"reasonLost", Any{std::decay<decltype(reason_lost)>::type{}}},
         {"reasonWon", Any{std::decay<decltype(reason_won)>::type{}}},
-        {"speed", Any{std::decay<decltype(speed)>::type{}}},
         {"timeRemaining", Any{std::decay<decltype(time_remaining)>::type{}}},
         {"wizard", Any{std::decay<decltype(wizard)>::type{}}},
         {"won", Any{std::decay<decltype(won)>::type{}}},
     },
-    aether(variables_["aether"].as<std::decay<decltype(aether)>::type>()),
-    attack(variables_["attack"].as<std::decay<decltype(attack)>::type>()),
     client_type(variables_["clientType"].as<std::decay<decltype(client_type)>::type>()),
-    defense(variables_["defense"].as<std::decay<decltype(defense)>::type>()),
-    health(variables_["health"].as<std::decay<decltype(health)>::type>()),
     lost(variables_["lost"].as<std::decay<decltype(lost)>::type>()),
     name(variables_["name"].as<std::decay<decltype(name)>::type>()),
     opponent(variables_["opponent"].as<std::decay<decltype(opponent)>::type>()),
     reason_lost(variables_["reasonLost"].as<std::decay<decltype(reason_lost)>::type>()),
     reason_won(variables_["reasonWon"].as<std::decay<decltype(reason_won)>::type>()),
-    speed(variables_["speed"].as<std::decay<decltype(speed)>::type>()),
     time_remaining(variables_["timeRemaining"].as<std::decay<decltype(time_remaining)>::type>()),
     wizard(variables_["wizard"].as<std::decay<decltype(wizard)>::type>()),
     won(variables_["won"].as<std::decay<decltype(won)>::type>())

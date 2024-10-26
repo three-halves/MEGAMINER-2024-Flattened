@@ -24,28 +24,94 @@ namespace cpp_client
 namespace magomachy
 {
 
+bool Wizard_::cast(const std::string& spell_name, const Tile& tile)
+{
+    std::string order = R"({"event": "run", "data": {"functionName": "cast", "caller": {"id": ")";
+    order += this->id + R"("}, "args": {)";
+
+    order += std::string("\"spellName\":") + std::string("\"") + spell_name + "\"";
+
+    order += std::string(",\"tile\":") + (tile ? (std::string("{\"id\":\"") + tile->id + "\"}") : std::string("null"));
+
+    order += "}}}";
+    Magomachy::instance()->send(order);
+    //Go until not a delta
+    std::unique_ptr<Any> info;
+    //until a not bool is seen (i.e., the delta has been processed)
+    do
+    {
+        info = Magomachy::instance()->handle_response();
+    } while(info->type() == typeid(bool));
+    auto doc = info->as<rapidjson::Document*>();
+    auto loc = doc->FindMember("data");
+    if(loc == doc->MemberEnd())
+    {
+       return {};
+    }
+    auto& val = loc->value;
+    Any to_return;
+    morph_any(to_return, val);
+    return to_return.as<bool>();
+}
+
+bool Wizard_::move(const Tile& tile)
+{
+    std::string order = R"({"event": "run", "data": {"functionName": "move", "caller": {"id": ")";
+    order += this->id + R"("}, "args": {)";
+
+    order += std::string("\"tile\":") + (tile ? (std::string("{\"id\":\"") + tile->id + "\"}") : std::string("null"));
+
+    order += "}}}";
+    Magomachy::instance()->send(order);
+    //Go until not a delta
+    std::unique_ptr<Any> info;
+    //until a not bool is seen (i.e., the delta has been processed)
+    do
+    {
+        info = Magomachy::instance()->handle_response();
+    } while(info->type() == typeid(bool));
+    auto doc = info->as<rapidjson::Document*>();
+    auto loc = doc->FindMember("data");
+    if(loc == doc->MemberEnd())
+    {
+       return {};
+    }
+    auto& val = loc->value;
+    Any to_return;
+    morph_any(to_return, val);
+    return to_return.as<bool>();
+}
+
 
 Wizard_::Wizard_(std::initializer_list<std::pair<std::string, Any&&>> init) :
     Game_object_{
         {"aether", Any{std::decay<decltype(aether)>::type{}}},
         {"attack", Any{std::decay<decltype(attack)>::type{}}},
         {"defense", Any{std::decay<decltype(defense)>::type{}}},
+        {"direction", Any{std::decay<decltype(direction)>::type{}}},
+        {"effectTimes", Any{std::decay<decltype(effect_times)>::type{}}},
+        {"effects", Any{std::decay<decltype(effects)>::type{}}},
+        {"hasCast", Any{std::decay<decltype(has_cast)>::type{}}},
         {"health", Any{std::decay<decltype(health)>::type{}}},
+        {"movementLeft", Any{std::decay<decltype(movement_left)>::type{}}},
         {"owner", Any{std::decay<decltype(owner)>::type{}}},
         {"specialty", Any{std::decay<decltype(specialty)>::type{}}},
         {"speed", Any{std::decay<decltype(speed)>::type{}}},
-        {"x", Any{std::decay<decltype(x)>::type{}}},
-        {"y", Any{std::decay<decltype(y)>::type{}}},
+        {"tile", Any{std::decay<decltype(tile)>::type{}}},
     },
     aether(variables_["aether"].as<std::decay<decltype(aether)>::type>()),
     attack(variables_["attack"].as<std::decay<decltype(attack)>::type>()),
     defense(variables_["defense"].as<std::decay<decltype(defense)>::type>()),
+    direction(variables_["direction"].as<std::decay<decltype(direction)>::type>()),
+    effect_times(variables_["effectTimes"].as<std::decay<decltype(effect_times)>::type>()),
+    effects(variables_["effects"].as<std::decay<decltype(effects)>::type>()),
+    has_cast(variables_["hasCast"].as<std::decay<decltype(has_cast)>::type>()),
     health(variables_["health"].as<std::decay<decltype(health)>::type>()),
+    movement_left(variables_["movementLeft"].as<std::decay<decltype(movement_left)>::type>()),
     owner(variables_["owner"].as<std::decay<decltype(owner)>::type>()),
     specialty(variables_["specialty"].as<std::decay<decltype(specialty)>::type>()),
     speed(variables_["speed"].as<std::decay<decltype(speed)>::type>()),
-    x(variables_["x"].as<std::decay<decltype(x)>::type>()),
-    y(variables_["y"].as<std::decay<decltype(y)>::type>())
+    tile(variables_["tile"].as<std::decay<decltype(tile)>::type>())
 {
     for(auto&& obj : init)
     {
@@ -57,6 +123,18 @@ Wizard_::~Wizard_() = default;
 
 void Wizard_::resize(const std::string& name, std::size_t size)
 {
+    if(name == "effectTimes")
+    {
+        auto& vec = variables_["effectTimes"].as<std::decay<decltype(effect_times)>::type>();
+        vec.resize(size);
+        return;
+    }
+    else if(name == "effects")
+    {
+        auto& vec = variables_["effects"].as<std::decay<decltype(effects)>::type>();
+        vec.resize(size);
+        return;
+    }
     try
     {
         Game_object_::resize(name, size);
@@ -68,6 +146,26 @@ void Wizard_::resize(const std::string& name, std::size_t size)
 
 void Wizard_::change_vec_values(const std::string& name, std::vector<std::pair<std::size_t, Any>>& values)
 {
+    if(name == "effectTimes")
+    {
+        using type = std::decay<decltype(effect_times)>::type;
+        auto& vec = variables_["effectTimes"].as<type>();
+        for(auto&& val : values)
+        { 
+            vec[val.first] = std::move(val.second.as<type::value_type>());
+        }
+        return;
+    } 
+    else if(name == "effects")
+    {
+        using type = std::decay<decltype(effects)>::type;
+        auto& vec = variables_["effects"].as<type>();
+        for(auto&& val : values)
+        { 
+            vec[val.first] = std::move(val.second.as<type::value_type>());
+        }
+        return;
+    } 
     try
     {
         Game_object_::change_vec_values(name, values);
@@ -113,6 +211,11 @@ void Wizard_::rebind_by_name(Any* to_change, const std::string& member, std::sha
    if(member == "owner")
    { 
       to_change->as<Player>() = std::static_pointer_cast<Player_>(ref);
+      return;
+   }
+   if(member == "tile")
+   { 
+      to_change->as<Tile>() = std::static_pointer_cast<Tile_>(ref);
       return;
    }
    try

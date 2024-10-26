@@ -39,6 +39,16 @@ class Item_ : public Game_object_
 public:
 
     /// <summary>
+    /// The type of Item this is.
+    /// </summary>
+    const std::string& form;
+
+    /// <summary>
+    /// How many turns this item has existed for.
+    /// </summary>
+    const int& lifetime;
+
+    /// <summary>
     /// The Tile this Item is on.
     /// </summary>
     const Item& tile;

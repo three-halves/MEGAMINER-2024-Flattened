@@ -196,9 +196,9 @@ class Game extends BaseGame {
 
 
   /**
-   * List of wizards.
+   * List of wizard choices.
    *
-   * @type {Array.<Magomachy.Wizard>}
+   * @type {Array.<string>}
    */
   get wizards() {
     return client.gameManager.getMemberValue(this, 'wizards');

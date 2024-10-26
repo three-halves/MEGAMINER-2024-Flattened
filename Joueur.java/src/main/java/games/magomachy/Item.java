@@ -26,6 +26,16 @@ import joueur.BaseGameObject;
  */
 public class Item extends GameObject {
     /**
+     * The type of Item this is.
+     */
+    public String form;
+
+    /**
+     * How many turns this item has existed for.
+     */
+    public int lifetime;
+
+    /**
      * The Tile this Item is on.
      */
     public Item tile;

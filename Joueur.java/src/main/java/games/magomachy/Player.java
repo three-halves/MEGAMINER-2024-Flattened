@@ -26,29 +26,9 @@ import joueur.BaseGameObject;
  */
 public class Player extends GameObject {
     /**
-     * The amount of spell resources this Player has.
-     */
-    public int aether;
-
-    /**
-     * The attack value of the player.
-     */
-    public int attack;
-
-    /**
      * What type of client this is, e.g. 'Python', 'JavaScript', or some other language. For potential data mining purposes.
      */
     public String clientType;
-
-    /**
-     * The defense value of the player.
-     */
-    public int defense;
-
-    /**
-     * The amount of health this player has.
-     */
-    public int health;
 
     /**
      * If the player lost the game or not.
@@ -76,11 +56,6 @@ public class Player extends GameObject {
     public String reasonWon;
 
     /**
-     * The speed of the player.
-     */
-    public int speed;
-
-    /**
      * The amount of time (in ns) remaining for this AI to send commands.
      */
     public double timeRemaining;
@@ -106,6 +81,18 @@ public class Player extends GameObject {
      */
     protected Player() {
         super();
+    }
+
+    /**
+     * This is called when you need to pick your wizard class.
+     *
+     * @param   wizardClass  The class of wizard the player wants.
+     * @return True if class successfully chosen, false otherwise.
+     */
+    public boolean chooseWizard(String wizardClass) {
+        JSONObject args = new JSONObject();
+        args.put("wizardClass", Client.getInstance().gameManager.serializeSafe(wizardClass));
+        return (boolean)this.runOnServer("chooseWizard", args);
     }
 
 

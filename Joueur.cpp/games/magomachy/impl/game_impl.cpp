@@ -110,7 +110,7 @@ void Game_::change_vec_values(const std::string& name, std::vector<std::pair<std
         auto& vec = variables_["wizards"].as<type>();
         for(auto&& val : values)
         { 
-            vec[val.first] = std::static_pointer_cast<type::value_type::element_type>(get_objects()[val.second.as<std::string>()]);
+            vec[val.first] = std::move(val.second.as<type::value_type>());
         }
         return;
     } 

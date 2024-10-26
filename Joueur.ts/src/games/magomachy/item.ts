@@ -18,6 +18,16 @@ import { GameObject } from "./game-object";
 export class Item extends GameObject {
 
     /**
+     * The type of Item this is.
+     */
+    public readonly form!: string;
+
+    /**
+     * How many turns this item has existed for.
+     */
+    public readonly lifetime!: number;
+
+    /**
      * The Tile this Item is on.
      */
     public readonly tile!: Item;

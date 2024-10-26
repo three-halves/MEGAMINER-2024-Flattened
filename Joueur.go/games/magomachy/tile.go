@@ -37,6 +37,8 @@ type Tile interface {
 	TileWest() Tile
 
 	// Type is the type of Tile this is (i.e Grass, Wall).
+	//
+	// Literal Values: "floor" or "wall"
 	Type() string
 
 	// Wizard is the Wizard on this Tile if present, otherwise nil.

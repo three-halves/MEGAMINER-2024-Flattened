@@ -19,30 +19,10 @@ import { Wizard } from "./wizard";
 export class Player extends GameObject {
 
     /**
-     * The amount of spell resources this Player has.
-     */
-    public readonly aether!: number;
-
-    /**
-     * The attack value of the player.
-     */
-    public readonly attack!: number;
-
-    /**
      * What type of client this is, e.g. 'Python', 'JavaScript', or some other
      * language. For potential data mining purposes.
      */
     public readonly clientType!: string;
-
-    /**
-     * The defense value of the player.
-     */
-    public readonly defense!: number;
-
-    /**
-     * The amount of health this player has.
-     */
-    public readonly health!: number;
 
     /**
      * If the player lost the game or not.
@@ -70,11 +50,6 @@ export class Player extends GameObject {
     public readonly reasonWon!: string;
 
     /**
-     * The speed of the player.
-     */
-    public readonly speed!: number;
-
-    /**
      * The amount of time (in ns) remaining for this AI to send commands.
      */
     public readonly timeRemaining!: number;
@@ -88,6 +63,17 @@ export class Player extends GameObject {
      * If the player won the game or not.
      */
     public readonly won!: boolean;
+
+    /**
+     * This is called when you need to pick your wizard class.
+     * @param wizardClass The class of wizard the player wants.
+     * @returns True if class successfully chosen, false otherwise.
+     */
+    public async chooseWizard(wizardClass: string): Promise<boolean> {
+        return this.runOnServer("chooseWizard", {
+            wizardClass,
+        });
+    }
 
     // <<-- Creer-Merge: functions -->>
     // any additional functions you want to add to this class can be preserved here

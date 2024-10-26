@@ -27,8 +27,12 @@ namespace magomachy
 
 Item_::Item_(std::initializer_list<std::pair<std::string, Any&&>> init) :
     Game_object_{
+        {"form", Any{std::decay<decltype(form)>::type{}}},
+        {"lifetime", Any{std::decay<decltype(lifetime)>::type{}}},
         {"tile", Any{std::decay<decltype(tile)>::type{}}},
     },
+    form(variables_["form"].as<std::decay<decltype(form)>::type>()),
+    lifetime(variables_["lifetime"].as<std::decay<decltype(lifetime)>::type>()),
     tile(variables_["tile"].as<std::decay<decltype(tile)>::type>())
 {
     for(auto&& obj : init)

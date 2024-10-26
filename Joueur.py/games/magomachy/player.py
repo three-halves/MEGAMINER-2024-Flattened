@@ -23,50 +23,21 @@ class Player(GameObject):
         GameObject.__init__(self)
 
         # private attributes to hold the properties so they appear read only
-        self._aether = 0
-        self._attack = 0
         self._client_type = ""
-        self._defense = 0
-        self._health = 0
         self._lost = False
         self._name = "Anonymous"
         self._opponent = None
         self._reason_lost = ""
         self._reason_won = ""
-        self._speed = 0
         self._time_remaining = 0
         self._wizard = None
         self._won = False
-
-    @property
-    def aether(self) -> int:
-        """int: The amount of spell resources this Player has.
-        """
-        return self._aether
-
-    @property
-    def attack(self) -> int:
-        """int: The attack value of the player.
-        """
-        return self._attack
 
     @property
     def client_type(self) -> str:
         """str: What type of client this is, e.g. 'Python', 'JavaScript', or some other language. For potential data mining purposes.
         """
         return self._client_type
-
-    @property
-    def defense(self) -> int:
-        """int: The defense value of the player.
-        """
-        return self._defense
-
-    @property
-    def health(self) -> int:
-        """int: The amount of health this player has.
-        """
-        return self._health
 
     @property
     def lost(self) -> bool:
@@ -99,12 +70,6 @@ class Player(GameObject):
         return self._reason_won
 
     @property
-    def speed(self) -> int:
-        """int: The speed of the player.
-        """
-        return self._speed
-
-    @property
     def time_remaining(self) -> float:
         """float: The amount of time (in ns) remaining for this AI to send commands.
         """
@@ -121,6 +86,19 @@ class Player(GameObject):
         """bool: If the player won the game or not.
         """
         return self._won
+
+    def choose_wizard(self, wizard_class: str) -> bool:
+        """This is called when you need to pick your wizard class.
+
+        Args:
+            wizard_class (str): The class of wizard the player wants.
+
+        Returns:
+            bool: True if class successfully chosen, False otherwise.
+        """
+        return self._run_on_server('chooseWizard', {
+            'wizardClass': wizard_class
+        })
 
 
     # <<-- Creer-Merge: functions -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.

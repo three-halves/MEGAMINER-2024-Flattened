@@ -41,9 +41,34 @@ public class Wizard extends GameObject {
     public int defense;
 
     /**
+     * The direction this Wizard is facing.
+     */
+    public int direction;
+
+    /**
+     * The turns remaining on each active effects on Wizard.
+     */
+    public List<int> effectTimes;
+
+    /**
+     * The names of active effects on the Wizard.
+     */
+    public List<String> effects;
+
+    /**
+     * Whether or not this Wizard has cast a spell this turn.
+     */
+    public boolean hasCast;
+
+    /**
      * The amount of health this player has.
      */
     public int health;
+
+    /**
+     * How much movement the wizard has left.
+     */
+    public int movementLeft;
 
     /**
      * The Player that owns and can control this Unit, or null if the Unit is neutral.
@@ -61,14 +86,9 @@ public class Wizard extends GameObject {
     public int speed;
 
     /**
-     * The x coordinate of the wizard.
+     * The Tile that this Wizard is on.
      */
-    public int x;
-
-    /**
-     * The y coordinate of the wizard.
-     */
-    public int y;
+    public Tile tile;
 
 
     // <<-- Creer-Merge: fields -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
@@ -81,6 +101,34 @@ public class Wizard extends GameObject {
      */
     protected Wizard() {
         super();
+        this.effectTimes = new ArrayList<int>();
+        this.effects = new ArrayList<String>();
+    }
+
+    /**
+     * Casts a spell on a Tile in range.
+     *
+     * @param   spellName  The name of the spell to cast.
+     * @param   tile  The Tile to aim the spell toward.
+     * @return True if successfully cast, false otherwise.
+     */
+    public boolean cast(String spellName, Tile tile) {
+        JSONObject args = new JSONObject();
+        args.put("spellName", Client.getInstance().gameManager.serializeSafe(spellName));
+        args.put("tile", Client.getInstance().gameManager.serializeSafe(tile));
+        return (boolean)this.runOnServer("cast", args);
+    }
+
+    /**
+     * Moves this Wizard from its current Tile to another empty Tile.
+     *
+     * @param   tile  The Tile this Wizard should move to.
+     * @return True if it moved, false otherwise.
+     */
+    public boolean move(Tile tile) {
+        JSONObject args = new JSONObject();
+        args.put("tile", Client.getInstance().gameManager.serializeSafe(tile));
+        return (boolean)this.runOnServer("move", args);
     }
 
 

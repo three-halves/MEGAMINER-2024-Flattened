@@ -21,16 +21,8 @@ function Player:init(...)
 
     -- The following values should get overridden when delta states are merged, but we set them here as a reference for you to see what variables this class has.
 
-    --- The amount of spell resources this Player has.
-    self.aether = 0
-    --- The attack value of the player.
-    self.attack = 0
     --- What type of client this is, e.g. 'Python', 'JavaScript', or some other language. For potential data mining purposes.
     self.clientType = ""
-    --- The defense value of the player.
-    self.defense = 0
-    --- The amount of health this player has.
-    self.health = 0
     --- If the player lost the game or not.
     self.lost = false
     --- The name of the player.
@@ -41,8 +33,6 @@ function Player:init(...)
     self.reasonLost = ""
     --- The reason why the player won the game.
     self.reasonWon = ""
-    --- The speed of the player.
-    self.speed = 0
     --- The amount of time (in ns) remaining for this AI to send commands.
     self.timeRemaining = 0
     --- The specific wizard owned by the player.
@@ -63,6 +53,15 @@ function Player:init(...)
     -- @see GameObject.logs
 
 
+end
+
+--- This is called when you need to pick your wizard class.
+-- @tparam string wizardClass The class of wizard the player wants.
+-- @treturn bool True if class successfully chosen, false otherwise.
+function Player:chooseWizard(wizardClass)
+    return not not (self:_runOnServer("chooseWizard", {
+        wizardClass = wizardClass,
+    }))
 end
 
 --- (inherited) Adds a message to this GameObject's logs. Intended for your own debugging purposes, as strings stored here are saved in the gamelog.

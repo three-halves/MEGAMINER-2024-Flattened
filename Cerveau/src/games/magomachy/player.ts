@@ -1,7 +1,12 @@
 import { BaseGameObjectRequiredData } from "~/core/game";
-import { BaseMagomachyPlayer, PlayerConstructorArgs } from "./";
+import {
+    BaseMagomachyPlayer,
+    PlayerChooseWizardArgs,
+    PlayerConstructorArgs,
+} from "./";
 import { AI } from "./ai";
 import { GameObject } from "./game-object";
+import { Player } from "./player";
 import { Wizard } from "./wizard";
 
 // <<-- Creer-Merge: imports -->>
@@ -16,30 +21,10 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
     public readonly ai!: AI;
 
     /**
-     * The amount of spell resources this Player has.
-     */
-    public aether!: number;
-
-    /**
-     * The attack value of the player.
-     */
-    public attack!: number;
-
-    /**
      * What type of client this is, e.g. 'Python', 'JavaScript', or some other
      * language. For potential data mining purposes.
      */
     public readonly clientType!: string;
-
-    /**
-     * The defense value of the player.
-     */
-    public defense!: number;
-
-    /**
-     * The amount of health this player has.
-     */
-    public health!: number;
 
     /**
      * If the player lost the game or not.
@@ -65,11 +50,6 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
      * The reason why the player won the game.
      */
     public reasonWon!: string;
-
-    /**
-     * The speed of the player.
-     */
-    public speed!: number;
 
     /**
      * The amount of time (in ns) remaining for this AI to send commands.
@@ -126,6 +106,53 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
     }
 
     // <<-- /Creer-Merge: public-functions -->>
+
+    /**
+     * Invalidation function for chooseWizard. Try to find a reason why the
+     * passed in parameters are invalid, and return a human readable string
+     * telling them why it is invalid.
+     *
+     * @param player - The player that called this.
+     * @param wizardClass - The class of wizard the player wants.
+     * @returns If the arguments are invalid, return a string explaining to
+     * human players why it is invalid. If it is valid return nothing, or an
+     * object with new arguments to use in the actual function.
+     */
+    protected invalidateChooseWizard(
+        player: Player,
+        wizardClass: string,
+    ): void | string | PlayerChooseWizardArgs {
+        // <<-- Creer-Merge: invalidate-chooseWizard -->>
+
+        // Check all the arguments for chooseWizard here and try to
+        // return a string explaining why the input is wrong.
+        // If you need to change an argument for the real function, then
+        // changing its value in this scope is enough.
+        return undefined; // means nothing could be found that was ivalid.
+
+        // <<-- /Creer-Merge: invalidate-chooseWizard -->>
+    }
+
+    /**
+     * This is called when you need to pick your wizard class.
+     *
+     * @param player - The player that called this.
+     * @param wizardClass - The class of wizard the player wants.
+     * @returns True if class successfully chosen, false otherwise.
+     */
+    protected async chooseWizard(
+        player: Player,
+        wizardClass: string,
+    ): Promise<boolean> {
+        // <<-- Creer-Merge: chooseWizard -->>
+
+        // Add logic here for chooseWizard.
+
+        // TODO: replace this with actual logic
+        return false;
+
+        // <<-- /Creer-Merge: chooseWizard -->>
+    }
 
     // <<-- Creer-Merge: protected-private-functions -->>
 

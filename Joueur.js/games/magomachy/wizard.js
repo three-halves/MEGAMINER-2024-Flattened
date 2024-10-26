@@ -32,12 +32,16 @@ class Wizard extends GameObject {
     this.aether = 0;
     this.attack = 0;
     this.defense = 0;
+    this.direction = 0;
+    this.effectTimes = [];
+    this.effects = [];
+    this.hasCast = false;
     this.health = 0;
+    this.movementLeft = 0;
     this.owner = null;
     this.specialty = '';
     this.speed = 0;
-    this.x = 0;
-    this.y = 0;
+    this.tile = null;
 
     //<<-- Creer-Merge: init -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
     // any additional init logic you want can go here
@@ -90,6 +94,62 @@ class Wizard extends GameObject {
 
 
   /**
+   * The direction this Wizard is facing.
+   *
+   * @type {number}
+   */
+  get direction() {
+    return client.gameManager.getMemberValue(this, 'direction');
+  }
+
+  set direction(value) {
+    client.gameManager.setMemberValue(this, 'direction', value);
+  }
+
+
+  /**
+   * The turns remaining on each active effects on Wizard.
+   *
+   * @type {Array.<number>}
+   */
+  get effectTimes() {
+    return client.gameManager.getMemberValue(this, 'effectTimes');
+  }
+
+  set effectTimes(value) {
+    client.gameManager.setMemberValue(this, 'effectTimes', value);
+  }
+
+
+  /**
+   * The names of active effects on the Wizard.
+   *
+   * @type {Array.<string>}
+   */
+  get effects() {
+    return client.gameManager.getMemberValue(this, 'effects');
+  }
+
+  set effects(value) {
+    client.gameManager.setMemberValue(this, 'effects', value);
+  }
+
+
+  /**
+   * Whether or not this Wizard has cast a spell this turn.
+   *
+   * @type {boolean}
+   */
+  get hasCast() {
+    return client.gameManager.getMemberValue(this, 'hasCast');
+  }
+
+  set hasCast(value) {
+    client.gameManager.setMemberValue(this, 'hasCast', value);
+  }
+
+
+  /**
    * The amount of health this player has.
    *
    * @type {number}
@@ -100,6 +160,20 @@ class Wizard extends GameObject {
 
   set health(value) {
     client.gameManager.setMemberValue(this, 'health', value);
+  }
+
+
+  /**
+   * How much movement the wizard has left.
+   *
+   * @type {number}
+   */
+  get movementLeft() {
+    return client.gameManager.getMemberValue(this, 'movementLeft');
+  }
+
+  set movementLeft(value) {
+    client.gameManager.setMemberValue(this, 'movementLeft', value);
   }
 
 
@@ -146,32 +220,46 @@ class Wizard extends GameObject {
 
 
   /**
-   * The x coordinate of the wizard.
+   * The Tile that this Wizard is on.
    *
-   * @type {number}
+   * @type {Magomachy.Tile}
    */
-  get x() {
-    return client.gameManager.getMemberValue(this, 'x');
+  get tile() {
+    return client.gameManager.getMemberValue(this, 'tile');
   }
 
-  set x(value) {
-    client.gameManager.setMemberValue(this, 'x', value);
+  set tile(value) {
+    client.gameManager.setMemberValue(this, 'tile', value);
+  }
+
+
+
+  /**
+   * Casts a spell on a Tile in range.
+   *
+   * @param {string} spellName - The name of the spell to cast.
+   * @param {Magomachy.Tile} tile - The Tile to aim the spell toward.
+   * @returns {boolean} - True if successfully cast, false otherwise.
+   */
+  cast(spellName, tile) {
+    return client.runOnServer(this, 'cast', {
+      spellName: spellName,
+      tile: tile,
+    });
   }
 
 
   /**
-   * The y coordinate of the wizard.
+   * Moves this Wizard from its current Tile to another empty Tile.
    *
-   * @type {number}
+   * @param {Magomachy.Tile} tile - The Tile this Wizard should move to.
+   * @returns {boolean} - True if it moved, false otherwise.
    */
-  get y() {
-    return client.gameManager.getMemberValue(this, 'y');
+  move(tile) {
+    return client.runOnServer(this, 'move', {
+      tile: tile,
+    });
   }
-
-  set y(value) {
-    client.gameManager.setMemberValue(this, 'y', value);
-  }
-
 
 
   //<<-- Creer-Merge: functions -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.

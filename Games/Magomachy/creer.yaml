@@ -25,7 +25,7 @@ Player:
         description: The class of wizard the player wants.
       returns:
         type: boolean
-        description: True if class successfully chosen, false otherwise
+        description: True if class successfully chosen, false otherwise.
         invalidValue: false
     
 

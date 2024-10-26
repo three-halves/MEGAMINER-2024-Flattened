@@ -65,7 +65,7 @@ class Tile(GameObject):
 
     @property
     def type(self) -> str:
-        """str: The type of Tile this is (i.e Grass, Wall).
+        """'floor' or 'wall': The type of Tile this is (i.e Grass, Wall).
         """
         return self._type
 

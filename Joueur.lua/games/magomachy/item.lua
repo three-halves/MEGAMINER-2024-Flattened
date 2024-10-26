@@ -21,6 +21,10 @@ function Item:init(...)
 
     -- The following values should get overridden when delta states are merged, but we set them here as a reference for you to see what variables this class has.
 
+    --- The type of Item this is.
+    self.form = ""
+    --- How many turns this item has existed for.
+    self.lifetime = 0
     --- The Tile this Item is on.
     self.tile = nil
 

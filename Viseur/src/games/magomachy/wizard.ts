@@ -4,7 +4,7 @@ import { Immutable } from "src/utils";
 import { Viseur } from "src/viseur";
 import { makeRenderable } from "src/viseur/game";
 import { GameObject } from "./game-object";
-import { MagomachyDelta, WizardState } from "./state-interfaces";
+import { MagomachyDelta, TileState, WizardState } from "./state-interfaces";
 
 // <<-- Creer-Merge: imports -->>
 // any additional imports you want can be added here safely between Creer runs
@@ -13,7 +13,7 @@ import { MagomachyDelta, WizardState } from "./state-interfaces";
 // <<-- Creer-Merge: should-render -->>
 // Set this variable to `true`, if this class should render.
 const SHOULD_RENDER = true;
-// <<-- /Creer-Merge: shouldn-render -->>
+// <<-- /Creer-Merge: should-render -->>
 
 /**
  * An object in the game. The most basic class that all game classes should inherit from automatically.
@@ -28,14 +28,6 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
 
     /** The next state of the Wizard (dt = 1). */
     public next: WizardState | undefined;
-
-    // nested dictionary of wizard sprites, organized by specialty and direction
-    // currently only a dictionary by specialty, direction needs to be added to creer file
-    public sprites: { [specialty: string]: PIXI.Sprite };
-
-    public type: string;
-
-    public typeSuffix: string;
 
     // <<-- Creer-Merge: variables -->>
     // You can add additional member variables here
@@ -162,6 +154,42 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
     // <<-- Creer-Merge: public-functions -->>
     // You can add additional public functions here
     // <<-- /Creer-Merge: public-functions -->>
+
+    // <Joueur functions> --- functions invoked for human playable client
+    // NOTE: These functions are only used 99% of the time if the game
+    // supports human playable clients (like Chess).
+    // If it does not, feel free to ignore these Joueur functions.
+
+    /**
+     * Casts a spell on a Tile in range.
+     *
+     * @param spellName - The name of the spell to cast.
+     * @param tile - The Tile to aim the spell toward.
+     * @param callback - The callback that eventually returns the return value
+     * from the server. - The returned value is True if successfully cast, false
+     * otherwise.
+     */
+    public cast(
+        spellName: string,
+        tile: TileState,
+        callback: (returned: boolean) => void,
+    ): void {
+        this.runOnServer("cast", { spellName, tile }, callback);
+    }
+
+    /**
+     * Moves this Wizard from its current Tile to another empty Tile.
+     *
+     * @param tile - The Tile this Wizard should move to.
+     * @param callback - The callback that eventually returns the return value
+     * from the server. - The returned value is True if it moved, false
+     * otherwise.
+     */
+    public move(tile: TileState, callback: (returned: boolean) => void): void {
+        this.runOnServer("move", { tile }, callback);
+    }
+
+    // </Joueur functions>
 
     // <<-- Creer-Merge: protected-private-functions -->>
     // You can add additional protected/private functions here

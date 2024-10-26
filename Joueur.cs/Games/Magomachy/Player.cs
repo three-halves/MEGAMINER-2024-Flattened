@@ -21,29 +21,9 @@ namespace Joueur.cs.Games.Magomachy
     {
         #region Properties
         /// <summary>
-        /// The amount of spell resources this Player has.
-        /// </summary>
-        public int Aether { get; protected set; }
-
-        /// <summary>
-        /// The attack value of the player.
-        /// </summary>
-        public int Attack { get; protected set; }
-
-        /// <summary>
         /// What type of client this is, e.g. 'Python', 'JavaScript', or some other language. For potential data mining purposes.
         /// </summary>
         public string ClientType { get; protected set; }
-
-        /// <summary>
-        /// The defense value of the player.
-        /// </summary>
-        public int Defense { get; protected set; }
-
-        /// <summary>
-        /// The amount of health this player has.
-        /// </summary>
-        public int Health { get; protected set; }
 
         /// <summary>
         /// If the player lost the game or not.
@@ -69,11 +49,6 @@ namespace Joueur.cs.Games.Magomachy
         /// The reason why the player won the game.
         /// </summary>
         public string ReasonWon { get; protected set; }
-
-        /// <summary>
-        /// The speed of the player.
-        /// </summary>
-        public int Speed { get; protected set; }
 
         /// <summary>
         /// The amount of time (in ns) remaining for this AI to send commands.
@@ -103,6 +78,18 @@ namespace Joueur.cs.Games.Magomachy
         /// </summary>
         protected Player() : base()
         {
+        }
+
+        /// <summary>
+        /// This is called when you need to pick your wizard class.
+        /// </summary>
+        /// <param name="wizardClass">The class of wizard the player wants.</param>
+        /// <returns>True if class successfully chosen, false otherwise.</returns>
+        public bool ChooseWizard(string wizardClass)
+        {
+            return this.RunOnServer<bool>("chooseWizard", new Dictionary<string, object> {
+                {"wizardClass", wizardClass}
+            });
         }
 
 

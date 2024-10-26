@@ -21,7 +21,7 @@ type GameImpl struct {
 	sessionImpl          string
 	tilesImpl            []magomachy.Tile
 	timeAddedPerTurnImpl float64
-	wizardsImpl          []magomachy.Wizard
+	wizardsImpl          []string
 }
 
 // CurrentPlayer returns the player whose turn it is currently. That player
@@ -84,8 +84,8 @@ func (gameImpl *GameImpl) TimeAddedPerTurn() float64 {
 	return gameImpl.timeAddedPerTurnImpl
 }
 
-// Wizards returns array of wizards.
-func (gameImpl *GameImpl) Wizards() []magomachy.Wizard {
+// Wizards returns array of wizard choices.
+func (gameImpl *GameImpl) Wizards() []string {
 	return gameImpl.wizardsImpl
 }
 
@@ -103,7 +103,7 @@ func (gameImpl *GameImpl) InitImplDefaults() {
 	gameImpl.sessionImpl = ""
 	gameImpl.tilesImpl = []magomachy.Tile{}
 	gameImpl.timeAddedPerTurnImpl = 0
-	gameImpl.wizardsImpl = []magomachy.Wizard{}
+	gameImpl.wizardsImpl = []string{}
 }
 
 // DeltaMerge merges the delta for a given attribute in Game.
@@ -161,7 +161,7 @@ func (gameImpl *GameImpl) DeltaMerge(
 		gameImpl.timeAddedPerTurnImpl = magomachyDeltaMerge.Float(delta)
 		return true, nil
 	case "wizards":
-		gameImpl.wizardsImpl = magomachyDeltaMerge.ArrayOfWizard(&gameImpl.wizardsImpl, delta)
+		gameImpl.wizardsImpl = magomachyDeltaMerge.ArrayOfString(&gameImpl.wizardsImpl, delta)
 		return true, nil
 	}
 

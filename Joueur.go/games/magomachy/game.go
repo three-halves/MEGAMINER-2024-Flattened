@@ -49,8 +49,8 @@ type Game interface {
 	// after each player performs a turn.
 	TimeAddedPerTurn() float64
 
-	// Wizards is array of wizards.
-	Wizards() []Wizard
+	// Wizards is array of wizard choices.
+	Wizards() []string
 
 	// -- Tiled Game Utils -- \\
 

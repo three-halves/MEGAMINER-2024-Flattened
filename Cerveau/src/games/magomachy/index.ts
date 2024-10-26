@@ -88,6 +88,16 @@ export interface GameObjectProperties {}
 /** All the possible properties for Item instances. */
 export interface ItemProperties {
     /**
+     * The type of Item this is.
+     */
+    form?: string;
+
+    /**
+     * How many turns this item has existed for.
+     */
+    lifetime?: number;
+
+    /**
      * The Tile this Item is on.
      */
     tile?: Item;
@@ -96,30 +106,10 @@ export interface ItemProperties {
 /** All the possible properties for Player instances. */
 export interface PlayerProperties {
     /**
-     * The amount of spell resources this Player has.
-     */
-    aether?: number;
-
-    /**
-     * The attack value of the player.
-     */
-    attack?: number;
-
-    /**
      * What type of client this is, e.g. 'Python', 'JavaScript', or some other
      * language. For potential data mining purposes.
      */
     clientType?: string;
-
-    /**
-     * The defense value of the player.
-     */
-    defense?: number;
-
-    /**
-     * The amount of health this player has.
-     */
-    health?: number;
 
     /**
      * If the player lost the game or not.
@@ -147,11 +137,6 @@ export interface PlayerProperties {
     reasonWon?: string;
 
     /**
-     * The speed of the player.
-     */
-    speed?: number;
-
-    /**
      * The amount of time (in ns) remaining for this AI to send commands.
      */
     timeRemaining?: number;
@@ -165,6 +150,18 @@ export interface PlayerProperties {
      * If the player won the game or not.
      */
     won?: boolean;
+}
+
+/**
+ * Argument overrides for Player's chooseWizard function. If you return an
+ * object of this interface from the invalidate functions, the value(s) you set
+ * will be used in the actual function.
+ */
+export interface PlayerChooseWizardArgs {
+    /**
+     * The class of wizard the player wants.
+     */
+    wizardClass?: string;
 }
 
 /** All the possible properties for Tile instances. */
@@ -201,7 +198,7 @@ export interface TileProperties {
     /**
      * The type of Tile this is (i.e Grass, Wall).
      */
-    type?: string;
+    type?: "floor" | "wall";
 
     /**
      * The Wizard on this Tile if present, otherwise undefined.
@@ -237,9 +234,34 @@ export interface WizardProperties {
     defense?: number;
 
     /**
+     * The direction this Wizard is facing.
+     */
+    direction?: number;
+
+    /**
+     * The turns remaining on each active effects on Wizard.
+     */
+    effectTimes?: number[];
+
+    /**
+     * The names of active effects on the Wizard.
+     */
+    effects?: string[];
+
+    /**
+     * Whether or not this Wizard has cast a spell this turn.
+     */
+    hasCast?: boolean;
+
+    /**
      * The amount of health this player has.
      */
     health?: number;
+
+    /**
+     * How much movement the wizard has left.
+     */
+    movementLeft?: number;
 
     /**
      * The Player that owns and can control this Unit, or undefined if the Unit
@@ -258,14 +280,37 @@ export interface WizardProperties {
     speed?: number;
 
     /**
-     * The x coordinate of the wizard.
+     * The Tile that this Wizard is on.
      */
-    x?: number;
+    tile?: Tile;
+}
 
+/**
+ * Argument overrides for Wizard's cast function. If you return an object of
+ * this interface from the invalidate functions, the value(s) you set will be
+ * used in the actual function.
+ */
+export interface WizardCastArgs {
     /**
-     * The y coordinate of the wizard.
+     * The name of the spell to cast.
      */
-    y?: number;
+    spellName?: string;
+    /**
+     * The Tile to aim the spell toward.
+     */
+    tile?: Tile;
+}
+
+/**
+ * Argument overrides for Wizard's move function. If you return an object of
+ * this interface from the invalidate functions, the value(s) you set will be
+ * used in the actual function.
+ */
+export interface WizardMoveArgs {
+    /**
+     * The Tile this Wizard should move to.
+     */
+    tile?: Tile;
 }
 
 /**
@@ -487,9 +532,7 @@ export const Namespace = makeNamespace({
                 wizards: {
                     typeName: "list",
                     valueType: {
-                        typeName: "gameObject",
-                        gameObjectClass: Wizard,
-                        nullable: false,
+                        typeName: "string",
                     },
                 },
             },
@@ -527,6 +570,12 @@ export const Namespace = makeNamespace({
         Item: {
             parentClassName: "GameObject",
             attributes: {
+                form: {
+                    typeName: "string",
+                },
+                lifetime: {
+                    typeName: "int",
+                },
                 tile: {
                     typeName: "gameObject",
                     gameObjectClass: Item,
@@ -538,20 +587,8 @@ export const Namespace = makeNamespace({
         Player: {
             parentClassName: "GameObject",
             attributes: {
-                aether: {
-                    typeName: "int",
-                },
-                attack: {
-                    typeName: "int",
-                },
                 clientType: {
                     typeName: "string",
-                },
-                defense: {
-                    typeName: "int",
-                },
-                health: {
-                    typeName: "int",
                 },
                 lost: {
                     typeName: "boolean",
@@ -570,9 +607,6 @@ export const Namespace = makeNamespace({
                 reasonWon: {
                     typeName: "string",
                 },
-                speed: {
-                    typeName: "int",
-                },
                 timeRemaining: {
                     typeName: "float",
                 },
@@ -585,7 +619,20 @@ export const Namespace = makeNamespace({
                     typeName: "boolean",
                 },
             },
-            functions: {},
+            functions: {
+                chooseWizard: {
+                    args: [
+                        {
+                            argName: "wizardClass",
+                            typeName: "string",
+                        },
+                    ],
+                    invalidValue: false,
+                    returns: {
+                        typeName: "boolean",
+                    },
+                },
+            },
         },
         Tile: {
             parentClassName: "GameObject",
@@ -617,6 +664,8 @@ export const Namespace = makeNamespace({
                 },
                 type: {
                     typeName: "string",
+                    defaultValue: "floor",
+                    literals: ["floor", "wall"],
                 },
                 wizard: {
                     typeName: "gameObject",
@@ -644,7 +693,28 @@ export const Namespace = makeNamespace({
                 defense: {
                     typeName: "int",
                 },
+                direction: {
+                    typeName: "int",
+                },
+                effectTimes: {
+                    typeName: "list",
+                    valueType: {
+                        typeName: "int",
+                    },
+                },
+                effects: {
+                    typeName: "list",
+                    valueType: {
+                        typeName: "string",
+                    },
+                },
+                hasCast: {
+                    typeName: "boolean",
+                },
                 health: {
+                    typeName: "int",
+                },
+                movementLeft: {
                     typeName: "int",
                 },
                 owner: {
@@ -665,16 +735,48 @@ export const Namespace = makeNamespace({
                 speed: {
                     typeName: "int",
                 },
-                x: {
-                    typeName: "int",
-                },
-                y: {
-                    typeName: "int",
+                tile: {
+                    typeName: "gameObject",
+                    gameObjectClass: Tile,
+                    nullable: true,
                 },
             },
-            functions: {},
+            functions: {
+                cast: {
+                    args: [
+                        {
+                            argName: "spellName",
+                            typeName: "string",
+                        },
+                        {
+                            argName: "tile",
+                            typeName: "gameObject",
+                            gameObjectClass: Tile,
+                            nullable: false,
+                        },
+                    ],
+                    invalidValue: false,
+                    returns: {
+                        typeName: "boolean",
+                    },
+                },
+                move: {
+                    args: [
+                        {
+                            argName: "tile",
+                            typeName: "gameObject",
+                            gameObjectClass: Tile,
+                            nullable: false,
+                        },
+                    ],
+                    invalidValue: false,
+                    returns: {
+                        typeName: "boolean",
+                    },
+                },
+            },
         },
     },
     gameVersion:
-        "2253f2c43d650502bf62e0375cd0448402699c1ac9347c81dce8b93f202cdac8",
+        "77505b71a8b9f75455f9f5fec932c1959810e1ad9f6ddce1fab318c55b71b79f",
 });

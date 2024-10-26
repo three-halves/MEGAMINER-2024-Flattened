@@ -62,6 +62,8 @@ func (tileImpl *TileImpl) TileWest() magomachy.Tile {
 }
 
 // Type returns the type of Tile this is (i.e Grass, Wall).
+//
+// Literal Values: "floor" or "wall"
 func (tileImpl *TileImpl) Type() string {
 	return tileImpl.typeImpl
 }

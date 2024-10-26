@@ -84,10 +84,10 @@ export interface GameState extends BaseGame {
     timeAddedPerTurn: number;
 
     /**
-     * List of wizards.
+     * List of wizard choices.
      *
      */
-    wizards: WizardState[];
+    wizards: string[];
 }
 
 /**
@@ -125,6 +125,18 @@ export interface GameObjectState extends BaseGameObject {
  */
 export interface ItemState extends GameObjectState {
     /**
+     * The type of Item this is.
+     *
+     */
+    form: string;
+
+    /**
+     * How many turns this item has existed for.
+     *
+     */
+    lifetime: number;
+
+    /**
      * The Tile this Item is on.
      *
      */
@@ -137,35 +149,11 @@ export interface ItemState extends GameObjectState {
  */
 export interface PlayerState extends GameObjectState, BasePlayer {
     /**
-     * The amount of spell resources this Player has.
-     *
-     */
-    aether: number;
-
-    /**
-     * The attack value of the player.
-     *
-     */
-    attack: number;
-
-    /**
      * What type of client this is, e.g. 'Python', 'JavaScript', or some other
      * language. For potential data mining purposes.
      *
      */
     clientType: string;
-
-    /**
-     * The defense value of the player.
-     *
-     */
-    defense: number;
-
-    /**
-     * The amount of health this player has.
-     *
-     */
-    health: number;
 
     /**
      * If the player lost the game or not.
@@ -196,12 +184,6 @@ export interface PlayerState extends GameObjectState, BasePlayer {
      *
      */
     reasonWon: string;
-
-    /**
-     * The speed of the player.
-     *
-     */
-    speed: number;
 
     /**
      * The amount of time (in ns) remaining for this AI to send commands.
@@ -265,7 +247,7 @@ export interface TileState extends GameObjectState {
      * The type of Tile this is (i.e Grass, Wall).
      *
      */
-    type: string;
+    type: "floor" | "wall";
 
     /**
      * The Wizard on this Tile if present, otherwise null.
@@ -310,10 +292,40 @@ export interface WizardState extends GameObjectState {
     defense: number;
 
     /**
+     * The direction this Wizard is facing.
+     *
+     */
+    direction: number;
+
+    /**
+     * The turns remaining on each active effects on Wizard.
+     *
+     */
+    effectTimes: number[];
+
+    /**
+     * The names of active effects on the Wizard.
+     *
+     */
+    effects: string[];
+
+    /**
+     * Whether or not this Wizard has cast a spell this turn.
+     *
+     */
+    hasCast: boolean;
+
+    /**
      * The amount of health this player has.
      *
      */
     health: number;
+
+    /**
+     * How much movement the wizard has left.
+     *
+     */
+    movementLeft: number;
 
     /**
      * The Player that owns and can control this Unit, or null if the Unit is
@@ -335,16 +347,10 @@ export interface WizardState extends GameObjectState {
     speed: number;
 
     /**
-     * The x coordinate of the wizard.
+     * The Tile that this Wizard is on.
      *
      */
-    x: number;
-
-    /**
-     * The y coordinate of the wizard.
-     *
-     */
-    y: number;
+    tile: TileState;
 }
 
 // -- Run Deltas -- \\
@@ -385,6 +391,129 @@ export type GameObjectLogRanDelta = RanDelta & {
          *
          */
         returned: void;
+    };
+};
+
+/**
+ * The delta about what happened when a 'Player' ran their 'chooseWizard'
+ * function.
+ *
+ */
+export type PlayerChooseWizardRanDelta = RanDelta & {
+    /** Data about why the run/ran occurred. */
+    data: {
+        /** The player that requested this game logic be ran. */
+        player: GameObjectInstance<PlayerState>;
+
+        /** The data about what was requested be run. */
+        run: {
+            /** The reference to the game object requesting a function to be run. */
+            caller: GameObjectInstance<PlayerState>;
+
+            /** The name of the function of the caller to run. */
+            functionName: "chooseWizard";
+
+            /**
+             * The arguments to Player.chooseWizard,
+             * as a map of the argument name to its value.
+             */
+            args: {
+                /**
+                 * The class of wizard the player wants.
+                 *
+                 */
+                wizardClass: string;
+            };
+        };
+
+        /**
+         * True if class successfully chosen, false otherwise.
+         *
+         */
+        returned: boolean;
+    };
+};
+
+/**
+ * The delta about what happened when a 'Wizard' ran their 'cast' function.
+ *
+ */
+export type WizardCastRanDelta = RanDelta & {
+    /** Data about why the run/ran occurred. */
+    data: {
+        /** The player that requested this game logic be ran. */
+        player: GameObjectInstance<PlayerState>;
+
+        /** The data about what was requested be run. */
+        run: {
+            /** The reference to the game object requesting a function to be run. */
+            caller: GameObjectInstance<WizardState>;
+
+            /** The name of the function of the caller to run. */
+            functionName: "cast";
+
+            /**
+             * The arguments to Wizard.cast,
+             * as a map of the argument name to its value.
+             */
+            args: {
+                /**
+                 * The name of the spell to cast.
+                 *
+                 */
+                spellName: string;
+                /**
+                 * The Tile to aim the spell toward.
+                 *
+                 */
+                tile: GameObjectInstance<TileState>;
+            };
+        };
+
+        /**
+         * True if successfully cast, false otherwise.
+         *
+         */
+        returned: boolean;
+    };
+};
+
+/**
+ * The delta about what happened when a 'Wizard' ran their 'move' function.
+ *
+ */
+export type WizardMoveRanDelta = RanDelta & {
+    /** Data about why the run/ran occurred. */
+    data: {
+        /** The player that requested this game logic be ran. */
+        player: GameObjectInstance<PlayerState>;
+
+        /** The data about what was requested be run. */
+        run: {
+            /** The reference to the game object requesting a function to be run. */
+            caller: GameObjectInstance<WizardState>;
+
+            /** The name of the function of the caller to run. */
+            functionName: "move";
+
+            /**
+             * The arguments to Wizard.move,
+             * as a map of the argument name to its value.
+             */
+            args: {
+                /**
+                 * The Tile this Wizard should move to.
+                 *
+                 */
+                tile: GameObjectInstance<TileState>;
+            };
+        };
+
+        /**
+         * True if it moved, false otherwise.
+         *
+         */
+        returned: boolean;
     };
 };
 
@@ -494,6 +623,9 @@ export type AIRunTurnFinishedDelta = FinishedDelta & {
 /** All the possible specific deltas in Magomachy. */
 export type MagomachySpecificDelta =
     | GameObjectLogRanDelta
+    | PlayerChooseWizardRanDelta
+    | WizardCastRanDelta
+    | WizardMoveRanDelta
     | AIActionFinishedDelta
     | AIMoveFinishedDelta
     | AIRunTurnFinishedDelta;

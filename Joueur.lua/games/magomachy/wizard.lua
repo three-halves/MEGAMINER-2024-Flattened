@@ -27,18 +27,26 @@ function Wizard:init(...)
     self.attack = 0
     --- The defense value of the player.
     self.defense = 0
+    --- The direction this Wizard is facing.
+    self.direction = 0
+    --- The turns remaining on each active effects on Wizard.
+    self.effectTimes = Table()
+    --- The names of active effects on the Wizard.
+    self.effects = Table()
+    --- Whether or not this Wizard has cast a spell this turn.
+    self.hasCast = false
     --- The amount of health this player has.
     self.health = 0
+    --- How much movement the wizard has left.
+    self.movementLeft = 0
     --- The Player that owns and can control this Unit, or nil if the Unit is neutral.
     self.owner = nil
     --- Specific type of Wizard.
     self.specialty = ""
     --- The speed of the player.
     self.speed = 0
-    --- The x coordinate of the wizard.
-    self.x = 0
-    --- The y coordinate of the wizard.
-    self.y = 0
+    --- The Tile that this Wizard is on.
+    self.tile = nil
 
     --- (inherited) String representing the top level Class that this game object is an instance of. Used for reflection to create new instances on clients, but exposed for convenience should AIs want this data.
     -- @field[string] self.gameObjectName
@@ -53,6 +61,26 @@ function Wizard:init(...)
     -- @see GameObject.logs
 
 
+end
+
+--- Casts a spell on a Tile in range.
+-- @tparam string spellName The name of the spell to cast.
+-- @tparam Tile tile The Tile to aim the spell toward.
+-- @treturn bool True if successfully cast, false otherwise.
+function Wizard:cast(spellName, tile)
+    return not not (self:_runOnServer("cast", {
+        spellName = spellName,
+        tile = tile,
+    }))
+end
+
+--- Moves this Wizard from its current Tile to another empty Tile.
+-- @tparam Tile tile The Tile this Wizard should move to.
+-- @treturn bool True if it moved, false otherwise.
+function Wizard:move(tile)
+    return not not (self:_runOnServer("move", {
+        tile = tile,
+    }))
 end
 
 --- (inherited) Adds a message to this GameObject's logs. Intended for your own debugging purposes, as strings stored here are saved in the gamelog.

@@ -4,7 +4,7 @@
 # Never try to directly create an instance of this class, or modify its member variables.
 # Instead, you should only be reading its variables and calling its functions.
 
-from typing import Optional
+from typing import List, Optional
 from games.magomachy.game_object import GameObject
 
 # <<-- Creer-Merge: imports -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
@@ -26,12 +26,16 @@ class Wizard(GameObject):
         self._aether = 0
         self._attack = 0
         self._defense = 0
+        self._direction = 0
+        self._effect_times = []
+        self._effects = []
+        self._has_cast = False
         self._health = 0
+        self._movement_left = 0
         self._owner = None
         self._specialty = ""
         self._speed = 0
-        self._x = 0
-        self._y = 0
+        self._tile = None
 
     @property
     def aether(self) -> int:
@@ -52,10 +56,40 @@ class Wizard(GameObject):
         return self._defense
 
     @property
+    def direction(self) -> int:
+        """int: The direction this Wizard is facing.
+        """
+        return self._direction
+
+    @property
+    def effect_times(self) -> List[int]:
+        """list[int]: The turns remaining on each active effects on Wizard.
+        """
+        return self._effect_times
+
+    @property
+    def effects(self) -> List[str]:
+        """list[str]: The names of active effects on the Wizard.
+        """
+        return self._effects
+
+    @property
+    def has_cast(self) -> bool:
+        """bool: Whether or not this Wizard has cast a spell this turn.
+        """
+        return self._has_cast
+
+    @property
     def health(self) -> int:
         """int: The amount of health this player has.
         """
         return self._health
+
+    @property
+    def movement_left(self) -> int:
+        """int: How much movement the wizard has left.
+        """
+        return self._movement_left
 
     @property
     def owner(self) -> Optional['games.magomachy.player.Player']:
@@ -76,16 +110,38 @@ class Wizard(GameObject):
         return self._speed
 
     @property
-    def x(self) -> int:
-        """int: The x coordinate of the wizard.
+    def tile(self) -> Optional['games.magomachy.tile.Tile']:
+        """games.magomachy.tile.Tile or None: The Tile that this Wizard is on.
         """
-        return self._x
+        return self._tile
 
-    @property
-    def y(self) -> int:
-        """int: The y coordinate of the wizard.
+    def cast(self, spell_name: str, tile: 'games.magomachy.tile.Tile') -> bool:
+        """Casts a spell on a Tile in range.
+
+        Args:
+            spell_name (str): The name of the spell to cast.
+            tile (games.magomachy.tile.Tile): The Tile to aim the spell toward.
+
+        Returns:
+            bool: True if successfully cast, False otherwise.
         """
-        return self._y
+        return self._run_on_server('cast', {
+            'spellName': spell_name,
+            'tile': tile
+        })
+
+    def move(self, tile: 'games.magomachy.tile.Tile') -> bool:
+        """Moves this Wizard from its current Tile to another empty Tile.
+
+        Args:
+            tile (games.magomachy.tile.Tile): The Tile this Wizard should move to.
+
+        Returns:
+            bool: True if it moved, False otherwise.
+        """
+        return self._run_on_server('move', {
+            'tile': tile
+        })
 
 
     # <<-- Creer-Merge: functions -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.

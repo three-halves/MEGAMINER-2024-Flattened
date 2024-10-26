@@ -29,17 +29,12 @@ class Player extends GameObject {
     // The following values should get overridden when delta states are merged, but we set them here as a reference for you to see what variables this class has.
 
     // default values for private member values
-    this.aether = 0;
-    this.attack = 0;
     this.clientType = '';
-    this.defense = 0;
-    this.health = 0;
     this.lost = false;
     this.name = '';
     this.opponent = null;
     this.reasonLost = '';
     this.reasonWon = '';
-    this.speed = 0;
     this.timeRemaining = 0;
     this.wizard = null;
     this.won = false;
@@ -53,34 +48,6 @@ class Player extends GameObject {
   // Member variables
 
   /**
-   * The amount of spell resources this Player has.
-   *
-   * @type {number}
-   */
-  get aether() {
-    return client.gameManager.getMemberValue(this, 'aether');
-  }
-
-  set aether(value) {
-    client.gameManager.setMemberValue(this, 'aether', value);
-  }
-
-
-  /**
-   * The attack value of the player.
-   *
-   * @type {number}
-   */
-  get attack() {
-    return client.gameManager.getMemberValue(this, 'attack');
-  }
-
-  set attack(value) {
-    client.gameManager.setMemberValue(this, 'attack', value);
-  }
-
-
-  /**
    * What type of client this is, e.g. 'Python', 'JavaScript', or some other language. For potential data mining purposes.
    *
    * @type {string}
@@ -91,34 +58,6 @@ class Player extends GameObject {
 
   set clientType(value) {
     client.gameManager.setMemberValue(this, 'clientType', value);
-  }
-
-
-  /**
-   * The defense value of the player.
-   *
-   * @type {number}
-   */
-  get defense() {
-    return client.gameManager.getMemberValue(this, 'defense');
-  }
-
-  set defense(value) {
-    client.gameManager.setMemberValue(this, 'defense', value);
-  }
-
-
-  /**
-   * The amount of health this player has.
-   *
-   * @type {number}
-   */
-  get health() {
-    return client.gameManager.getMemberValue(this, 'health');
-  }
-
-  set health(value) {
-    client.gameManager.setMemberValue(this, 'health', value);
   }
 
 
@@ -193,20 +132,6 @@ class Player extends GameObject {
 
 
   /**
-   * The speed of the player.
-   *
-   * @type {number}
-   */
-  get speed() {
-    return client.gameManager.getMemberValue(this, 'speed');
-  }
-
-  set speed(value) {
-    client.gameManager.setMemberValue(this, 'speed', value);
-  }
-
-
-  /**
    * The amount of time (in ns) remaining for this AI to send commands.
    *
    * @type {number}
@@ -247,6 +172,19 @@ class Player extends GameObject {
     client.gameManager.setMemberValue(this, 'won', value);
   }
 
+
+
+  /**
+   * This is called when you need to pick your wizard class.
+   *
+   * @param {string} wizardClass - The class of wizard the player wants.
+   * @returns {boolean} - True if class successfully chosen, false otherwise.
+   */
+  chooseWizard(wizardClass) {
+    return client.runOnServer(this, 'chooseWizard', {
+      wizardClass: wizardClass,
+    });
+  }
 
 
   //<<-- Creer-Merge: functions -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.

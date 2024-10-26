@@ -135,6 +135,28 @@ export class Player extends makeRenderable(GameObject, SHOULD_RENDER) {
     // You can add additional public functions here
     // <<-- /Creer-Merge: public-functions -->>
 
+    // <Joueur functions> --- functions invoked for human playable client
+    // NOTE: These functions are only used 99% of the time if the game
+    // supports human playable clients (like Chess).
+    // If it does not, feel free to ignore these Joueur functions.
+
+    /**
+     * This is called when you need to pick your wizard class.
+     *
+     * @param wizardClass - The class of wizard the player wants.
+     * @param callback - The callback that eventually returns the return value
+     * from the server. - The returned value is True if class successfully
+     * chosen, false otherwise.
+     */
+    public chooseWizard(
+        wizardClass: string,
+        callback: (returned: boolean) => void,
+    ): void {
+        this.runOnServer("chooseWizard", { wizardClass }, callback);
+    }
+
+    // </Joueur functions>
+
     // <<-- Creer-Merge: protected-private-functions -->>
     // You can add additional protected/private functions here
     // <<-- /Creer-Merge: protected-private-functions -->>

@@ -22,7 +22,21 @@ class Item(GameObject):
         GameObject.__init__(self)
 
         # private attributes to hold the properties so they appear read only
+        self._form = ""
+        self._lifetime = 0
         self._tile = None
+
+    @property
+    def form(self) -> str:
+        """str: The type of Item this is.
+        """
+        return self._form
+
+    @property
+    def lifetime(self) -> int:
+        """int: How many turns this item has existed for.
+        """
+        return self._lifetime
 
     @property
     def tile(self) -> 'games.magomachy.item.Item':

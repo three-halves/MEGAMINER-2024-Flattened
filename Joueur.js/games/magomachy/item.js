@@ -29,6 +29,8 @@ class Item extends GameObject {
     // The following values should get overridden when delta states are merged, but we set them here as a reference for you to see what variables this class has.
 
     // default values for private member values
+    this.form = '';
+    this.lifetime = 0;
     this.tile = null;
 
     //<<-- Creer-Merge: init -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
@@ -38,6 +40,34 @@ class Item extends GameObject {
 
 
   // Member variables
+
+  /**
+   * The type of Item this is.
+   *
+   * @type {string}
+   */
+  get form() {
+    return client.gameManager.getMemberValue(this, 'form');
+  }
+
+  set form(value) {
+    client.gameManager.setMemberValue(this, 'form', value);
+  }
+
+
+  /**
+   * How many turns this item has existed for.
+   *
+   * @type {number}
+   */
+  get lifetime() {
+    return client.gameManager.getMemberValue(this, 'lifetime');
+  }
+
+  set lifetime(value) {
+    client.gameManager.setMemberValue(this, 'lifetime', value);
+  }
+
 
   /**
    * The Tile this Item is on.

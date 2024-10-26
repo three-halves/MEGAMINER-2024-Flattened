@@ -21,6 +21,16 @@ namespace Joueur.cs.Games.Magomachy
     {
         #region Properties
         /// <summary>
+        /// The type of Item this is.
+        /// </summary>
+        public string Form { get; protected set; }
+
+        /// <summary>
+        /// How many turns this item has existed for.
+        /// </summary>
+        public int Lifetime { get; protected set; }
+
+        /// <summary>
         /// The Tile this Item is on.
         /// </summary>
         public Magomachy.Item Tile { get; protected set; }

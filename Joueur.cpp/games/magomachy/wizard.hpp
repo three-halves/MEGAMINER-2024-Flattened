@@ -54,9 +54,34 @@ public:
     const int& defense;
 
     /// <summary>
+    /// The direction this Wizard is facing.
+    /// </summary>
+    const int& direction;
+
+    /// <summary>
+    /// The turns remaining on each active effects on Wizard.
+    /// </summary>
+    const std::vector<int>& effect_times;
+
+    /// <summary>
+    /// The names of active effects on the Wizard.
+    /// </summary>
+    const std::vector<std::string>& effects;
+
+    /// <summary>
+    /// Whether or not this Wizard has cast a spell this turn.
+    /// </summary>
+    const bool& has_cast;
+
+    /// <summary>
     /// The amount of health this player has.
     /// </summary>
     const int& health;
+
+    /// <summary>
+    /// How much movement the wizard has left.
+    /// </summary>
+    const int& movement_left;
 
     /// <summary>
     /// The Player that owns and can control this Unit, or null if the Unit is neutral.
@@ -74,19 +99,27 @@ public:
     const int& speed;
 
     /// <summary>
-    /// The x coordinate of the wizard.
+    /// The Tile that this Wizard is on.
     /// </summary>
-    const int& x;
-
-    /// <summary>
-    /// The y coordinate of the wizard.
-    /// </summary>
-    const int& y;
+    const Tile& tile;
 
     // <<-- Creer-Merge: member variables -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
     // You can add additional member variables here. None of them will be tracked or updated by the server.
     // <<-- /Creer-Merge: member variables -->>
 
+
+    /// <summary>
+    /// casts a spell on a _tile in range.
+    /// </summary>
+    /// <param name="spell_name"> The name of the spell to cast. </param>
+    /// <param name="tile"> The Tile to aim the spell toward. </param>
+    bool cast(const std::string& spell_name, const Tile& tile);
+
+    /// <summary>
+    /// moves this _wizard from its current _tile to another empty _tile.
+    /// </summary>
+    /// <param name="tile"> The Tile this Wizard should move to. </param>
+    bool move(const Tile& tile);
 
 
    // <<-- Creer-Merge: methods -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.

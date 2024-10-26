@@ -92,9 +92,9 @@ public:
     const double& time_added_per_turn;
 
     /// <summary>
-    /// List of wizards.
+    /// List of wizard choices.
     /// </summary>
-    const std::vector<Wizard>& wizards;
+    const std::vector<std::string>& wizards;
 
     // <<-- Creer-Merge: member variables -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
     // You can add additional member variables here. None of them will be tracked or updated by the server.

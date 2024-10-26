@@ -36,9 +36,34 @@ namespace Joueur.cs.Games.Magomachy
         public int Defense { get; protected set; }
 
         /// <summary>
+        /// The direction this Wizard is facing.
+        /// </summary>
+        public int Direction { get; protected set; }
+
+        /// <summary>
+        /// The turns remaining on each active effects on Wizard.
+        /// </summary>
+        public IList<int> EffectTimes { get; protected set; }
+
+        /// <summary>
+        /// The names of active effects on the Wizard.
+        /// </summary>
+        public IList<string> Effects { get; protected set; }
+
+        /// <summary>
+        /// Whether or not this Wizard has cast a spell this turn.
+        /// </summary>
+        public bool HasCast { get; protected set; }
+
+        /// <summary>
         /// The amount of health this player has.
         /// </summary>
         public int Health { get; protected set; }
+
+        /// <summary>
+        /// How much movement the wizard has left.
+        /// </summary>
+        public int MovementLeft { get; protected set; }
 
         /// <summary>
         /// The Player that owns and can control this Unit, or null if the Unit is neutral.
@@ -56,14 +81,9 @@ namespace Joueur.cs.Games.Magomachy
         public int Speed { get; protected set; }
 
         /// <summary>
-        /// The x coordinate of the wizard.
+        /// The Tile that this Wizard is on.
         /// </summary>
-        public int X { get; protected set; }
-
-        /// <summary>
-        /// The y coordinate of the wizard.
-        /// </summary>
-        public int Y { get; protected set; }
+        public Magomachy.Tile Tile { get; protected set; }
 
 
         // <<-- Creer-Merge: properties -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
@@ -78,6 +98,34 @@ namespace Joueur.cs.Games.Magomachy
         /// </summary>
         protected Wizard() : base()
         {
+            this.EffectTimes = new List<int>();
+            this.Effects = new List<string>();
+        }
+
+        /// <summary>
+        /// Casts a spell on a Tile in range.
+        /// </summary>
+        /// <param name="spellName">The name of the spell to cast.</param>
+        /// <param name="tile">The Tile to aim the spell toward.</param>
+        /// <returns>True if successfully cast, false otherwise.</returns>
+        public bool Cast(string spellName, Magomachy.Tile tile)
+        {
+            return this.RunOnServer<bool>("cast", new Dictionary<string, object> {
+                {"spellName", spellName},
+                {"tile", tile}
+            });
+        }
+
+        /// <summary>
+        /// Moves this Wizard from its current Tile to another empty Tile.
+        /// </summary>
+        /// <param name="tile">The Tile this Wizard should move to.</param>
+        /// <returns>True if it moved, false otherwise.</returns>
+        public bool Move(Magomachy.Tile tile)
+        {
+            return this.RunOnServer<bool>("move", new Dictionary<string, object> {
+                {"tile", tile}
+            });
         }
 
 

@@ -8,6 +8,7 @@
 
 import { GameObject } from "./game-object";
 import { Player } from "./player";
+import { Tile } from "./tile";
 
 // <<-- Creer-Merge: imports -->>
 // any additional imports you want can be placed here safely between creer runs
@@ -34,9 +35,34 @@ export class Wizard extends GameObject {
     public readonly defense!: number;
 
     /**
+     * The direction this Wizard is facing.
+     */
+    public readonly direction!: number;
+
+    /**
+     * The turns remaining on each active effects on Wizard.
+     */
+    public readonly effectTimes!: number[];
+
+    /**
+     * The names of active effects on the Wizard.
+     */
+    public readonly effects!: string[];
+
+    /**
+     * Whether or not this Wizard has cast a spell this turn.
+     */
+    public readonly hasCast!: boolean;
+
+    /**
      * The amount of health this player has.
      */
     public readonly health!: number;
+
+    /**
+     * How much movement the wizard has left.
+     */
+    public readonly movementLeft!: number;
 
     /**
      * The Player that owns and can control this Unit, or null if the Unit is
@@ -55,14 +81,33 @@ export class Wizard extends GameObject {
     public readonly speed!: number;
 
     /**
-     * The x coordinate of the wizard.
+     * The Tile that this Wizard is on.
      */
-    public readonly x!: number;
+    public readonly tile!: Tile | undefined;
 
     /**
-     * The y coordinate of the wizard.
+     * Casts a spell on a Tile in range.
+     * @param spellName The name of the spell to cast.
+     * @param tile The Tile to aim the spell toward.
+     * @returns True if successfully cast, false otherwise.
      */
-    public readonly y!: number;
+    public async cast(spellName: string, tile: Tile): Promise<boolean> {
+        return this.runOnServer("cast", {
+            spellName,
+            tile,
+        });
+    }
+
+    /**
+     * Moves this Wizard from its current Tile to another empty Tile.
+     * @param tile The Tile this Wizard should move to.
+     * @returns True if it moved, false otherwise.
+     */
+    public async move(tile: Tile): Promise<boolean> {
+        return this.runOnServer("move", {
+            tile,
+        });
+    }
 
     // <<-- Creer-Merge: functions -->>
     // any additional functions you want to add to this class can be preserved here

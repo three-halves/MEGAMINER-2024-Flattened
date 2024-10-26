@@ -10,6 +10,11 @@ import { Wizard } from "./wizard";
 // <<-- /Creer-Merge: imports -->>
 
 /**
+ * The type of Tile this is (i.e Grass, Wall).
+ */
+export type TileType = "floor" | "wall";
+
+/**
  * A Tile in the game that makes up the 2D map grid.
  */
 export class Tile extends GameObject implements BaseTile {
@@ -45,7 +50,7 @@ export class Tile extends GameObject implements BaseTile {
     /**
      * The type of Tile this is (i.e Grass, Wall).
      */
-    public type!: string;
+    public readonly type!: "floor" | "wall";
 
     /**
      * The Wizard on this Tile if present, otherwise undefined.

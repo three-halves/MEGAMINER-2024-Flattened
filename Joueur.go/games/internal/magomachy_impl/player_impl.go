@@ -11,30 +11,15 @@ import (
 type PlayerImpl struct {
 	GameObjectImpl
 
-	aetherImpl        int64
-	attackImpl        int64
 	clientTypeImpl    string
-	defenseImpl       int64
-	healthImpl        int64
 	lostImpl          bool
 	nameImpl          string
 	opponentImpl      magomachy.Player
 	reasonLostImpl    string
 	reasonWonImpl     string
-	speedImpl         int64
 	timeRemainingImpl float64
 	wizardImpl        magomachy.Wizard
 	wonImpl           bool
-}
-
-// Aether returns the amount of spell resources this Player has.
-func (playerImpl *PlayerImpl) Aether() int64 {
-	return playerImpl.aetherImpl
-}
-
-// Attack returns the attack value of the player.
-func (playerImpl *PlayerImpl) Attack() int64 {
-	return playerImpl.attackImpl
 }
 
 // ClientType returns what type of client this is, e.g. 'Python',
@@ -42,16 +27,6 @@ func (playerImpl *PlayerImpl) Attack() int64 {
 // purposes.
 func (playerImpl *PlayerImpl) ClientType() string {
 	return playerImpl.clientTypeImpl
-}
-
-// Defense returns the defense value of the player.
-func (playerImpl *PlayerImpl) Defense() int64 {
-	return playerImpl.defenseImpl
-}
-
-// Health returns the amount of health this player has.
-func (playerImpl *PlayerImpl) Health() int64 {
-	return playerImpl.healthImpl
 }
 
 // Lost returns if the player lost the game or not.
@@ -79,11 +54,6 @@ func (playerImpl *PlayerImpl) ReasonWon() string {
 	return playerImpl.reasonWonImpl
 }
 
-// Speed returns the speed of the player.
-func (playerImpl *PlayerImpl) Speed() int64 {
-	return playerImpl.speedImpl
-}
-
 // TimeRemaining returns the amount of time (in ns) remaining for this AI
 // to send commands.
 func (playerImpl *PlayerImpl) TimeRemaining() float64 {
@@ -102,21 +72,24 @@ func (playerImpl *PlayerImpl) Won() bool {
 	return playerImpl.wonImpl
 }
 
+// ChooseWizard runs logic that this is called when you need to pick your
+// wizard class.
+func (playerImpl *PlayerImpl) ChooseWizard(wizardClass string) bool {
+	return playerImpl.RunOnServer("chooseWizard", map[string]interface{}{
+		"wizardClass": wizardClass,
+	}).(bool)
+}
+
 // InitImplDefaults initializes safe defaults for all fields in Player.
 func (playerImpl *PlayerImpl) InitImplDefaults() {
 	playerImpl.GameObjectImpl.InitImplDefaults()
 
-	playerImpl.aetherImpl = 0
-	playerImpl.attackImpl = 0
 	playerImpl.clientTypeImpl = ""
-	playerImpl.defenseImpl = 0
-	playerImpl.healthImpl = 0
 	playerImpl.lostImpl = true
 	playerImpl.nameImpl = ""
 	playerImpl.opponentImpl = nil
 	playerImpl.reasonLostImpl = ""
 	playerImpl.reasonWonImpl = ""
-	playerImpl.speedImpl = 0
 	playerImpl.timeRemainingImpl = 0
 	playerImpl.wizardImpl = nil
 	playerImpl.wonImpl = true
@@ -146,20 +119,8 @@ func (playerImpl *PlayerImpl) DeltaMerge(
 	}
 
 	switch attribute {
-	case "aether":
-		playerImpl.aetherImpl = magomachyDeltaMerge.Int(delta)
-		return true, nil
-	case "attack":
-		playerImpl.attackImpl = magomachyDeltaMerge.Int(delta)
-		return true, nil
 	case "clientType":
 		playerImpl.clientTypeImpl = magomachyDeltaMerge.String(delta)
-		return true, nil
-	case "defense":
-		playerImpl.defenseImpl = magomachyDeltaMerge.Int(delta)
-		return true, nil
-	case "health":
-		playerImpl.healthImpl = magomachyDeltaMerge.Int(delta)
 		return true, nil
 	case "lost":
 		playerImpl.lostImpl = magomachyDeltaMerge.Boolean(delta)
@@ -175,9 +136,6 @@ func (playerImpl *PlayerImpl) DeltaMerge(
 		return true, nil
 	case "reasonWon":
 		playerImpl.reasonWonImpl = magomachyDeltaMerge.String(delta)
-		return true, nil
-	case "speed":
-		playerImpl.speedImpl = magomachyDeltaMerge.Int(delta)
 		return true, nil
 	case "timeRemaining":
 		playerImpl.timeRemainingImpl = magomachyDeltaMerge.Float(delta)

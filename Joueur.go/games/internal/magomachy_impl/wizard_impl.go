@@ -11,15 +11,19 @@ import (
 type WizardImpl struct {
 	GameObjectImpl
 
-	aetherImpl    int64
-	attackImpl    int64
-	defenseImpl   int64
-	healthImpl    int64
-	ownerImpl     magomachy.Player
-	specialtyImpl string
-	speedImpl     int64
-	xImpl         int64
-	yImpl         int64
+	aetherImpl       int64
+	attackImpl       int64
+	defenseImpl      int64
+	directionImpl    int64
+	effectTimesImpl  []int64
+	effectsImpl      []string
+	hasCastImpl      bool
+	healthImpl       int64
+	movementLeftImpl int64
+	ownerImpl        magomachy.Player
+	specialtyImpl    string
+	speedImpl        int64
+	tileImpl         magomachy.Tile
 }
 
 // Aether returns the amount of spell resources this Player has.
@@ -37,9 +41,35 @@ func (wizardImpl *WizardImpl) Defense() int64 {
 	return wizardImpl.defenseImpl
 }
 
+// Direction returns the direction this Wizard is facing.
+func (wizardImpl *WizardImpl) Direction() int64 {
+	return wizardImpl.directionImpl
+}
+
+// EffectTimes returns the turns remaining on each active effects on
+// Wizard.
+func (wizardImpl *WizardImpl) EffectTimes() []int64 {
+	return wizardImpl.effectTimesImpl
+}
+
+// Effects returns the names of active effects on the Wizard.
+func (wizardImpl *WizardImpl) Effects() []string {
+	return wizardImpl.effectsImpl
+}
+
+// HasCast returns whether or not this Wizard has cast a spell this turn.
+func (wizardImpl *WizardImpl) HasCast() bool {
+	return wizardImpl.hasCastImpl
+}
+
 // Health returns the amount of health this player has.
 func (wizardImpl *WizardImpl) Health() int64 {
 	return wizardImpl.healthImpl
+}
+
+// MovementLeft returns how much movement the wizard has left.
+func (wizardImpl *WizardImpl) MovementLeft() int64 {
+	return wizardImpl.movementLeftImpl
 }
 
 // Owner returns the Player that owns and can control this Unit, or nil if
@@ -62,14 +92,27 @@ func (wizardImpl *WizardImpl) Speed() int64 {
 	return wizardImpl.speedImpl
 }
 
-// X returns the x coordinate of the wizard.
-func (wizardImpl *WizardImpl) X() int64 {
-	return wizardImpl.xImpl
+// Tile returns the Tile that this Wizard is on.
+//
+// Value can be returned as a nil pointer.
+func (wizardImpl *WizardImpl) Tile() magomachy.Tile {
+	return wizardImpl.tileImpl
 }
 
-// Y returns the y coordinate of the wizard.
-func (wizardImpl *WizardImpl) Y() int64 {
-	return wizardImpl.yImpl
+// Cast runs logic that casts a spell on a Tile in range.
+func (wizardImpl *WizardImpl) Cast(spellName string, tile magomachy.Tile) bool {
+	return wizardImpl.RunOnServer("cast", map[string]interface{}{
+		"spellName": spellName,
+		"tile":      tile,
+	}).(bool)
+}
+
+// Move runs logic that moves this Wizard from its current Tile to another
+// empty Tile.
+func (wizardImpl *WizardImpl) Move(tile magomachy.Tile) bool {
+	return wizardImpl.RunOnServer("move", map[string]interface{}{
+		"tile": tile,
+	}).(bool)
 }
 
 // InitImplDefaults initializes safe defaults for all fields in Wizard.
@@ -79,12 +122,16 @@ func (wizardImpl *WizardImpl) InitImplDefaults() {
 	wizardImpl.aetherImpl = 0
 	wizardImpl.attackImpl = 0
 	wizardImpl.defenseImpl = 0
+	wizardImpl.directionImpl = 0
+	wizardImpl.effectTimesImpl = []int64{}
+	wizardImpl.effectsImpl = []string{}
+	wizardImpl.hasCastImpl = true
 	wizardImpl.healthImpl = 0
+	wizardImpl.movementLeftImpl = 0
 	wizardImpl.ownerImpl = nil
 	wizardImpl.specialtyImpl = ""
 	wizardImpl.speedImpl = 0
-	wizardImpl.xImpl = 0
-	wizardImpl.yImpl = 0
+	wizardImpl.tileImpl = nil
 }
 
 // DeltaMerge merges the delta for a given attribute in Wizard.
@@ -120,8 +167,23 @@ func (wizardImpl *WizardImpl) DeltaMerge(
 	case "defense":
 		wizardImpl.defenseImpl = magomachyDeltaMerge.Int(delta)
 		return true, nil
+	case "direction":
+		wizardImpl.directionImpl = magomachyDeltaMerge.Int(delta)
+		return true, nil
+	case "effectTimes":
+		wizardImpl.effectTimesImpl = magomachyDeltaMerge.ArrayOfInt(&wizardImpl.effectTimesImpl, delta)
+		return true, nil
+	case "effects":
+		wizardImpl.effectsImpl = magomachyDeltaMerge.ArrayOfString(&wizardImpl.effectsImpl, delta)
+		return true, nil
+	case "hasCast":
+		wizardImpl.hasCastImpl = magomachyDeltaMerge.Boolean(delta)
+		return true, nil
 	case "health":
 		wizardImpl.healthImpl = magomachyDeltaMerge.Int(delta)
+		return true, nil
+	case "movementLeft":
+		wizardImpl.movementLeftImpl = magomachyDeltaMerge.Int(delta)
 		return true, nil
 	case "owner":
 		wizardImpl.ownerImpl = magomachyDeltaMerge.Player(delta)
@@ -132,11 +194,8 @@ func (wizardImpl *WizardImpl) DeltaMerge(
 	case "speed":
 		wizardImpl.speedImpl = magomachyDeltaMerge.Int(delta)
 		return true, nil
-	case "x":
-		wizardImpl.xImpl = magomachyDeltaMerge.Int(delta)
-		return true, nil
-	case "y":
-		wizardImpl.yImpl = magomachyDeltaMerge.Int(delta)
+	case "tile":
+		wizardImpl.tileImpl = magomachyDeltaMerge.Tile(delta)
 		return true, nil
 	}
 
