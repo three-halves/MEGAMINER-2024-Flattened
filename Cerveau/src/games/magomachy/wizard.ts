@@ -126,6 +126,52 @@ export class Wizard extends GameObject {
     {
         return this.game.tiles[this.y * this.game.mapWidth + this.x];
     }
+
+    public bressenham(x0: number, y0: number, x1: number, y1: number, current: Tile): Tile | undefined {
+        // First we describe the slope of the line
+        dx = Math.abs(x1 - x0);
+        sx = x0 < x1 ? 1 : -1;
+
+        dy = abs(y1 - y0);
+        sy = y0 < y1 ? 1 : -1;
+
+        cx = dx > dy ? 1 : 0.5
+        cy = dx > dy ? 0.5 : 1
+
+        // If the line is diagonal, we have to note it
+        isDiag = (dx === dy)
+
+        // We also need the y-intercept
+        // Thankfully TypeScript stores all numbers as floats by default
+        b = y0 - dx / dy * x0;
+
+        // If a point (x,y) is on the line, then dy*x - dx*y + dx*b = 0.
+        // Its parity also tells us how good a nearby tile approximates the line.
+        f = dy*(current.x + sx*cx) - dx*(current.y + sy*cy) + dx*b;
+
+        // Now we choose the best tile for the line.
+        // We always update the coordinate that changes quicker.
+        // If f is positive or the slope is 1, we also update the other coordinate.
+        // Since this function is being called outside the game class, we can't just tilemap this.
+        // So we have to go case by case.
+        vert = sy > 0 ? "South" | "North";
+        horiz = sx > 0 ? "East" | "West";
+
+        if (dy > dx) {
+            neighbor = current.getNeighbor(vert);
+            if (isDiag || f > 0) {
+                return neighbor.getNeighbor(horiz);
+            }
+        return neighbor;
+        }
+        else {
+            neighbor = current.getNeighbor(horiz);
+            if (isDiag || f > 0) {
+                return neighbor.getNeighbor(vert);
+            }
+            return neighbor;
+        }
+    }
         
     // <<-- /Creer-Merge: public-functions -->>
 
@@ -216,14 +262,112 @@ export class Wizard extends GameObject {
         // Add logic here for cast.
 
         // TODO: replace this with actual logic
-                // Process each spell separately
+        // Process each spell separately
         switch(spellName) { 
             case "Punch": {
                 // Throws a crappy wizard punch within 1 range.
-                tile.wizard!.health -= 1;
+                tile.wizard.health -= 1;
                 return true;
                 break; 
-            } 
+            }
+            case "Magic Missile": {
+                // Debug spell like wii tanks
+                this.aether -= 2;
+
+                bouncesLeft = 4;
+                prevTile = tile;
+                x0 = this.tile.x;
+                y0 = this.tile.y;
+                x1 = tile.x;
+                y1 = tile.y;
+
+                while(bouncesLeft > 0) {
+                    nextTile = bressenham(x0,y0,x1,y1,prevTile);
+                    if(!nextTile || nextTile.type === "wall") {
+                        // eh 
+                    }
+                }
+                break;
+            }
+            case "Fire Slash": {
+                // Fire blast
+                // Does it go through walls? I assume so
+                tile.wizard.health -= 3;
+                this.aether -= 2;
+                break;
+            }
+            case "Thunderous Dash": {
+                // Just add an isDash var to wizards
+                break;
+            }
+            case "Furious Telekinesis": {
+                // Impossible to implement without items.
+                break;
+            }
+            case "Rock Lob": {
+                // This is spelled wrong in the slide examples, please fix.
+                // Anyhoo throws rock in exactly 2 range
+                tile.wizard.health -= 2;
+                this.aether -= 2
+                break;
+            }
+            case "Force Push": {
+                // Requires Bressenham to find path
+                // After that, keep pushing until wall is hit or out of range
+                this.aether -= 3;
+
+                distLeft = 3;
+                prevTile = tile;
+                nextTile = bressenham(this.tile.x,this.tile.y,tile.x,tile.y,tile)
+                while (nextTile && nextTile.type === "floor" && distLeft > 0) {
+                    prevTile.wizard.tile = nextTile;
+                    nextTile.wizard = prevTile.wizard;
+                    prevTile.wizard = undefined;
+                    // NOTE: If wizard touches item, collect it
+                    // Honestly may be best to have a generic move function
+
+                    distLeft--;
+                    prevTile = nextTile;
+                    nextTile = bressenham(this.tile.x,this.tile.y,tile.x,tile.y,prevTile);
+                }
+                if (distLeft > 0) {
+                    prevTile.wizard.health -= 2;
+                }
+                break;
+            }
+            case "Stone Summon": {
+                // Um. I just dont know here.
+                // Maybe keep a list of walled tiles and their associated times?
+                // And then add a variable to tile describing if its blocked or not?
+                // This is more of a game manager thing...
+
+                // ok coming back to this, I think I have a plan.
+                // we'll store a list of walled tiles in the wizard itself.
+                // we can also give tiles a MUTABLE variable saying if they're walled.
+                // then the gm checks this array every turn.
+                // the same idea counts for strategist runes.
+                break;
+            }
+            case "Calming Blast": {
+                // So this requires editing the game manager to heal speeds after every turn.
+                // Until that is done, DO NOT UNCOMMENT THIS CODE!
+
+                // tile.wizard.speed -= 1;
+                // tile.wizard.health -= 1;
+                // this.aether -= 3;
+                break;
+            }
+            case "Teleport": {
+                // Hey! This one's easy!
+                this.tile.wizard = undefined;
+                this.tile = tile;
+                tile.wizard = this;
+                break;
+            }
+            case "Dispel Magic": {
+                // Can't do until items are made bro
+                break;
+            }
             default: { 
                 throw new Error("invalid spell cast");
                 break; 
