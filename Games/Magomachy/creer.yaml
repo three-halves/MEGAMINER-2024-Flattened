@@ -8,14 +8,26 @@ Game:
   description: Wizards fight to the death.
   attributes:
     wizards:
-      description: List of wizards.
-      type: Wizard[]
+      description: List of wizard choices.
+      type: string[]
     
 Player:
   attributes:
     wizard:
       description: The specific wizard owned by the player.
       type: Wizard?
+  functions:
+    chooseWizard:
+      description: This is called when you need to pick your wizard class.
+      arguments:
+      - type: string
+        name: wizardClass
+        description: The class of wizard the player wants.
+      returns:
+        type: boolean
+        description: True if class successfully chosen, false otherwise
+        invalidValue: false
+    
 
 Tile:
   attributes:
@@ -27,7 +39,7 @@ Tile:
       type: Item?
     type:
       description: The type of Tile this is (i.e Grass, Wall).
-      type: string
+      type: const string = "floor" | "wall"
 
 Item:
   description: Objects that help the players.
@@ -38,6 +50,9 @@ Item:
     form:
       description: The type of Item this is.
       type: string!
+    lifetime:
+      description: How many turns this item has existed for.
+      type: int!
     
 Wizard:
   description: The wizard default.
@@ -63,21 +78,21 @@ Wizard:
     speed:
       description: The speed of the player.
       type: int
+    effects:
+      description: The names of active effects on the Wizard.
+      type: string[]
+    effectTimes:
+      description: The turns remaining on each active effects on Wizard.
+      type: int[]
     direction:
       description: The direction this Wizard is facing.
       type: int
-    hasMoved:
-      description: Whether or not this Wizard has moved this turn.
-      type: boolean
+    movementLeft:
+      description: How much movement the wizard has left.
+      type: int
     hasCast:
       description: Whether or not this Wizard has cast a spell this turn.
       type: boolean
-    x:
-      type: int
-      description: The x coordinate of the wizard.
-    y:
-      type: int
-      description: The y coordinate of the wizard.
     tile:
       type: Tile?
       description: The Tile that this Wizard is on.
