@@ -126,34 +126,27 @@ export class Wizard extends GameObject {
     {
         return this.game.tiles[this.y * this.game.mapWidth + this.x];
     }
+        
+    // <<-- /Creer-Merge: public-functions -->>
 
-    // Any public functions can go here for other things in the game to use.
-    // NOTE: Client AIs cannot call these functions, those must be defined
-    // in the creer file.
-
-    // SIGH
-    // I'm gonna store the spells here initially, but they will
-    // have to be copied into the right place after the creer
-    // program is run again.
     /**
      * Invalidation function for cast. Try to find a reason why the passed in
      * parameters are invalid, and return a human readable string telling them
      * why it is invalid.
-     * 
+     *
      * @param player - The player that called this.
      * @param spellName - The name of the spell to cast.
      * @param tile - The Tile to aim the spell toward.
      * @returns If the arguments are invalid, return a string explaining to
      * human players why it is invalid. If it is valid return nothing, or an
-     * object with new arguments to us in the actual function.
+     * object with new arguments to use in the actual function.
      */
     protected invalidateCast(
         player: Player,
         spellName: string,
         tile: Tile,
     ): void | string | WizardCastArgs {
-        // NOTE: RE ADD THE CREER MERGE COMMENT HERE
-
+        // <<-- Creer-Merge: invalidate-cast -->>
         const reason = this.invalidate(player);
         if (reason) {
             return reason;
@@ -195,125 +188,6 @@ export class Wizard extends GameObject {
         // - Not in range.
         // - Don't have access to the spell.
         // - No target on tile.
-    }
-
-    /**
-     * Casts a spell on a Tile in range.
-     * 
-     * @param player: The player that called this.
-     * @param spellName: The name of the spell to cast.
-     * @param tile: The Tile to aim the spell toward.
-     * @returns True if successfully cast, false otherwise.
-     */
-    protected async cast(
-        player: Player,
-        spellName: string,
-        tile: Tile,
-    ): Promise<boolean> {
-        // ADD THE CREER MERGE COMMENT HERE TOO AUUGHH
-
-        // Process each spell separately
-        switch(spellName) { 
-            case "Punch": {
-                // Throws a crappy wizard punch within 1 range.
-                tile.wizard!.health -= 1;
-                break; 
-            } 
-            default: { 
-                throw new Error("invalid spell cast");
-                break; 
-            } 
-        }
-
-        return true;
-    }
-
-    /**
-     * Invalidation function for move. Try to find a reason why the passed in
-     * parameters are invalid, and return a human readable string telling them
-     * why it is invalid.
-     * 
-     * @param player: The player that called this.
-     * @param tile: The Tile that this Wizard should move to.
-     * @returns If the arguments are invalid, return a string explainig to
-     * human players why it is invalid. If it is valid return nothing, or an
-     * object with new arguments to use in the actual function.
-     */
-    protected invalidateMove(
-        player: Player,
-        tile: Tile,
-    ): void | string | WizardMoveArgs {
-        // COMMENT MERGE CREER HERE
-
-        const reason = this.invalidate(player);
-        if (reason) {
-            return reason;
-        }
-
-        // TODO: add variables tracking whether unit moved/cast spell or not each turn
-        if (!this.tile()) {
-            throw new Error('${this} has no Tile!');
-        }
-
-        // Calculate distance of target tile
-        const dx = this.x - tile.x;
-        const dy = this.y - tile.y;
-        const distSq = dx * dx + dy * dy;
-
-        if (distSq > this.speed ** 2) {
-            return '${tile} is too far away to reach this turn!';
-        }
-
-        if (tile.type === "wall") {
-            return '${this} can\'t phase through walls! (Yet...)';
-        }
-
-        if (tile.wizard) {
-            return '${tile} is occupied by a wizard!';
-        }
-    }
-
-    /**
-     * Moves this Wizard from its current Tile to another empty Tile.
-     *
-     * @param player - The player that called this.
-     * @param tile - The Tile this Wizard should move to.
-     * @returns True if it moved, false otherwise.
-     */
-    protected async move(player: Player, tile: Tile): Promise<boolean> {
-        if (!this.tile) {
-            throw new Error('${this} has no Tile to move from!');
-        }
-
-        this.tile().wizard = undefined;
-        this.x = tile.x;
-        this.y = tile.y;
-        this.tile().wizard = this;
-        // TODO: UPDATE VARIABLE STATING HOW MUCH MOVEMENT LEFT
-
-        return true;
-    }
-        
-    // <<-- /Creer-Merge: public-functions -->>
-
-    /**
-     * Invalidation function for cast. Try to find a reason why the passed in
-     * parameters are invalid, and return a human readable string telling them
-     * why it is invalid.
-     *
-     * @param player - The player that called this.
-     * @param spellName - The name of the spell to cast.
-     * @param tile - The Tile to aim the spell toward.
-     * @returns If the arguments are invalid, return a string explaining to
-     * human players why it is invalid. If it is valid return nothing, or an
-     * object with new arguments to use in the actual function.
-     */
-    protected invalidateCast(
-        player: Player,
-        spellName: string,
-        tile: Tile,
-    ): void | string | WizardCastArgs {
-        // <<-- Creer-Merge: invalidate-cast -->>
 
         // Check all the arguments for cast here and try to
         // return a string explaining why the input is wrong.
@@ -342,6 +216,20 @@ export class Wizard extends GameObject {
         // Add logic here for cast.
 
         // TODO: replace this with actual logic
+                // Process each spell separately
+        switch(spellName) { 
+            case "Punch": {
+                // Throws a crappy wizard punch within 1 range.
+                tile.wizard!.health -= 1;
+                return true;
+                break; 
+            } 
+            default: { 
+                throw new Error("invalid spell cast");
+                break; 
+            } 
+        }
+        
         return false;
 
         // <<-- /Creer-Merge: cast -->>
@@ -368,6 +256,33 @@ export class Wizard extends GameObject {
         // return a string explaining why the input is wrong.
         // If you need to change an argument for the real function, then
         // changing its value in this scope is enough.
+        const reason = this.invalidate(player);
+        if (reason) {
+            return reason;
+        }
+
+        // TODO: add variables tracking whether unit moved/cast spell or not each turn
+        if (!this.tile()) {
+            throw new Error('${this} has no Tile!');
+        }
+
+        // Calculate distance of target tile
+        const dx = this.x - tile.x;
+        const dy = this.y - tile.y;
+        const distSq = dx * dx + dy * dy;
+
+        // This needs to be changed
+        //if (distSq > this.speed ** 2) {
+        //    return '${tile} is too far away to reach this turn!';
+        //}
+
+        if (tile.type === "wall") {
+            return '${this} can\'t phase through walls! (Yet...)';
+        }
+
+        if (tile.wizard) {
+            return '${tile} is occupied by a wizard!';
+        }
         return undefined; // means nothing could be found that was ivalid.
 
         // <<-- /Creer-Merge: invalidate-move -->>
@@ -386,8 +301,18 @@ export class Wizard extends GameObject {
         // Add logic here for move.
 
         // TODO: replace this with actual logic
-        return false;
+        if (!this.tile) {
+            throw new Error('${this} has no Tile to move from!');
+            return false;
+        }
 
+        this.tile().wizard = undefined;
+        this.x = tile.x;
+        this.y = tile.y;
+        this.tile().wizard = this;
+        // TODO: UPDATE VARIABLE STATING HOW MUCH MOVEMENT LEFT
+
+        return true;
         // <<-- /Creer-Merge: move -->>
     }
 
