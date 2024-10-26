@@ -44,6 +44,7 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
 
         // <<-- Creer-Merge: before-turn -->>
         // add logic here for before the current player's turn starts
+        //this.updateArrays();
         // <<-- /Creer-Merge: before-turn -->>
     }
 
@@ -57,6 +58,10 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
 
         // <<-- Creer-Merge: after-turn -->>
         // add logic here after the current player's turn starts
+        // This is where speed would be restored after Calming Blast
+        //this.updateArrays();
+        //this.updateUnits();
+        //this.updateOtherStuff();
         // <<-- /Creer-Merge: after-turn -->>
     }
 
@@ -73,6 +78,21 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
 
         // <<-- Creer-Merge: primary-win-conditions -->>
         // Add logic here checking for the primary win condition(s)
+        const killedOff = this.game.players.filter(
+            (p) => p.wizard.health <= 0 || p.wizard.aether <= 0)
+
+        if (killedOff.length == 2) {
+            this.secondaryWinConditions("Both wizards have died!")
+        }
+        else if (killedOff.length == 1) {
+            const loser = killedOff[0];
+            this.declareWinner("You defeated the other wizard!", loser.opponent);
+            this.declareLoser(
+                "The other wizard's arcane might proved too much for you.", loser
+            );
+
+            return true;
+        }
         // <<-- /Creer-Merge: primary-win-conditions -->>
 
         return false; // If we get here no one won on this turn.
@@ -89,6 +109,33 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
     protected secondaryWinConditions(reason: string): void {
         // <<-- Creer-Merge: secondary-win-conditions -->>
         // Add logic here for the secondary win conditions
+        const players = this.game.players.slice();
+
+        // 1. Most health
+        players.sort((a,b) => b.wizard.health - a.wizard.health);
+        if (players[0].wizard.health > players[1].wizard.health) {
+            this.declareWinner(
+                '${reason}: Had the highest health',
+                players[0],
+            );
+            this.declareLoser(
+                '${reason}: Had the lowest health',
+                players[1],
+            );
+        }
+
+        // 2. Most aether
+        players.sort((a,b) => b.wizard.aether - a.wizard.aether);
+        if (players[0].wizard.aether > players[1].wizard.aether) {
+            this.declareWinner(
+                '${reason}: Had the highest aether',
+                players[0],
+            );
+            this.declareLoser(
+                '${reason}: Had the lowest aether',
+                players[1],
+            );
+        }
         // <<-- /Creer-Merge: secondary-win-conditions -->>
 
         // This will end the game.
