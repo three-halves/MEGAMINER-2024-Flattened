@@ -127,12 +127,16 @@ export class MagomachyGame extends BaseClasses.Game {
         // ALSO CAN YOU ASSIGN THE WIZARDS TO THE PLAYERS HERE
         // AND THEN GIVE THEM THEIR STARTING HEALTH/AETHER
         this.manager.create.wizard({
+            health: 10,
+            ether: 10,
             x: 1,
             y: floor(this.mapHeight / 2),
             specialty: "aggressive",
         });
 
         this.manager.create.wizard({
+            health: 10,
+            ether: 10,
             x: this.mapWidth - 2,
             y: floor(this.mapHeight / 2),
             specialty: "sustaining",

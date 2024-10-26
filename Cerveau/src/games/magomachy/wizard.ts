@@ -1,5 +1,5 @@
 import { BaseGameObjectRequiredData } from "~/core/game";
-import { WizardConstructorArgs } from "./";
+import { Tile, WizardConstructorArgs } from "./";
 import { GameObject } from "./game-object";
 import { Player } from "./player";
 
@@ -101,6 +101,11 @@ export class Wizard extends GameObject {
 
     // <<-- Creer-Merge: public-functions -->>
 
+    public tile(): Tile
+    {
+        return this.game.tiles[this.y * this.game.mapWidth + this.x];
+    }
+
     // Any public functions can go here for other things in the game to use.
     // NOTE: Client AIs cannot call these functions, those must be defined
     // in the creer file.
@@ -128,35 +133,36 @@ export class Wizard extends GameObject {
     ): void | string | WizardCastArgs {
         // NOTE: RE ADD THE CREER MERGE COMMENT HERE
 
-        const reason = this.invalidate(player, true);
+        const reason = this.invalidate(player);
         if (reason) {
             return reason;
         }
 
-        if (!this.tile) {
+        if (!this.tile()) {
            throw new Error('${this} has no Tile to target!');
         }
 
         // Calculate distance of target tile
-        const dx = this.tile.x - tile.x;
-        const dy = this.tile.y - tile.y;
+        const dx = this.y - tile.x;
+        const dy = this.x - tile.y;
         const distSq = dx * dx + dy * dy;
 
         // And now handle each spell in its own case
         switch(spellName) {
             case "Punch": {
                 if (!tile.wizard) {
-                    return 'Curses! The enemy wizard isn't at ${tile}!';
+                    return 'Curses! The enemy wizard isn\'t at ${tile}!';
                 }
                 if (tile.wizard == this) {
-                    return 'You're a wizard, why would you be dumb enough to punch yourself?!';
+                    return 'You\'re a wizard, why would you be dumb enough to punch yourself?!';
                 }
                 if (distSq > 1) {
                     return '${tile} is too far away for your wimpy wizard arms to reach!';
                 }
+                break;
             }
             default: {
-                throw new error("I've never heard of that spell...");
+                throw new Error("I've never heard of that spell...");
             }
         }
 
@@ -189,7 +195,7 @@ export class Wizard extends GameObject {
         switch(spellName) { 
             case "Punch": {
                 // Throws a crappy wizard punch within 1 range.
-                tile.wizard.health -= 1;
+                tile.wizard!.health -= 1;
                 break; 
             } 
             default: { 
@@ -224,13 +230,13 @@ export class Wizard extends GameObject {
         }
 
         // TODO: add variables tracking whether unit moved/cast spell or not each turn
-        if (!this.tile) {
+        if (!this.tile()) {
             throw new Error('${this} has no Tile!');
         }
 
         // Calculate distance of target tile
-        const dx = this.tile.x - tile.x;
-        const dy = this.tile.y - tile.y;
+        const dx = this.x - tile.x;
+        const dy = this.y - tile.y;
         const distSq = dx * dx + dy * dy;
 
         if (distSq > this.speed ** 2) {
@@ -238,7 +244,7 @@ export class Wizard extends GameObject {
         }
 
         if (tile.type === "wall") {
-            return '${this} can't phase through walls! (Yet...)';
+            return '${this} can\'t phase through walls! (Yet...)';
         }
 
         if (tile.wizard) {
@@ -258,9 +264,10 @@ export class Wizard extends GameObject {
             throw new Error('${this} has no Tile to move from!');
         }
 
-        this.tile.wizard = undefined;
-        this.tile = tile;
-        tile.wizard = this;
+        this.tile().wizard = undefined;
+        this.x = tile.x;
+        this.y = tile.y;
+        this.tile().wizard = this;
         // TODO: UPDATE VARIABLE STATING HOW MUCH MOVEMENT LEFT
 
         return true;
@@ -275,7 +282,7 @@ export class Wizard extends GameObject {
      * Trues to invalidate args for an action function
      *
      * @param player - The player calling the action.
-     * @returns The rason this is invalid, undefined if it looks valid so far.
+     * @returns The reason this is invalid, undefined if it looks valid so far.
      */
     private invalidate(
         player: Player,
