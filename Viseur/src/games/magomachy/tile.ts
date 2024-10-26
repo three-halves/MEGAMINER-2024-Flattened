@@ -31,6 +31,9 @@ export class Tile extends makeRenderable(GameObject, SHOULD_RENDER) {
 
     // <<-- Creer-Merge: variables -->>
     // You can add additional member variables here
+    public grass: PIXI.Sprite;
+    public wall: PIXI.Sprite;
+    public type: string;
     // <<-- /Creer-Merge: variables -->>
 
     /**

@@ -31,6 +31,12 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
 
     // <<-- Creer-Merge: variables -->>
     // You can add additional member variables here
+
+    public type: string;
+
+    public typeSuffix: string;
+
+    public sprites: { [type: string]: PIXI.Sprite };
     // <<-- /Creer-Merge: variables -->>
 
     /**
@@ -93,8 +99,8 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         // eslint-disable-next-line no-console
         const sprite = this.sprites[this.type];
         sprite.visible = true;
-        sprite.x = current.x;
-        sprite.y = current.y;
+        sprite.x = current.tile.x;
+        sprite.y = current.tile.y;
 
         // <<-- /Creer-Merge: render -->>
     }
