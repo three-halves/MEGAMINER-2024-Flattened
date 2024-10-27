@@ -125,14 +125,14 @@ export class MagomachyGame extends BaseClasses.Game {
         // TEMP init wizards for testing
         this.players[0].wizard = this.manager.create.wizard({
             health: 10,
-            ether: 10,
+            aether: 10,
             tile: this.tiles[floor(this.mapHeight) / 2 * this.mapWidth + 1],
             specialty: "aggressive",
         });
 
         this.players[1].wizard = this.manager.create.wizard({
             health: 10,
-            ether: 10,
+            aether: 10,
             tile: this.tiles[floor(this.mapHeight) / 2 * this.mapWidth + this.mapWidth - 2],
             specialty: "sustaining",
         });

@@ -76,6 +76,11 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
     protected primaryWinConditionsCheck(): boolean {
         super.primaryWinConditionsCheck();
 
+        // if (this.game.currentTurn <= 1) return false;
+        // else if (this.game.players[0].wizard.specialty == undefined){
+        //     this.declareLoserthis.game.players[0]
+        // }
+
         // <<-- Creer-Merge: primary-win-conditions -->>
         // Add logic here checking for the primary win condition(s)
         const killedOff = this.game.players.filter(
