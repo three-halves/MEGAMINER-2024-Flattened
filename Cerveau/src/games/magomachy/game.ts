@@ -5,6 +5,7 @@ import { GameObject } from "./game-object";
 import { MagomachyGameSettingsManager } from "./game-settings";
 import { Player } from "./player";
 import { Tile } from "./tile";
+import { floor } from "lodash";
 
 // <<-- Creer-Merge: imports -->>
 // any additional imports you want can be placed here safely between creer runs
@@ -110,32 +111,29 @@ export class MagomachyGame extends BaseClasses.Game {
 
             // this.manager.create.tile({});
 
-            this.tiles[i].type =
-                x === 0 ||
-                x === this.mapWidth - 1 ||
-                y === 0 ||
-                y === this.mapHeight - 1
-                    ? "wall"
-                    : "grass";
+            // TODO Manually create arrays of tiles/strings for different maps
+            this.tiles[i] = this.manager.create.tile({
+                    type: 
+                    x === 0 || x === this.mapWidth - 1 ||
+                    y === 0 || y === this.mapHeight - 1
+                        ? "wall"
+                        : "floor",
+                }
+            );
         }
 
-        // init wizards for testing
-        // NOTE FROM STEVEN: PLZ CHANGE X AND Y TO A TILE, THANK YOU
-        // ALSO CAN YOU ASSIGN THE WIZARDS TO THE PLAYERS HERE
-        // AND THEN GIVE THEM THEIR STARTING HEALTH/AETHER
-        this.manager.create.wizard({
+        // TEMP init wizards for testing
+        this.players[0].wizard = this.manager.create.wizard({
             health: 10,
             ether: 10,
-            x: 1,
-            y: floor(this.mapHeight / 2),
+            tile: this.tiles[floor(this.mapHeight) / 2 * this.mapWidth + 1],
             specialty: "aggressive",
         });
 
-        this.manager.create.wizard({
+        this.players[1].wizard = this.manager.create.wizard({
             health: 10,
             ether: 10,
-            x: this.mapWidth - 2,
-            y: floor(this.mapHeight / 2),
+            tile: this.tiles[floor(this.mapHeight) / 2 * this.mapWidth + this.mapWidth - 2],
             specialty: "sustaining",
         });
 
