@@ -33,7 +33,7 @@ export class Tile extends makeRenderable(GameObject, SHOULD_RENDER) {
     // You can add additional member variables here
     public grass: PIXI.Sprite;
     public wall: PIXI.Sprite;
-    public type: string;
+    public type: "floor" | "wall";
     // <<-- /Creer-Merge: variables -->>
 
     /**
@@ -87,7 +87,7 @@ export class Tile extends makeRenderable(GameObject, SHOULD_RENDER) {
 
         // <<-- Creer-Merge: render -->>
         // render where the Tile is
-        this.grass.visible = this.type === "grass";
+        this.grass.visible = this.type === "floor";
         this.wall.visible = this.type === "wall";
 
         // <<-- /Creer-Merge: render -->>

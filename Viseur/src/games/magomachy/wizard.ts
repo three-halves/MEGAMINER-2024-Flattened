@@ -1,6 +1,6 @@
 // This is a class to represent the Wizard object in the game.
 // If you want to render it in the game do so here.
-import { Immutable } from "src/utils";
+import { ease, Immutable } from "src/utils";
 import { Viseur } from "src/viseur";
 import { makeRenderable } from "src/viseur/game";
 import { GameObject } from "./game-object";
@@ -32,11 +32,14 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
     // <<-- Creer-Merge: variables -->>
     // You can add additional member variables here
 
+    // wizard's specialty
     public type: string;
 
+    // shorted version of wizard's specialty
     public typeSuffix: string;
 
-    public sprites: { [type: string]: PIXI.Sprite };
+    // a dict of dicts representing all wizard sprites. Outermost dict
+    public sprites: { [type: string]: { [direction: string]: PIXI.Sprite } };
     // <<-- /Creer-Merge: variables -->>
 
     /**
@@ -60,10 +63,30 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
 
         const hide = { visible: false };
         this.sprites = {
-            aggressive: this.addSprite.wiz_ag_s(hide),
-            defensive: this.addSprite.wiz_de_s(hide),
-            sustaining: this.addSprite.wiz_su_s(hide),
-            strategic: this.addSprite.wiz_st_s(hide),
+            aggressive: {
+                north: this.addSprite.wiz_ag_n(hide),
+                east: this.addSprite.wiz_ag_e(hide),
+                south: this.addSprite.wiz_ag_s(hide),
+                west: this.addSprite.wiz_ag_w(hide),
+            },
+            defensive: {
+                north: this.addSprite.wiz_ag_n(hide),
+                east: this.addSprite.wiz_ag_e(hide),
+                south: this.addSprite.wiz_ag_s(hide),
+                west: this.addSprite.wiz_de_w(hide),
+            },
+            sustaining: {
+                north: this.addSprite.wiz_ag_n(hide),
+                east: this.addSprite.wiz_ag_e(hide),
+                south: this.addSprite.wiz_ag_s(hide),
+                west: this.addSprite.wiz_su_w(hide),
+            },
+            strategic: {
+                north: this.addSprite.wiz_ag_n(hide),
+                east: this.addSprite.wiz_ag_e(hide),
+                south: this.addSprite.wiz_ag_s(hide),
+                west: this.addSprite.wiz_st_w(hide),
+            },
         };
 
         // <<-- /Creer-Merge: constructor -->>
@@ -97,10 +120,13 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         // render where the Wizard is
         // eslint-disable-next-line no-console
         // eslint-disable-next-line no-console
-        const sprite = this.sprites[this.type];
+        const dir = this.dirAsString(current.direction);
+        const sprite = this.sprites[this.type][dir];
         sprite.visible = true;
-        sprite.x = current.tile.x;
-        sprite.y = current.tile.y;
+        this.container.position.set(
+            ease(current.tile.x, next.tile.x, dt),
+            ease(current.tile.y, next.tile.x, dt),
+        );
 
         // <<-- /Creer-Merge: render -->>
     }
@@ -159,6 +185,9 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
 
     // <<-- Creer-Merge: public-functions -->>
     // You can add additional public functions here
+    dirAsString(direction: number): string {
+        return ["north", "east", "south", "west"][direction];
+    }
     // <<-- /Creer-Merge: public-functions -->>
 
     // <Joueur functions> --- functions invoked for human playable client
