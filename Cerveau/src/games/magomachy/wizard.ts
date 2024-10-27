@@ -37,34 +37,9 @@ export class Wizard extends GameObject {
     public defense!: number;
 
     /**
-     * The direction this Wizard is facing.
-     */
-    public direction!: number;
-
-    /**
-     * The turns remaining on each active effects on Wizard.
-     */
-    public effectTimes!: number[];
-
-    /**
-     * The names of active effects on the Wizard.
-     */
-    public effects!: string[];
-
-    /**
-     * Whether or not this Wizard has cast a spell this turn.
-     */
-    public hasCast!: boolean;
-
-    /**
      * The amount of health this player has.
      */
     public health!: number;
-
-    /**
-     * How much movement the wizard has left.
-     */
-    public movementLeft!: number;
 
     /**
      * The Player that owns and can control this Unit, or undefined if the Unit
@@ -122,50 +97,133 @@ export class Wizard extends GameObject {
 
     // <<-- Creer-Merge: public-functions -->>
 
-    public tile(): Tile
-    {
-        return this.game.tiles[this.y * this.game.mapWidth + this.x];
+    // Any public functions can go here for other things in the game to use.
+    // NOTE: Client AIs cannot call these functions, those must be defined
+    // in the creer file.
+
+    // SIGH
+    // I'm gonna store the spells here initially, but they will
+    // have to be copied into the right place after the creer
+    // program is run again.
+
+
+
+    /**
+     * Invalidation function for move. Try to find a reason why the passed in
+     * parameters are invalid, and return a human readable string telling them
+     * why it is invalid.
+     * 
+     * @param player: The player that called this.
+     * @param tile: The Tile that this Wizard should move to.
+     * @returns If the arguments are invalid, return a string explainig to
+     * human players why it is invalid. If it is valid return nothing, or an
+     * object with new arguments to use in the actual function.
+     */
+    protected invalidateMove(
+        player: Player,
+        tile: Tile,
+    ): void | string | WizardMoveArgs {
+        // COMMENT MERGE CREER HERE
+
+        const reason = this.invalidate(player);
+        if (reason) {
+            return reason;
+        }
+
+        // TODO: add variables tracking whether unit moved/cast spell or not each turn
+        if (!this.tile) {
+            throw new Error('${this} has no Tile!');
+        }
+
+        // Calculate distance of target tile
+        const dx = this.tile.x - tile.x;
+        const dy = this.tile.y - tile.y;
+        const distSq = dx * dx + dy * dy;
+
+        if (distSq > this.speed ** 2) {
+            return `${tile} is too far away to reach this turn!`;
+        }
+
+        if (tile.type === "wall") {
+            return `${this} can't phase through walls! (Yet...)`;
+        }
+
+        if (tile.wizard) {
+            return `${tile} is occupied by a wizard!`;
+        }
+    }
+
+    /**
+     * Moves this Wizard from its current Tile to another empty Tile.
+     *
+     * @param player - The player that called this.
+     * @param tile - The Tile this Wizard should move to.
+     * @returns True if it moved, false otherwise.
+     */
+    protected async move(player: Player, tile: Tile): Promise<boolean> {
+        if (!this.tile) {
+            throw new Error(`${this} has no Tile to move from!']`);
+        }
+
+        this.tile.wizard = undefined;
+        this.tile = tile;
+        tile.wizard = this;
+        // TODO: UPDATE VARIABLE STATING HOW MUCH MOVEMENT LEFT
+
+        return true;
     }
 
     public bressenham(x0: number, y0: number, x1: number, y1: number, current: Tile): Tile | undefined {
         // First we describe the slope of the line
-        dx = Math.abs(x1 - x0);
-        sx = x0 < x1 ? 1 : -1;
+        let dx = Math.abs(x1 - x0);
+        let sx = x0 < x1 ? 1 : -1;
 
-        dy = abs(y1 - y0);
-        sy = y0 < y1 ? 1 : -1;
+        let dy = Math.abs(y1 - y0);
+        let sy = y0 < y1 ? 1 : -1;
 
-        cx = dx > dy ? 1 : 0.5
-        cy = dx > dy ? 0.5 : 1
+        let cx = dx > dy ? 1 : 0.5
+        let cy = dx > dy ? 0.5 : 1
 
         // If the line is diagonal, we have to note it
-        isDiag = (dx === dy)
+        let isDiag = (dx === dy)
 
         // We also need the y-intercept
         // Thankfully TypeScript stores all numbers as floats by default
-        b = y0 - dx / dy * x0;
+        let b = y0 - dx / dy * x0;
 
         // If a point (x,y) is on the line, then dy*x - dx*y + dx*b = 0.
         // Its parity also tells us how good a nearby tile approximates the line.
-        f = dy*(current.x + sx*cx) - dx*(current.y + sy*cy) + dx*b;
+        let f = dy*(current.x + sx*cx) - dx*(current.y + sy*cy) + dx*b;
 
         // Now we choose the best tile for the line.
         // We always update the coordinate that changes quicker.
         // If f is positive or the slope is 1, we also update the other coordinate.
         // Since this function is being called outside the game class, we can't just tilemap this.
         // So we have to go case by case.
-        vert = sy > 0 ? "South" | "North";
-        horiz = sx > 0 ? "East" | "West";
+        let vert = "North";
+        let horiz = "West";
+        if (sy > 0) {
+            let vert = "South";
+
+        if (sx > 0) {
+            let horiz = "East";
+
+
 
         if (dy > dx) {
-            neighbor = current.getNeighbor(vert);
+            let neighbor = this.tile.tileEast;
+            if (sy > 0) {
+                let vert = "South";
+    
+            if (sx > 0) {
+                let horiz = "West";
             if (isDiag || f > 0) {
                 return neighbor.getNeighbor(horiz);
             }
         return neighbor;
         }
         else {
-            neighbor = current.getNeighbor(horiz);
+            let neighbor = current.getNeighbor(horiz);
             if (isDiag || f > 0) {
                 return neighbor.getNeighbor(vert);
             }
@@ -203,8 +261,8 @@ export class Wizard extends GameObject {
         }
 
         // Calculate distance of target tile
-        const dx = this.y - tile.x;
-        const dy = this.x - tile.y;
+        const dx = this.tile.y - tile.x;
+        const dy = this.tile.x - tile.y;
         const distSq = dx * dx + dy * dy;
 
         // And now handle each spell in its own case
@@ -220,6 +278,14 @@ export class Wizard extends GameObject {
                     return '${tile} is too far away for your wimpy wizard arms to reach!';
                 }
                 break;
+            }
+            case "Fire Slash":{
+                if (player.wizard.specialty != "aggressive") {
+                    return `You do not have the knowledge to use that spell`;
+                }
+                if (tile.hasNeighbor(player.wizard.tile)) {
+                    return ``
+                }
             }
             default: {
                 throw new Error("I've never heard of that spell...");
@@ -274,15 +340,15 @@ export class Wizard extends GameObject {
                 // Debug spell like wii tanks
                 this.aether -= 2;
 
-                bouncesLeft = 4;
-                prevTile = tile;
-                x0 = this.tile.x;
-                y0 = this.tile.y;
-                x1 = tile.x;
-                y1 = tile.y;
+                let bouncesLeft = 4;
+                let prevTile = tile;
+                let x0 = this.tile.x;
+                let y0 = this.tile.y;
+                let x1 = tile.x;
+                let y1 = tile.y;
 
                 while(bouncesLeft > 0) {
-                    nextTile = bressenham(x0,y0,x1,y1,prevTile);
+                    let nextTile = this.bressenham(x0,y0,x1,y1,prevTile);
                     if(!nextTile || nextTile.type === "wall") {
                         // eh 
                     }
@@ -316,9 +382,9 @@ export class Wizard extends GameObject {
                 // After that, keep pushing until wall is hit or out of range
                 this.aether -= 3;
 
-                distLeft = 3;
-                prevTile = tile;
-                nextTile = bressenham(this.tile.x,this.tile.y,tile.x,tile.y,tile)
+                let distLeft = 3;
+                let prevTile = tile;
+                let nextTile = this.bressenham(this.tile.x,this.tile.y,tile.x,tile.y,tile)
                 while (nextTile && nextTile.type === "floor" && distLeft > 0) {
                     prevTile.wizard.tile = nextTile;
                     nextTile.wizard = prevTile.wizard;
@@ -328,7 +394,7 @@ export class Wizard extends GameObject {
 
                     distLeft--;
                     prevTile = nextTile;
-                    nextTile = bressenham(this.tile.x,this.tile.y,tile.x,tile.y,prevTile);
+                    nextTile = this.bressenham(this.tile.x,this.tile.y,tile.x,tile.y,prevTile);
                 }
                 if (distLeft > 0) {
                     prevTile.wizard.health -= 2;
@@ -378,87 +444,7 @@ export class Wizard extends GameObject {
 
         // <<-- /Creer-Merge: cast -->>
     }
-
-    /**
-     * Invalidation function for move. Try to find a reason why the passed in
-     * parameters are invalid, and return a human readable string telling them
-     * why it is invalid.
-     *
-     * @param player - The player that called this.
-     * @param tile - The Tile this Wizard should move to.
-     * @returns If the arguments are invalid, return a string explaining to
-     * human players why it is invalid. If it is valid return nothing, or an
-     * object with new arguments to use in the actual function.
-     */
-    protected invalidateMove(
-        player: Player,
-        tile: Tile,
-    ): void | string | WizardMoveArgs {
-        // <<-- Creer-Merge: invalidate-move -->>
-
-        // Check all the arguments for move here and try to
-        // return a string explaining why the input is wrong.
-        // If you need to change an argument for the real function, then
-        // changing its value in this scope is enough.
-        const reason = this.invalidate(player);
-        if (reason) {
-            return reason;
-        }
-
-        // TODO: add variables tracking whether unit moved/cast spell or not each turn
-        if (!this.tile()) {
-            throw new Error('${this} has no Tile!');
-        }
-
-        // Calculate distance of target tile
-        const dx = this.x - tile.x;
-        const dy = this.y - tile.y;
-        const distSq = dx * dx + dy * dy;
-
-        // This needs to be changed
-        //if (distSq > this.speed ** 2) {
-        //    return '${tile} is too far away to reach this turn!';
-        //}
-
-        if (tile.type === "wall") {
-            return '${this} can\'t phase through walls! (Yet...)';
-        }
-
-        if (tile.wizard) {
-            return '${tile} is occupied by a wizard!';
-        }
-        return undefined; // means nothing could be found that was ivalid.
-
-        // <<-- /Creer-Merge: invalidate-move -->>
-    }
-
-    /**
-     * Moves this Wizard from its current Tile to another empty Tile.
-     *
-     * @param player - The player that called this.
-     * @param tile - The Tile this Wizard should move to.
-     * @returns True if it moved, false otherwise.
-     */
-    protected async move(player: Player, tile: Tile): Promise<boolean> {
-        // <<-- Creer-Merge: move -->>
-
-        // Add logic here for move.
-
-        // TODO: replace this with actual logic
-        if (!this.tile) {
-            throw new Error('${this} has no Tile to move from!');
-            return false;
-        }
-
-        this.tile().wizard = undefined;
-        this.x = tile.x;
-        this.y = tile.y;
-        this.tile().wizard = this;
-        // TODO: UPDATE VARIABLE STATING HOW MUCH MOVEMENT LEFT
-
-        return true;
-        // <<-- /Creer-Merge: move -->>
-    }
+    // <<-- /Creer-Merge: public-functions -->>
 
     // <<-- Creer-Merge: protected-private-functions -->>
 
@@ -467,16 +453,16 @@ export class Wizard extends GameObject {
      * Trues to invalidate args for an action function
      *
      * @param player - The player calling the action.
-     * @returns The reason this is invalid, undefined if it looks valid so far.
+     * @returns The rason this is invalid, undefined if it looks valid so far.
      */
     private invalidate(
         player: Player,
     ): string | undefined {
         if (!player || player != this.game.currentPlayer) {
-            return 'It is not your turn, young ${player}!';
+            return `It is not your turn, young ${player}!`;
         }
         if (this.owner != player) {
-            return 'Wrong wizard, ${player}.';
+            return `Wrong wizard, ${player}.`;
         }
     }
     
