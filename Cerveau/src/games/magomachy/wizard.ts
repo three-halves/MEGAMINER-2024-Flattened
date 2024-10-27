@@ -175,60 +175,61 @@ export class Wizard extends GameObject {
 
     public bressenham(x0: number, y0: number, x1: number, y1: number, current: Tile): Tile | undefined {
         // First we describe the slope of the line
-        let dx = Math.abs(x1 - x0);
-        let sx = x0 < x1 ? 1 : -1;
+        // let dx = Math.abs(x1 - x0);
+        // let sx = x0 < x1 ? 1 : -1;
 
-        let dy = Math.abs(y1 - y0);
-        let sy = y0 < y1 ? 1 : -1;
+        // let dy = Math.abs(y1 - y0);
+        // let sy = y0 < y1 ? 1 : -1;
 
-        let cx = dx > dy ? 1 : 0.5
-        let cy = dx > dy ? 0.5 : 1
+        // let cx = dx > dy ? 1 : 0.5
+        // let cy = dx > dy ? 0.5 : 1
 
-        // If the line is diagonal, we have to note it
-        let isDiag = (dx === dy)
+        // // If the line is diagonal, we have to note it
+        // let isDiag = (dx === dy)
 
-        // We also need the y-intercept
-        // Thankfully TypeScript stores all numbers as floats by default
-        let b = y0 - dx / dy * x0;
+        // // We also need the y-intercept
+        // // Thankfully TypeScript stores all numbers as floats by default
+        // let b = y0 - dx / dy * x0;
 
-        // If a point (x,y) is on the line, then dy*x - dx*y + dx*b = 0.
-        // Its parity also tells us how good a nearby tile approximates the line.
-        let f = dy*(current.x + sx*cx) - dx*(current.y + sy*cy) + dx*b;
+        // // If a point (x,y) is on the line, then dy*x - dx*y + dx*b = 0.
+        // // Its parity also tells us how good a nearby tile approximates the line.
+        // let f = dy*(current.x + sx*cx) - dx*(current.y + sy*cy) + dx*b;
 
-        // Now we choose the best tile for the line.
-        // We always update the coordinate that changes quicker.
-        // If f is positive or the slope is 1, we also update the other coordinate.
-        // Since this function is being called outside the game class, we can't just tilemap this.
-        // So we have to go case by case.
-        let vert = "North";
-        let horiz = "West";
-        if (sy > 0) {
-            let vert = "South";
+        // // Now we choose the best tile for the line.
+        // // We always update the coordinate that changes quicker.
+        // // If f is positive or the slope is 1, we also update the other coordinate.
+        // // Since this function is being called outside the game class, we can't just tilemap this.
+        // // So we have to go case by case.
+        // let vert = "North";
+        // let horiz = "West";
+        // if (sy > 0) {
+        //     vert = "South";
 
-        if (sx > 0) {
-            let horiz = "East";
+        // if (sx > 0) {
+        //     horiz = "East";
 
 
 
-        if (dy > dx) {
-            let neighbor = this.tile.tileEast;
-            if (sy > 0) {
-                let vert = "South";
+        // if (dy > dx) {
+        //     let neighbor = this.tile.tileEast;
+        //     if (sy > 0) {
+        //         vert = "South";
     
-            if (sx > 0) {
-                let horiz = "West";
-            if (isDiag || f > 0) {
-                return neighbor.getNeighbor(horiz);
-            }
-        return neighbor;
-        }
-        else {
-            let neighbor = current.getNeighbor(horiz);
-            if (isDiag || f > 0) {
-                return neighbor.getNeighbor(vert);
-            }
-            return neighbor;
-        }
+        //     if (sx > 0) {
+        //         horiz = "West";
+        //     if (isDiag || f > 0) {
+        //         return neighbor.getNeighbor(horiz);
+        //     }
+        // return neighbor;
+        // }
+        // else {
+        //     let neighbor = current.getNeighbor(horiz);
+        //     if (isDiag || f > 0) {
+        //         return neighbor.getNeighbor(vert);
+        //     }
+        //     return neighbor;
+        // }
+        return this.game.tiles[0];
     }
         
     // <<-- /Creer-Merge: public-functions -->>
@@ -256,13 +257,13 @@ export class Wizard extends GameObject {
             return reason;
         }
 
-        if (!this.tile()) {
+        if (!tile) {
            throw new Error('${this} has no Tile to target!');
         }
 
         // Calculate distance of target tile
-        const dx = this.tile.y - tile.x;
-        const dy = this.tile.x - tile.y;
+        const dx = this.tile!.y - tile.x;
+        const dy = this.tile!.x - tile.y;
         const distSq = dx * dx + dy * dy;
 
         // And now handle each spell in its own case
@@ -286,6 +287,7 @@ export class Wizard extends GameObject {
                 if (tile.hasNeighbor(player.wizard.tile)) {
                     return ``
                 }
+                break;
             }
             default: {
                 throw new Error("I've never heard of that spell...");
@@ -332,7 +334,7 @@ export class Wizard extends GameObject {
         switch(spellName) { 
             case "Punch": {
                 // Throws a crappy wizard punch within 1 range.
-                tile.wizard.health -= 1;
+                tile.wizard!.health -= 1;
                 return true;
                 break; 
             }
@@ -342,8 +344,8 @@ export class Wizard extends GameObject {
 
                 let bouncesLeft = 4;
                 let prevTile = tile;
-                let x0 = this.tile.x;
-                let y0 = this.tile.y;
+                let x0 = this.tile!.x;
+                let y0 = this.tile!.y;
                 let x1 = tile.x;
                 let y1 = tile.y;
 
@@ -358,7 +360,7 @@ export class Wizard extends GameObject {
             case "Fire Slash": {
                 // Fire blast
                 // Does it go through walls? I assume so
-                tile.wizard.health -= 3;
+                tile.wizard!.health -= 3;
                 this.aether -= 2;
                 break;
             }
@@ -373,7 +375,7 @@ export class Wizard extends GameObject {
             case "Rock Lob": {
                 // This is spelled wrong in the slide examples, please fix.
                 // Anyhoo throws rock in exactly 2 range
-                tile.wizard.health -= 2;
+                tile.wizard!.health -= 2;
                 this.aether -= 2
                 break;
             }
@@ -384,9 +386,9 @@ export class Wizard extends GameObject {
 
                 let distLeft = 3;
                 let prevTile = tile;
-                let nextTile = this.bressenham(this.tile.x,this.tile.y,tile.x,tile.y,tile)
+                let nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, tile)
                 while (nextTile && nextTile.type === "floor" && distLeft > 0) {
-                    prevTile.wizard.tile = nextTile;
+                    prevTile.wizard!.tile = nextTile;
                     nextTile.wizard = prevTile.wizard;
                     prevTile.wizard = undefined;
                     // NOTE: If wizard touches item, collect it
@@ -394,10 +396,10 @@ export class Wizard extends GameObject {
 
                     distLeft--;
                     prevTile = nextTile;
-                    nextTile = this.bressenham(this.tile.x,this.tile.y,tile.x,tile.y,prevTile);
+                    nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, prevTile);
                 }
                 if (distLeft > 0) {
-                    prevTile.wizard.health -= 2;
+                    prevTile.wizard!.health -= 2;
                 }
                 break;
             }
@@ -425,7 +427,7 @@ export class Wizard extends GameObject {
             }
             case "Teleport": {
                 // Hey! This one's easy!
-                this.tile.wizard = undefined;
+                this.tile!.wizard = undefined;
                 this.tile = tile;
                 tile.wizard = this;
                 break;
