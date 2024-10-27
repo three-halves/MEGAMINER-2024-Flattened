@@ -123,14 +123,14 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         const dir = this.dirAsString(current.direction);
         const sprite = this.sprites[this.type][dir];
         sprite.visible = true;
-        // this.container.position.set(
-        //     ease(current.tile.x, next.tile.x, dt),
-        //     ease(current.tile.y, next.tile.x, dt),
-        // );
+        this.container.position.set(
+            ease(current.tile.x, next.tile.x, dt),
+            ease(current.tile.y, next.tile.y, dt),
+        );
 
         // this.container.position.set(current.tile.x, current.tile.y);
-        sprite.x = current.tile.x;
-        sprite.y = current.tile.y;
+        // sprite.x = current.tile.x;
+        // sprite.y = current.tile.y;
 
         // <<-- /Creer-Merge: render -->>
     }
