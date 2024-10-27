@@ -72,6 +72,11 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
     // NOTE: They will not be sent to the AIs, those must be defined
     // in the creer file.
 
+    /**
+     * The choice of wizard the player wants.
+     */
+    public wizardChoice?: WizardSpecialty;
+
     // <<-- /Creer-Merge: attributes -->>
 
     /**
@@ -128,6 +133,18 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
         // return a string explaining why the input is wrong.
         // If you need to change an argument for the real function, then
         // changing its value in this scope is enough.
+
+        if (this.wizardChoice) {
+            return 'You are already a ${wizardChoice}';
+        }
+        
+        if (wizardClass !== "aggressive"
+            && wizardClass !== "defensive"
+            && wizardClass !== "sustaining"
+            && wizardClass !== "strategic") {
+            return '${wizardClass} is not a valid wizard choice!';
+        }
+        
         return undefined; // means nothing could be found that was ivalid.
 
         // <<-- /Creer-Merge: invalidate-chooseWizard -->>
@@ -149,7 +166,8 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
         // Add logic here for chooseWizard.
 
         // TODO: replace this with actual logic
-        return false;
+        this.wizardChoice = wizardClass as WizardSpecialty;
+        return true;
 
         // <<-- /Creer-Merge: chooseWizard -->>
     }
