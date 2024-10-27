@@ -67,7 +67,7 @@ export class MagomachyGameSettingsManager extends BaseClasses.GameSettings {
             // Tiled settings
             mapWidth: {
                 // <<-- Creer-Merge: map-width -->>
-                default: 32,
+                default: 10,
                 // <<-- /Creer-Merge: map-width -->>
                 min: 2,
                 description:
@@ -76,7 +76,7 @@ export class MagomachyGameSettingsManager extends BaseClasses.GameSettings {
             },
             mapHeight: {
                 // <<-- Creer-Merge: map-height -->>
-                default: 16,
+                default: 10,
                 // <<-- /Creer-Merge: map-height -->>
                 min: 2,
                 description:

@@ -70,21 +70,21 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                 west: this.addSprite.wiz_ag_w(hide),
             },
             defensive: {
-                north: this.addSprite.wiz_ag_n(hide),
-                east: this.addSprite.wiz_ag_e(hide),
-                south: this.addSprite.wiz_ag_s(hide),
+                north: this.addSprite.wiz_de_n(hide),
+                east: this.addSprite.wiz_de_e(hide),
+                south: this.addSprite.wiz_de_s(hide),
                 west: this.addSprite.wiz_de_w(hide),
             },
             sustaining: {
-                north: this.addSprite.wiz_ag_n(hide),
-                east: this.addSprite.wiz_ag_e(hide),
-                south: this.addSprite.wiz_ag_s(hide),
+                north: this.addSprite.wiz_su_n(hide),
+                east: this.addSprite.wiz_su_e(hide),
+                south: this.addSprite.wiz_su_s(hide),
                 west: this.addSprite.wiz_su_w(hide),
             },
             strategic: {
-                north: this.addSprite.wiz_ag_n(hide),
-                east: this.addSprite.wiz_ag_e(hide),
-                south: this.addSprite.wiz_ag_s(hide),
+                north: this.addSprite.wiz_st_n(hide),
+                east: this.addSprite.wiz_st_e(hide),
+                south: this.addSprite.wiz_st_s(hide),
                 west: this.addSprite.wiz_st_w(hide),
             },
         };
@@ -123,10 +123,14 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         const dir = this.dirAsString(current.direction);
         const sprite = this.sprites[this.type][dir];
         sprite.visible = true;
-        this.container.position.set(
-            ease(current.tile.x, next.tile.x, dt),
-            ease(current.tile.y, next.tile.x, dt),
-        );
+        // this.container.position.set(
+        //     ease(current.tile.x, next.tile.x, dt),
+        //     ease(current.tile.y, next.tile.x, dt),
+        // );
+
+        // this.container.position.set(current.tile.x, current.tile.y);
+        sprite.x = current.tile.x;
+        sprite.y = current.tile.y;
 
         // <<-- /Creer-Merge: render -->>
     }

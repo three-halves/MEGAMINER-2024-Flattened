@@ -88,6 +88,8 @@ class AI(BaseAI):
         Returns:
             bool: Represents if you want to end your turn. True means end your turn, False means to keep your turn going and re-call this function.
         """
+        self.player.wizard.move(self.player.wizard.tile.tile_west)
+        self.player.wizard.cast("Punch", self.player.wizard.tile.tile_west)
         # <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         # Put your game logic here for runTurn
         return True

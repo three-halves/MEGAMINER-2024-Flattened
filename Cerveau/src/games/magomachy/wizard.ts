@@ -262,8 +262,8 @@ export class Wizard extends GameObject {
         }
 
         // Calculate distance of target tile
-        const dx = this.tile!.y - tile.x;
-        const dy = this.tile!.x - tile.y;
+        const dx = this.tile!.x - tile.x;
+        const dy = this.tile!.y - tile.y;
         const distSq = dx * dx + dy * dy;
 
         // And now handle each spell in its own case

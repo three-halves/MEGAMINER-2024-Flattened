@@ -6,9 +6,11 @@ import { MagomachyGameSettingsManager } from "./game-settings";
 import { Player } from "./player";
 import { Tile } from "./tile";
 import { floor } from "lodash";
+import { Mutable } from "@cadre/ts-utils";
 
 // <<-- Creer-Merge: imports -->>
 // any additional imports you want can be placed here safely between creer runs
+type MutableTile = Mutable<Tile>;
 // <<-- /Creer-Merge: imports -->>
 
 /**
@@ -112,30 +114,36 @@ export class MagomachyGame extends BaseClasses.Game {
             // this.manager.create.tile({});
 
             // TODO Manually create arrays of tiles/strings for different maps
-            this.tiles[i] = this.manager.create.tile({
-                    type: 
-                    x === 0 || x === this.mapWidth - 1 ||
-                    y === 0 || y === this.mapHeight - 1
-                        ? "wall"
-                        : "floor",
-                }
-            );
-        }
+            const tile = (this.tiles[i] as MutableTile);
+
+            tile.type = (x === 0 || x === this.mapWidth - 1 ||
+            y === 0 || y === this.mapHeight - 1)
+                ? "wall"
+                : "floor";
+            }
 
         // TEMP init wizards for testing
         this.players[0].wizard = this.manager.create.wizard({
+            owner: this.players[0],
             health: 10,
             aether: 10,
-            tile: this.tiles[floor(this.mapHeight) / 2 * this.mapWidth + 1],
+            tile: this.getTile(1, floor(this.mapHeight) / 2),
             specialty: "aggressive",
+            speed: 1
         });
 
+        this.players[0].wizard.tile!.wizard = this.players[0].wizard;
+
         this.players[1].wizard = this.manager.create.wizard({
+            owner: this.players[1],
             health: 10,
             aether: 10,
-            tile: this.tiles[floor(this.mapHeight) / 2 * this.mapWidth + this.mapWidth - 2],
+            tile: this.getTile(this.mapWidth - 2, floor(this.mapHeight) / 2),
             specialty: "sustaining",
+            speed: 1
         });
+
+        this.players[1].wizard.tile!.wizard = this.players[1].wizard;
 
         // <<-- /Creer-Merge: constructor -->>
     }
