@@ -210,61 +210,55 @@ export class Wizard extends GameObject {
 
     public bressenham(x0: number, y0: number, x1: number, y1: number, current: Tile): Tile | undefined {
         // First we describe the slope of the line
-        // let dx = Math.abs(x1 - x0);
-        // let sx = x0 < x1 ? 1 : -1;
+        let dx = Math.abs(x1 - x0);
+        let sx = x0 < x1 ? 1 : -1;
 
-        // let dy = Math.abs(y1 - y0);
-        // let sy = y0 < y1 ? 1 : -1;
+        let dy = Math.abs(y1 - y0);
+        let sy = y0 < y1 ? 1 : -1;
 
-        // let cx = dx > dy ? 1 : 0.5
-        // let cy = dx > dy ? 0.5 : 1
+        let cx = dx > dy ? 1 : 0.5
+        let cy = dx > dy ? 0.5 : 1
 
-        // // If the line is diagonal, we have to note it
-        // let isDiag = (dx === dy)
+        // If the line is diagonal, we have to note it
+        let isDiag = (dx === dy)
 
-        // // We also need the y-intercept
-        // // Thankfully TypeScript stores all numbers as floats by default
-        // let b = y0 - dx / dy * x0;
+        // We also need the y-intercept
+        // Thankfully TypeScript stores all numbers as floats by default
+        let b = y0 - dx / dy * x0;
 
-        // // If a point (x,y) is on the line, then dy*x - dx*y + dx*b = 0.
-        // // Its parity also tells us how good a nearby tile approximates the line.
-        // let f = dy*(current.x + sx*cx) - dx*(current.y + sy*cy) + dx*b;
+        // If a point (x,y) is on the line, then dy*x - dx*y + dx*b = 0.
+        // Its parity also tells us how good a nearby tile approximates the line.
+        let f = dy*(current.x + sx*cx) - dx*(current.y + sy*cy) + dx*b;
 
-        // // Now we choose the best tile for the line.
-        // // We always update the coordinate that changes quicker.
-        // // If f is positive or the slope is 1, we also update the other coordinate.
-        // // Since this function is being called outside the game class, we can't just tilemap this.
-        // // So we have to go case by case.
-        // let vert = "North";
-        // let horiz = "West";
-        // if (sy > 0) {
-        //     vert = "South";
+        // Now we choose the best tile for the line.
+        // We always update the coordinate that changes quicker.
+        // If f is positive or the slope is 1, we also update the other coordinate.
+        // Since this function is being called outside the game class, we can't just tilemap this.
+        // So we have to go case by case.
+        let vert = "North";
+        let horiz = "West";
+        if (sy > 0) {
+            vert = "South";
+        }
 
-        // if (sx > 0) {
-        //     horiz = "East";
+        if (sx > 0) {
+            horiz = "East";
+        }
 
-
-
-        // if (dy > dx) {
-        //     let neighbor = this.tile.tileEast;
-        //     if (sy > 0) {
-        //         vert = "South";
-    
-        //     if (sx > 0) {
-        //         horiz = "West";
-        //     if (isDiag || f > 0) {
-        //         return neighbor.getNeighbor(horiz);
-        //     }
-        // return neighbor;
-        // }
-        // else {
-        //     let neighbor = current.getNeighbor(horiz);
-        //     if (isDiag || f > 0) {
-        //         return neighbor.getNeighbor(vert);
-        //     }
-        //     return neighbor;
-        // }
-        return this.game.tiles[0];
+        if (dy > dx) {
+            let neighbor = current.getNeighbor(vert);
+            if (isDiag || f > 0) {
+                return neighbor.getNeighbor(horiz);
+            }
+            return neighbor;
+        }
+        else {
+            let neighbor = current.getNeighbor(horiz);
+            if (isDiag || f > 0) {
+                return neighbor.getNeighbor(vert);
+            }
+            return neighbor;
+        }
     }
         
     // <<-- /Creer-Merge: public-functions -->>
@@ -401,10 +395,28 @@ export class Wizard extends GameObject {
             }
             case "Thunderous Dash": {
                 // Just add an isDash var to wizards
+                this.movementLeft += 3;
+                this.effects.push("Dash");
+                this.effectTimes.push(0);
+                this.aether -= 3;
                 break;
             }
             case "Furious Telekinesis": {
-                // Impossible to implement without items.
+                this.aether -= 4;
+
+                let prevTile = tile;
+                let nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, tile)
+                while (nextTile && nextTile.type === "floor" && !prevTile.wizard) {
+                    prevTile.object!.tile = nextTile;
+                    nextTile.object = prevTile.object!;
+                    prevTile.object = undefined;
+
+                    prevTile = nextTile;
+                    nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, prevTile);
+                }
+                if (prevTile.wizard) {
+                    // Collect item here
+                }
                 break;
             }
             case "Rock Lob": {
@@ -449,15 +461,21 @@ export class Wizard extends GameObject {
                 // we can also give tiles a MUTABLE variable saying if they're walled.
                 // then the gm checks this array every turn.
                 // the same idea counts for strategist runes.
+                tile.object = this.manager.create.item({
+                    form: "stone",
+                    lifetime: 0,
+                    tile: tile,
+                });
                 break;
             }
             case "Calming Blast": {
                 // So this requires editing the game manager to heal speeds after every turn.
                 // Until that is done, DO NOT UNCOMMENT THIS CODE!
+                // ^^^ Hello, it's me, I'm doing it anyway, sorry
 
-                // tile.wizard.speed -= 1;
-                // tile.wizard.health -= 1;
-                // this.aether -= 3;
+                tile.wizard.speed -= 1;
+                tile.wizard.health -= 1;
+                this.aether -= 3;
                 break;
             }
             case "Teleport": {
@@ -468,16 +486,50 @@ export class Wizard extends GameObject {
                 break;
             }
             case "Dispel Magic": {
-                // Can't do until items are made bro
+                // This is freaking broken lol
+                tile.object = undefined;
+                this.health += 4;
+                this.aether += 2;
                 break;
+            }
+            case "Explosion Rune": {
+                tile.object = this.manager.create.item({
+                    form: "explosive rune",
+                    lifetime: 0,
+                    tile: tile,
+                })
+                break;
+            }
+            case "Heal Rune": {
+                tile.object = this.manager.create.item({
+                    form: "heal rune",
+                    lifetime: 0,
+                    tile: tile,
+                })
+                break;
+            }
+            case "Teleport Rune": {
+                tile.object = this.manager.create.item({
+                    form: "teleport rune",
+                    lifetime: 0,
+                    tile: tile,
+                })
+                break;
+            }
+            case "Charge Rune": {
+                tile.object = this.manager.create.item({
+                    form: "charge rune",
+                    lifetime: 0,
+                    tile: tile,
+                })
             }
             default: { 
                 throw new Error("invalid spell cast");
                 break; 
             } 
         }
-        
-        return false;
+        this.hasCast = true;
+        return true;
 
         // <<-- /Creer-Merge: cast -->>
     }
