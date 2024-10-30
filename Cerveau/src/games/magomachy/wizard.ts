@@ -363,12 +363,17 @@ export class Wizard extends GameObject {
         switch(spellName) { 
             case "Punch": {
                 // Throws a crappy wizard punch within 1 range.
+                this.lastSpell = "Punch";
+                this.lastTargetTile = tile;
                 tile.wizard!.health -= 1;
                 return true;
                 break; 
             }
             case "Magic Missile": {
                 // Debug spell like wii tanks
+                this.lastSpell = "Magic Missile";
+                this.lastTargetTile = tile;
+                
                 this.aether -= 2;
 
                 let bouncesLeft = 4;
@@ -389,12 +394,17 @@ export class Wizard extends GameObject {
             case "Fire Slash": {
                 // Fire blast
                 // Does it go through walls? I assume so
+                this.lastSpell = "Fire Slash";
+                this.lastTargetTile = tile;
+                
                 tile.wizard!.health -= 3;
                 this.aether -= 2;
                 break;
             }
             case "Thunderous Dash": {
                 // Just add an isDash var to wizards
+                this.lastSpell = "Thunderous Dash";
+                this.lastTargetTile = tile;
                 this.movementLeft += 3;
                 this.effects.push("Dash");
                 this.effectTimes.push(0);
@@ -402,6 +412,8 @@ export class Wizard extends GameObject {
                 break;
             }
             case "Furious Telekinesis": {
+                this.lastSpell = "Furious Telekinesis";
+                this.lastTargetTile = tile;
                 this.aether -= 4;
 
                 let prevTile = tile;
@@ -422,6 +434,8 @@ export class Wizard extends GameObject {
             case "Rock Lob": {
                 // This is spelled wrong in the slide examples, please fix.
                 // Anyhoo throws rock in exactly 2 range
+                this.lastSpell = "Rock Lob";
+                this.lastTargetTile = tile;
                 tile.wizard!.health -= 2;
                 this.aether -= 2
                 break;
@@ -429,6 +443,8 @@ export class Wizard extends GameObject {
             case "Force Push": {
                 // Requires Bressenham to find path
                 // After that, keep pushing until wall is hit or out of range
+                this.lastSpell = "Force Push";
+                this.lastTargetTile = tile;
                 this.aether -= 3;
 
                 let distLeft = 3;
@@ -461,6 +477,8 @@ export class Wizard extends GameObject {
                 // we can also give tiles a MUTABLE variable saying if they're walled.
                 // then the gm checks this array every turn.
                 // the same idea counts for strategist runes.
+                this.lastSpell = "Stone Summon";
+                this.lastTargetTile = tile;
                 tile.object = this.manager.create.item({
                     form: "stone",
                     lifetime: 0,
@@ -472,7 +490,8 @@ export class Wizard extends GameObject {
                 // So this requires editing the game manager to heal speeds after every turn.
                 // Until that is done, DO NOT UNCOMMENT THIS CODE!
                 // ^^^ Hello, it's me, I'm doing it anyway, sorry
-
+                this.lastSpell = "Calming Blast";
+                this.lastTargetTile = tile;
                 tile.wizard!.speed -= 1;
                 tile.wizard!.health -= 1;
                 this.aether -= 3;
@@ -480,6 +499,8 @@ export class Wizard extends GameObject {
             }
             case "Teleport": {
                 // Hey! This one's easy!
+                this.lastSpell = "Teleport";
+                this.lastTargetTile = tile;
                 this.tile!.wizard = undefined;
                 this.tile = tile;
                 tile.wizard = this;
@@ -487,12 +508,16 @@ export class Wizard extends GameObject {
             }
             case "Dispel Magic": {
                 // This is freaking broken lol
+                this.lastSpell = "Dispel Magic";
+                this.lastTargetTile = tile;
                 tile.object = undefined;
                 this.health += 4;
                 this.aether += 2;
                 break;
             }
             case "Explosion Rune": {
+                this.lastSpell = "Explosion Rune";
+                this.lastTargetTile = tile;
                 tile.object = this.manager.create.item({
                     form: "explosive rune",
                     lifetime: 0,
@@ -501,6 +526,8 @@ export class Wizard extends GameObject {
                 break;
             }
             case "Heal Rune": {
+                this.lastSpell = "Heal Rune";
+                this.lastTargetTile = tile;
                 tile.object = this.manager.create.item({
                     form: "heal rune",
                     lifetime: 0,
@@ -509,6 +536,8 @@ export class Wizard extends GameObject {
                 break;
             }
             case "Teleport Rune": {
+                this.lastSpell = "Teleport Rune";
+                this.lastTargetTile = tile;
                 tile.object = this.manager.create.item({
                     form: "teleport rune",
                     lifetime: 0,
@@ -517,6 +546,8 @@ export class Wizard extends GameObject {
                 break;
             }
             case "Charge Rune": {
+                this.lastSpell = "Charge Rune";
+                this.lastTargetTile = tile;
                 tile.object = this.manager.create.item({
                     form: "charge rune",
                     lifetime: 0,
