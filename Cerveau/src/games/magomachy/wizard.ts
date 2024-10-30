@@ -200,6 +200,8 @@ export class Wizard extends GameObject {
             throw new Error(`${this} has no Tile to move from!']`);
         }
 
+        this.setDirection(tile);
+
         this.tile.wizard = undefined;
         this.tile = tile;
         tile.wizard = this;
@@ -360,6 +362,7 @@ export class Wizard extends GameObject {
 
         // TODO: replace this with actual logic
         // Process each spell separately
+        this.setDirection(tile);
         switch(spellName) { 
             case "Punch": {
                 // Throws a crappy wizard punch within 1 range.
@@ -604,10 +607,10 @@ export class Wizard extends GameObject {
 
     // Any additional protected or pirate methods can go here.
     /**
-     * Trues to invalidate args for an action function
+     * Tries to invalidate args for an action function
      *
      * @param player - The player calling the action.
-     * @returns The rason this is invalid, undefined if it looks valid so far.
+     * @returns The reason this is invalid, undefined if it looks valid so far.
      */
     private invalidate(
         player: Player,
@@ -619,6 +622,37 @@ export class Wizard extends GameObject {
             return `Wrong wizard, ${player}.`;
         }
     }
-    
+
+    /**
+     *
+     * Sets the wizard's direction based on bressenham
+     *
+     * @param tile - the target tile.
+     * @returns True if direction set, false otherwise.
+     */
+    private setDirection(
+        tile: tile,
+    ): boolean {
+        const dx = tile.x - this.tile!.x;
+        const dy = tile.y - this.tile!.y;
+
+        if (Math.abs(dy) >= Math.abs(dx)) {
+            if (dy >= 0) {
+                this.direction = 0;
+            }
+            else {
+                this.direction = 2;
+            }
+        }
+        else {
+            if (dx >= 0) {
+                this.direction = 1;
+            }
+            else {
+                this.direction = 3;
+            }
+        }
+        return true;
+    }
     // <<-- /Creer-Merge: protected-private-functions -->>
 }
