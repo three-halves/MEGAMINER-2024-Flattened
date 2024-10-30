@@ -100,7 +100,7 @@ void Item_::rebind_by_name(Any* to_change, const std::string& member, std::share
 {
    if(member == "tile")
    { 
-      to_change->as<Item>() = std::static_pointer_cast<Item_>(ref);
+      to_change->as<Tile>() = std::static_pointer_cast<Tile_>(ref);
       return;
    }
    try

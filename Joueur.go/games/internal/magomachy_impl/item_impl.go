@@ -13,7 +13,7 @@ type ItemImpl struct {
 
 	formImpl     string
 	lifetimeImpl int64
-	tileImpl     magomachy.Item
+	tileImpl     magomachy.Tile
 }
 
 // Form returns the type of Item this is.
@@ -27,7 +27,7 @@ func (itemImpl *ItemImpl) Lifetime() int64 {
 }
 
 // Tile returns the Tile this Item is on.
-func (itemImpl *ItemImpl) Tile() magomachy.Item {
+func (itemImpl *ItemImpl) Tile() magomachy.Tile {
 	return itemImpl.tileImpl
 }
 
@@ -71,7 +71,7 @@ func (itemImpl *ItemImpl) DeltaMerge(
 		itemImpl.lifetimeImpl = magomachyDeltaMerge.Int(delta)
 		return true, nil
 	case "tile":
-		itemImpl.tileImpl = magomachyDeltaMerge.Item(delta)
+		itemImpl.tileImpl = magomachyDeltaMerge.Tile(delta)
 		return true, nil
 	}
 

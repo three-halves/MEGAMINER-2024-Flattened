@@ -72,7 +72,7 @@ class Item extends GameObject {
   /**
    * The Tile this Item is on.
    *
-   * @type {Magomachy.Item}
+   * @type {Magomachy.Tile}
    */
   get tile() {
     return client.gameManager.getMemberValue(this, 'tile');

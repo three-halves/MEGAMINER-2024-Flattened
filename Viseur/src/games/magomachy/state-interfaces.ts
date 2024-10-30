@@ -140,7 +140,7 @@ export interface ItemState extends GameObjectState {
      * The Tile this Item is on.
      *
      */
-    tile: ItemState;
+    tile: TileState;
 }
 
 /**

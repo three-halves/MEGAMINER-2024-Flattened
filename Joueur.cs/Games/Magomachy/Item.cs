@@ -33,7 +33,7 @@ namespace Joueur.cs.Games.Magomachy
         /// <summary>
         /// The Tile this Item is on.
         /// </summary>
-        public Magomachy.Item Tile { get; protected set; }
+        public Magomachy.Tile Tile { get; protected set; }
 
 
         // <<-- Creer-Merge: properties -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.

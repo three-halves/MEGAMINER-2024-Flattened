@@ -14,5 +14,5 @@ type Item interface {
 	Lifetime() int64
 
 	// Tile is the Tile this Item is on.
-	Tile() Item
+	Tile() Tile
 }

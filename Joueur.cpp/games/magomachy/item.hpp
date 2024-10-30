@@ -51,7 +51,7 @@ public:
     /// <summary>
     /// The Tile this Item is on.
     /// </summary>
-    const Item& tile;
+    const Tile& tile;
 
     // <<-- Creer-Merge: member variables -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
     // You can add additional member variables here. None of them will be tracked or updated by the server.

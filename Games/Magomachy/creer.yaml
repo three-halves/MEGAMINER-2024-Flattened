@@ -46,7 +46,7 @@ Item:
   attributes:
     tile:
       description: The Tile this Item is on.
-      type: Item!
+      type: Tile!
     form:
       description: The type of Item this is.
       type: string!

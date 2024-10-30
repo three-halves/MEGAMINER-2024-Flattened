@@ -39,8 +39,8 @@ class Item(GameObject):
         return self._lifetime
 
     @property
-    def tile(self) -> 'games.magomachy.item.Item':
-        """games.magomachy.item.Item: The Tile this Item is on.
+    def tile(self) -> 'games.magomachy.tile.Tile':
+        """games.magomachy.tile.Tile: The Tile this Item is on.
         """
         return self._tile
 

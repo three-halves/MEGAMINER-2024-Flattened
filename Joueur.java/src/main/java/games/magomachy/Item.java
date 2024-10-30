@@ -38,7 +38,7 @@ public class Item extends GameObject {
     /**
      * The Tile this Item is on.
      */
-    public Item tile;
+    public Tile tile;
 
 
     // <<-- Creer-Merge: fields -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.

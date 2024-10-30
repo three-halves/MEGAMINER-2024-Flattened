@@ -1,6 +1,7 @@
 import { BaseGameObjectRequiredData } from "~/core/game";
 import { ItemConstructorArgs } from "./";
 import { GameObject } from "./game-object";
+import { Tile } from "./tile";
 
 // <<-- Creer-Merge: imports -->>
 // any additional imports you want can be placed here safely between creer runs
@@ -23,7 +24,7 @@ export class Item extends GameObject {
     /**
      * The Tile this Item is on.
      */
-    public tile: Item;
+    public tile: Tile;
 
     // <<-- Creer-Merge: attributes -->>
 

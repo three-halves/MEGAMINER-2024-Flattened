@@ -7,6 +7,7 @@
 // (though we will try to make it readable to humans)
 
 import { GameObject } from "./game-object";
+import { Tile } from "./tile";
 
 // <<-- Creer-Merge: imports -->>
 // any additional imports you want can be placed here safely between creer runs
@@ -30,7 +31,7 @@ export class Item extends GameObject {
     /**
      * The Tile this Item is on.
      */
-    public readonly tile!: Item;
+    public readonly tile!: Tile;
 
     // <<-- Creer-Merge: functions -->>
     // any additional functions you want to add to this class can be preserved here
