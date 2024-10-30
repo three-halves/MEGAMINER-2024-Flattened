@@ -61,6 +61,16 @@ namespace Joueur.cs.Games.Magomachy
         public int Health { get; protected set; }
 
         /// <summary>
+        /// The spell this wizard just casted. Undefined if no spell was cast.
+        /// </summary>
+        public string LastSpell { get; protected set; }
+
+        /// <summary>
+        /// The tile this wizard just cast to. Undefined if no tile was targeted.
+        /// </summary>
+        public Magomachy.Tile LastTargetTile { get; protected set; }
+
+        /// <summary>
         /// How much movement the wizard has left.
         /// </summary>
         public int MovementLeft { get; protected set; }

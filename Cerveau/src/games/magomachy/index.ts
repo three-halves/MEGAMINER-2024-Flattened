@@ -259,6 +259,16 @@ export interface WizardProperties {
     health?: number;
 
     /**
+     * The spell this wizard just casted. Undefined if no spell was cast.
+     */
+    lastSpell?: string;
+
+    /**
+     * The tile this wizard just cast to. Undefined if no tile was targeted.
+     */
+    lastTargetTile?: Tile;
+
+    /**
      * How much movement the wizard has left.
      */
     movementLeft?: number;
@@ -714,6 +724,14 @@ export const Namespace = makeNamespace({
                 health: {
                     typeName: "int",
                 },
+                lastSpell: {
+                    typeName: "string",
+                },
+                lastTargetTile: {
+                    typeName: "gameObject",
+                    gameObjectClass: Tile,
+                    nullable: true,
+                },
                 movementLeft: {
                     typeName: "int",
                 },
@@ -778,5 +796,5 @@ export const Namespace = makeNamespace({
         },
     },
     gameVersion:
-        "77505b71a8b9f75455f9f5fec932c1959810e1ad9f6ddce1fab318c55b71b79f",
+        "96137cfaefe2c6ad68ae397a311c3b2ab65fb9223e4f6b5a7ae01fc6d3dd4d9b",
 });

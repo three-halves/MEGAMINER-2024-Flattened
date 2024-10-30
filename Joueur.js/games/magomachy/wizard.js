@@ -37,6 +37,8 @@ class Wizard extends GameObject {
     this.effects = [];
     this.hasCast = false;
     this.health = 0;
+    this.lastSpell = '';
+    this.lastTargetTile = null;
     this.movementLeft = 0;
     this.owner = null;
     this.specialty = '';
@@ -160,6 +162,34 @@ class Wizard extends GameObject {
 
   set health(value) {
     client.gameManager.setMemberValue(this, 'health', value);
+  }
+
+
+  /**
+   * The spell this wizard just casted. Undefined if no spell was cast.
+   *
+   * @type {string}
+   */
+  get lastSpell() {
+    return client.gameManager.getMemberValue(this, 'lastSpell');
+  }
+
+  set lastSpell(value) {
+    client.gameManager.setMemberValue(this, 'lastSpell', value);
+  }
+
+
+  /**
+   * The tile this wizard just cast to. Undefined if no tile was targeted.
+   *
+   * @type {Magomachy.Tile}
+   */
+  get lastTargetTile() {
+    return client.gameManager.getMemberValue(this, 'lastTargetTile');
+  }
+
+  set lastTargetTile(value) {
+    client.gameManager.setMemberValue(this, 'lastTargetTile', value);
   }
 
 

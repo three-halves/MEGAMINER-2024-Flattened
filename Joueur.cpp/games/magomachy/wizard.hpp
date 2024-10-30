@@ -79,6 +79,16 @@ public:
     const int& health;
 
     /// <summary>
+    /// The spell this wizard just casted. Undefined if no spell was cast.
+    /// </summary>
+    const std::string& last_spell;
+
+    /// <summary>
+    /// The tile this wizard just cast to. Undefined if no tile was targeted.
+    /// </summary>
+    const Tile& last_target_tile;
+
+    /// <summary>
     /// How much movement the wizard has left.
     /// </summary>
     const int& movement_left;

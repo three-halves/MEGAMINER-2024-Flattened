@@ -31,6 +31,8 @@ class Wizard(GameObject):
         self._effects = []
         self._has_cast = False
         self._health = 0
+        self._last_spell = ""
+        self._last_target_tile = None
         self._movement_left = 0
         self._owner = None
         self._specialty = ""
@@ -84,6 +86,18 @@ class Wizard(GameObject):
         """int: The amount of health this player has.
         """
         return self._health
+
+    @property
+    def last_spell(self) -> str:
+        """str: The spell this wizard just casted. Undefined if no spell was cast.
+        """
+        return self._last_spell
+
+    @property
+    def last_target_tile(self) -> Optional['games.magomachy.tile.Tile']:
+        """games.magomachy.tile.Tile or None: The tile this wizard just cast to. Undefined if no tile was targeted.
+        """
+        return self._last_target_tile
 
     @property
     def movement_left(self) -> int:

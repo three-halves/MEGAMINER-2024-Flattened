@@ -93,6 +93,8 @@ Wizard_::Wizard_(std::initializer_list<std::pair<std::string, Any&&>> init) :
         {"effects", Any{std::decay<decltype(effects)>::type{}}},
         {"hasCast", Any{std::decay<decltype(has_cast)>::type{}}},
         {"health", Any{std::decay<decltype(health)>::type{}}},
+        {"lastSpell", Any{std::decay<decltype(last_spell)>::type{}}},
+        {"lastTargetTile", Any{std::decay<decltype(last_target_tile)>::type{}}},
         {"movementLeft", Any{std::decay<decltype(movement_left)>::type{}}},
         {"owner", Any{std::decay<decltype(owner)>::type{}}},
         {"specialty", Any{std::decay<decltype(specialty)>::type{}}},
@@ -107,6 +109,8 @@ Wizard_::Wizard_(std::initializer_list<std::pair<std::string, Any&&>> init) :
     effects(variables_["effects"].as<std::decay<decltype(effects)>::type>()),
     has_cast(variables_["hasCast"].as<std::decay<decltype(has_cast)>::type>()),
     health(variables_["health"].as<std::decay<decltype(health)>::type>()),
+    last_spell(variables_["lastSpell"].as<std::decay<decltype(last_spell)>::type>()),
+    last_target_tile(variables_["lastTargetTile"].as<std::decay<decltype(last_target_tile)>::type>()),
     movement_left(variables_["movementLeft"].as<std::decay<decltype(movement_left)>::type>()),
     owner(variables_["owner"].as<std::decay<decltype(owner)>::type>()),
     specialty(variables_["specialty"].as<std::decay<decltype(specialty)>::type>()),
@@ -208,6 +212,11 @@ bool Wizard_::is_map(const std::string& name)
 
 void Wizard_::rebind_by_name(Any* to_change, const std::string& member, std::shared_ptr<Base_object> ref)
 {
+   if(member == "lastTargetTile")
+   { 
+      to_change->as<Tile>() = std::static_pointer_cast<Tile_>(ref);
+      return;
+   }
    if(member == "owner")
    { 
       to_change->as<Player>() = std::static_pointer_cast<Player_>(ref);

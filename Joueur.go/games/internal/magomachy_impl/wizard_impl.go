@@ -11,19 +11,21 @@ import (
 type WizardImpl struct {
 	GameObjectImpl
 
-	aetherImpl       int64
-	attackImpl       int64
-	defenseImpl      int64
-	directionImpl    int64
-	effectTimesImpl  []int64
-	effectsImpl      []string
-	hasCastImpl      bool
-	healthImpl       int64
-	movementLeftImpl int64
-	ownerImpl        magomachy.Player
-	specialtyImpl    string
-	speedImpl        int64
-	tileImpl         magomachy.Tile
+	aetherImpl         int64
+	attackImpl         int64
+	defenseImpl        int64
+	directionImpl      int64
+	effectTimesImpl    []int64
+	effectsImpl        []string
+	hasCastImpl        bool
+	healthImpl         int64
+	lastSpellImpl      string
+	lastTargetTileImpl magomachy.Tile
+	movementLeftImpl   int64
+	ownerImpl          magomachy.Player
+	specialtyImpl      string
+	speedImpl          int64
+	tileImpl           magomachy.Tile
 }
 
 // Aether returns the amount of spell resources this Player has.
@@ -65,6 +67,22 @@ func (wizardImpl *WizardImpl) HasCast() bool {
 // Health returns the amount of health this player has.
 func (wizardImpl *WizardImpl) Health() int64 {
 	return wizardImpl.healthImpl
+}
+
+// LastSpell returns the spell this wizard just casted. Undefined if no
+// spell was cast.
+//
+// Value can be returned as a nil pointer.
+func (wizardImpl *WizardImpl) LastSpell() string {
+	return wizardImpl.lastSpellImpl
+}
+
+// LastTargetTile returns the tile this wizard just cast to. Undefined if
+// no tile was targeted.
+//
+// Value can be returned as a nil pointer.
+func (wizardImpl *WizardImpl) LastTargetTile() magomachy.Tile {
+	return wizardImpl.lastTargetTileImpl
 }
 
 // MovementLeft returns how much movement the wizard has left.
@@ -127,6 +145,8 @@ func (wizardImpl *WizardImpl) InitImplDefaults() {
 	wizardImpl.effectsImpl = []string{}
 	wizardImpl.hasCastImpl = true
 	wizardImpl.healthImpl = 0
+	wizardImpl.lastSpellImpl = ""
+	wizardImpl.lastTargetTileImpl = nil
 	wizardImpl.movementLeftImpl = 0
 	wizardImpl.ownerImpl = nil
 	wizardImpl.specialtyImpl = ""
@@ -181,6 +201,12 @@ func (wizardImpl *WizardImpl) DeltaMerge(
 		return true, nil
 	case "health":
 		wizardImpl.healthImpl = magomachyDeltaMerge.Int(delta)
+		return true, nil
+	case "lastSpell":
+		wizardImpl.lastSpellImpl = magomachyDeltaMerge.String(delta)
+		return true, nil
+	case "lastTargetTile":
+		wizardImpl.lastTargetTileImpl = magomachyDeltaMerge.Tile(delta)
 		return true, nil
 	case "movementLeft":
 		wizardImpl.movementLeftImpl = magomachyDeltaMerge.Int(delta)

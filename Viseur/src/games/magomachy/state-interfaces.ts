@@ -322,6 +322,18 @@ export interface WizardState extends GameObjectState {
     health: number;
 
     /**
+     * The spell this wizard just casted. Undefined if no spell was cast.
+     *
+     */
+    lastSpell: string;
+
+    /**
+     * The tile this wizard just cast to. Undefined if no tile was targeted.
+     *
+     */
+    lastTargetTile: TileState;
+
+    /**
      * How much movement the wizard has left.
      *
      */

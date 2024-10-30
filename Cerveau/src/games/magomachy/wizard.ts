@@ -37,9 +37,44 @@ export class Wizard extends GameObject {
     public defense!: number;
 
     /**
+     * The direction this Wizard is facing.
+     */
+    public direction!: number;
+
+    /**
+     * The turns remaining on each active effects on Wizard.
+     */
+    public effectTimes!: number[];
+
+    /**
+     * The names of active effects on the Wizard.
+     */
+    public effects!: string[];
+
+    /**
+     * Whether or not this Wizard has cast a spell this turn.
+     */
+    public hasCast!: boolean;
+
+    /**
      * The amount of health this player has.
      */
     public health!: number;
+
+    /**
+     * The spell this wizard just casted. Undefined if no spell was cast.
+     */
+    public lastSpell!: string;
+
+    /**
+     * The tile this wizard just cast to. Undefined if no tile was targeted.
+     */
+    public lastTargetTile?: Tile;
+
+    /**
+     * How much movement the wizard has left.
+     */
+    public movementLeft!: number;
 
     /**
      * The Player that owns and can control this Unit, or undefined if the Unit
@@ -446,7 +481,50 @@ export class Wizard extends GameObject {
 
         // <<-- /Creer-Merge: cast -->>
     }
-    // <<-- /Creer-Merge: public-functions -->>
+
+    /**
+     * Invalidation function for move. Try to find a reason why the passed in
+     * parameters are invalid, and return a human readable string telling them
+     * why it is invalid.
+     *
+     * @param player - The player that called this.
+     * @param tile - The Tile this Wizard should move to.
+     * @returns If the arguments are invalid, return a string explaining to
+     * human players why it is invalid. If it is valid return nothing, or an
+     * object with new arguments to use in the actual function.
+     */
+    protected invalidateMove(
+        player: Player,
+        tile: Tile,
+    ): void | string | WizardMoveArgs {
+        // <<-- Creer-Merge: invalidate-move -->>
+
+        // Check all the arguments for move here and try to
+        // return a string explaining why the input is wrong.
+        // If you need to change an argument for the real function, then
+        // changing its value in this scope is enough.
+        return undefined; // means nothing could be found that was ivalid.
+
+        // <<-- /Creer-Merge: invalidate-move -->>
+    }
+
+    /**
+     * Moves this Wizard from its current Tile to another empty Tile.
+     *
+     * @param player - The player that called this.
+     * @param tile - The Tile this Wizard should move to.
+     * @returns True if it moved, false otherwise.
+     */
+    protected async move(player: Player, tile: Tile): Promise<boolean> {
+        // <<-- Creer-Merge: move -->>
+
+        // Add logic here for move.
+
+        // TODO: replace this with actual logic
+        return false;
+
+        // <<-- /Creer-Merge: move -->>
+    }
 
     // <<-- Creer-Merge: protected-private-functions -->>
 

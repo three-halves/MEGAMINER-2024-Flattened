@@ -66,6 +66,16 @@ public class Wizard extends GameObject {
     public int health;
 
     /**
+     * The spell this wizard just casted. Undefined if no spell was cast.
+     */
+    public String lastSpell;
+
+    /**
+     * The tile this wizard just cast to. Undefined if no tile was targeted.
+     */
+    public Tile lastTargetTile;
+
+    /**
      * How much movement the wizard has left.
      */
     public int movementLeft;

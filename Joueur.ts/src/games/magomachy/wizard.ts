@@ -60,6 +60,16 @@ export class Wizard extends GameObject {
     public readonly health!: number;
 
     /**
+     * The spell this wizard just casted. Undefined if no spell was cast.
+     */
+    public readonly lastSpell!: string;
+
+    /**
+     * The tile this wizard just cast to. Undefined if no tile was targeted.
+     */
+    public readonly lastTargetTile!: Tile | undefined;
+
+    /**
      * How much movement the wizard has left.
      */
     public readonly movementLeft!: number;

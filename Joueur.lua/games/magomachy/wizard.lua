@@ -37,6 +37,10 @@ function Wizard:init(...)
     self.hasCast = false
     --- The amount of health this player has.
     self.health = 0
+    --- The spell this wizard just casted. Undefined if no spell was cast.
+    self.lastSpell = ""
+    --- The tile this wizard just cast to. Undefined if no tile was targeted.
+    self.lastTargetTile = nil
     --- How much movement the wizard has left.
     self.movementLeft = 0
     --- The Player that owns and can control this Unit, or nil if the Unit is neutral.

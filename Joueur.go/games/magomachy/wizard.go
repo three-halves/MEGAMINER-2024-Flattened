@@ -33,6 +33,18 @@ type Wizard interface {
 	// Health is the amount of health this player has.
 	Health() int64
 
+	// LastSpell is the spell this wizard just casted. Undefined if no
+	// spell was cast.
+	//
+	// Value can be returned as a nil pointer.
+	LastSpell() string
+
+	// LastTargetTile is the tile this wizard just cast to. Undefined
+	// if no tile was targeted.
+	//
+	// Value can be returned as a nil pointer.
+	LastTargetTile() Tile
+
 	// MovementLeft is how much movement the wizard has left.
 	MovementLeft() int64
 

@@ -96,6 +96,12 @@ Wizard:
     tile:
       type: Tile?
       description: The Tile that this Wizard is on.
+    lastSpell:
+      type: string?
+      description: The spell this wizard just casted. Undefined if no spell was cast.
+    lastTargetTile:
+      type: Tile?
+      description: The tile this wizard just cast to. Undefined if no tile was targeted.
   functions:
     cast:
       description: Casts a spell on a Tile in range.
