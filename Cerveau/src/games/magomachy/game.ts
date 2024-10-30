@@ -5,6 +5,7 @@ import { GameObject } from "./game-object";
 import { MagomachyGameSettingsManager } from "./game-settings";
 import { Player } from "./player";
 import { Tile } from "./tile";
+import { Mutable } from "@cadre/ts-utils";
 
 // <<-- Creer-Merge: imports -->>
 // any additional imports you want can be placed here safely between creer runs
@@ -107,7 +108,7 @@ export class MagomachyGame extends BaseClasses.Game {
         // init map for testing
         for (let i = 0; i < this.mapWidth * this.mapHeight; i++) {
             const x = i % this.mapWidth;
-            const y = floor(i / this.mapWidth);
+            const y = Math.floor(i / this.mapWidth);
 
             // this.manager.create.tile({});
 
@@ -125,7 +126,7 @@ export class MagomachyGame extends BaseClasses.Game {
             owner: this.players[0],
             health: 10,
             aether: 10,
-            tile: this.getTile(1, floor(this.mapHeight) / 2),
+            tile: this.getTile(1, Math.floor(this.mapHeight) / 2),
             specialty: "aggressive",
             speed: 1
         });
@@ -136,7 +137,7 @@ export class MagomachyGame extends BaseClasses.Game {
             owner: this.players[1],
             health: 10,
             aether: 10,
-            tile: this.getTile(this.mapWidth - 2, floor(this.mapHeight) / 2),
+            tile: this.getTile(this.mapWidth - 2, Math.floor(this.mapHeight) / 2),
             specialty: "sustaining",
             speed: 1
         });

@@ -235,8 +235,8 @@ export class Wizard extends GameObject {
         // If f is positive or the slope is 1, we also update the other coordinate.
         // Since this function is being called outside the game class, we can't just tilemap this.
         // So we have to go case by case.
-        let vert = "North";
-        let horiz = "West";
+        let vert: "North" | "West" | "South" | "East"  = "North";
+        let horiz: "North" | "West" | "South" | "East" = "West";
         if (sy > 0) {
             vert = "South";
         }
@@ -248,14 +248,14 @@ export class Wizard extends GameObject {
         if (dy > dx) {
             let neighbor = current.getNeighbor(vert);
             if (isDiag || f > 0) {
-                return neighbor.getNeighbor(horiz);
+                return neighbor?.getNeighbor(horiz);
             }
             return neighbor;
         }
         else {
             let neighbor = current.getNeighbor(horiz);
             if (isDiag || f > 0) {
-                return neighbor.getNeighbor(vert);
+                return neighbor?.getNeighbor(vert);
             }
             return neighbor;
         }
@@ -473,8 +473,8 @@ export class Wizard extends GameObject {
                 // Until that is done, DO NOT UNCOMMENT THIS CODE!
                 // ^^^ Hello, it's me, I'm doing it anyway, sorry
 
-                tile.wizard.speed -= 1;
-                tile.wizard.health -= 1;
+                tile.wizard!.speed -= 1;
+                tile.wizard!.health -= 1;
                 this.aether -= 3;
                 break;
             }
@@ -522,6 +522,7 @@ export class Wizard extends GameObject {
                     lifetime: 0,
                     tile: tile,
                 })
+                break;
             }
             default: { 
                 throw new Error("invalid spell cast");
@@ -545,20 +546,6 @@ export class Wizard extends GameObject {
      * human players why it is invalid. If it is valid return nothing, or an
      * object with new arguments to use in the actual function.
      */
-    protected invalidateMove(
-        player: Player,
-        tile: Tile,
-    ): void | string | WizardMoveArgs {
-        // <<-- Creer-Merge: invalidate-move -->>
-
-        // Check all the arguments for move here and try to
-        // return a string explaining why the input is wrong.
-        // If you need to change an argument for the real function, then
-        // changing its value in this scope is enough.
-        return undefined; // means nothing could be found that was ivalid.
-
-        // <<-- /Creer-Merge: invalidate-move -->>
-    }
 
     /**
      * Moves this Wizard from its current Tile to another empty Tile.
@@ -569,12 +556,16 @@ export class Wizard extends GameObject {
      */
     protected async move(player: Player, tile: Tile): Promise<boolean> {
         // <<-- Creer-Merge: move -->>
+        if (!this.tile) {
+            throw new Error(`${this} has no Tile to move from!']`);
+        }
 
-        // Add logic here for move.
+        this.tile.wizard = undefined;
+        this.tile = tile;
+        tile.wizard = this;
+        // TODO: UPDATE VARIABLE STATING HOW MUCH MOVEMENT LEFT
 
-        // TODO: replace this with actual logic
-        return false;
-
+        return true;
         // <<-- /Creer-Merge: move -->>
     }
 
