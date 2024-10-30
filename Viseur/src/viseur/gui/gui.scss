@@ -62,6 +62,9 @@
 
     & .renderer-wrapper {
         position: absolute;
+        background-image: url(../../games/magomachy/resources/bg.png);
+        background-repeat: no-repeat;
+        background-size: cover;
     }
 
     &.gamelog-loaded {

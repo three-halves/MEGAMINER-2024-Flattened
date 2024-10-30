@@ -71,6 +71,17 @@ export class Pane extends BasePane<GameState, PlayerState> {
         const stats = super.getGameStats(state);
 
         // <<-- Creer-Merge: game-stats -->>
+        stats.push({
+            title: "gold",
+            icon: "usd",
+            get: (player) => player.gold,
+        });
+
+        stats.push({
+            title: "infamy",
+            icon: "user-secret",
+            get: (player) => player.infamy,
+        });
         // <<-- /Creer-Merge: game-stats -->>
 
         return stats;

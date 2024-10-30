@@ -5,8 +5,11 @@ export const GameResources = createResources("Magomachy", {
     // <<-- Creer-Merge: resources -->>
     test: load("test.png"), // load files like this,
 
+    bg: load("bg.png"),
+
     grass: load("grass.png"),
     wall: load("wall.png"),
+    wall2: load("wall2.png"),
 
     wiz_ag_n: load("sprites-ag/face-north.png"),
     wiz_ag_e: load("sprites-ag/face-east.png"),

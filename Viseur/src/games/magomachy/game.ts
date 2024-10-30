@@ -128,10 +128,14 @@ export class Game extends BaseGame {
 
         // this is an example of how to render a sprite. You'll probably want
         // to remove this code and the test sprite once actually doing things
-        // this.resources.test.newSprite({
+        // const bg = this.resources.bg.newSprite({
         //     container: this.layers.background,
-        //     position: {x: 5, y: 5},
+        //     position: { x: -1, y: 0 },
         // });
+
+        // bg.anchor.set(0.5);
+        // bg.width = 3;
+        // bg.height = 3;
 
         // this shows you how to render text that scales to the game
         // NOTE: height of 1 means 1 "unit", so probably 1 tile in height

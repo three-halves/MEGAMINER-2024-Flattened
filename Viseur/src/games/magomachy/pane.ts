@@ -91,6 +91,17 @@ export class Pane extends BasePane<GameState, PlayerState> {
 
         // <<-- Creer-Merge: player-stats -->>
         // add stats for players to show up here
+        stats.push({
+            title: "health",
+            icon: "heart",
+            get: (player) => player.wizard.health,
+        });
+
+        stats.push({
+            title: "aether",
+            icon: "user-secret",
+            get: (player) => player.wizard.aether,
+        });
         // <<-- /Creer-Merge: player-stats -->>
 
         return stats;

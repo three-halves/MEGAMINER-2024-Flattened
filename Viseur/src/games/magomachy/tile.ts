@@ -33,6 +33,7 @@ export class Tile extends makeRenderable(GameObject, SHOULD_RENDER) {
     // You can add additional member variables here
     public grass: PIXI.Sprite;
     public wall: PIXI.Sprite;
+    public wall2: PIXI.Sprite;
     public type: "floor" | "wall";
     // <<-- /Creer-Merge: variables -->>
 
@@ -55,6 +56,7 @@ export class Tile extends makeRenderable(GameObject, SHOULD_RENDER) {
         const hide = { visible: false };
         this.grass = this.addSprite.grass(hide);
         this.wall = this.addSprite.wall(hide);
+        this.wall2 = this.addSprite.wall2(hide);
 
         this.container.position.set(state.x, state.y);
         this.type = state.type;
@@ -88,7 +90,11 @@ export class Tile extends makeRenderable(GameObject, SHOULD_RENDER) {
         // <<-- Creer-Merge: render -->>
         // render where the Tile is
         this.grass.visible = this.type === "floor";
-        this.wall.visible = this.type === "wall";
+        if (this.type === "wall") {
+            if (this.current?.tileSouth?.type !== "wall")
+                this.wall.visible = true;
+            else this.wall2.visible = true;
+        }
 
         // <<-- /Creer-Merge: render -->>
     }

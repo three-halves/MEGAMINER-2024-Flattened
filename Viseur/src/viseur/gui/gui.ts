@@ -308,6 +308,8 @@ export class GUI extends BaseElement {
             height: newHeight,
             remainingHeight,
         });
+
+        
     }
 
     /**

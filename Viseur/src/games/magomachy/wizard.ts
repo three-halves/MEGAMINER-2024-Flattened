@@ -128,9 +128,18 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
             ease(current.tile.y, next.tile.y, dt),
         );
 
-        // this.container.position.set(current.tile.x, current.tile.y);
-        // sprite.x = current.tile.x;
-        // sprite.y = current.tile.y;
+        if (next.health < current.health) {
+            sprite.anchor.set(0.5);
+            sprite.tint = ease(0xff1010, 0xffffff, dt, "cubicInOut");
+            sprite.angle = ease(
+                (Math.random() + 0.5) * 20 - 15,
+                0,
+                dt,
+                "cubicInOut",
+            );
+        }
+
+        sprite.anchor.set(0.0);
 
         // <<-- /Creer-Merge: render -->>
     }
