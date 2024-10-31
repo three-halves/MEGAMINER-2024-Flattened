@@ -120,7 +120,9 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         // render where the Wizard is
         // eslint-disable-next-line no-console
         // eslint-disable-next-line no-console
-        const dir = this.dirAsString(current.direction);
+
+        // render position
+        const dir = this.dirAsString(next.direction);
         const sprite = this.sprites[this.type][dir];
         sprite.visible = true;
         this.container.position.set(
@@ -128,6 +130,15 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
             ease(current.tile.y, next.tile.y, dt),
         );
 
+        // try to render spell
+        switch (next.lastSpell) {
+            case undefined:
+                break;
+            case "Punch":
+                break;
+        }
+
+        // render hurn anim
         if (next.health < current.health) {
             sprite.anchor.set(0.5);
             sprite.tint = ease(0xff1010, 0xffffff, dt, "cubicInOut");

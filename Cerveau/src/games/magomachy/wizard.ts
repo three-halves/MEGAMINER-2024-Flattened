@@ -188,28 +188,6 @@ export class Wizard extends GameObject {
         }
     }
 
-    /**
-     * Moves this Wizard from its current Tile to another empty Tile.
-     *
-     * @param player - The player that called this.
-     * @param tile - The Tile this Wizard should move to.
-     * @returns True if it moved, false otherwise.
-     */
-    protected async move(player: Player, tile: Tile): Promise<boolean> {
-        if (!this.tile) {
-            throw new Error(`${this} has no Tile to move from!']`);
-        }
-
-        this.setDirection(tile);
-
-        this.tile.wizard = undefined;
-        this.tile = tile;
-        tile.wizard = this;
-        // TODO: UPDATE VARIABLE STATING HOW MUCH MOVEMENT LEFT
-
-        return true;
-    }
-
     public bressenham(x0: number, y0: number, x1: number, y1: number, current: Tile): Tile | undefined {
         // First we describe the slope of the line
         let dx = Math.abs(x1 - x0);
@@ -593,6 +571,8 @@ export class Wizard extends GameObject {
         if (!this.tile) {
             throw new Error(`${this} has no Tile to move from!']`);
         }
+
+        this.setDirection(tile);
 
         this.tile.wizard = undefined;
         this.tile = tile;
