@@ -44,7 +44,12 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
 
         // <<-- Creer-Merge: before-turn -->>
         // add logic here for before the current player's turn starts
-        //this.updateArrays();
+        
+        // Give Movement
+        this.game.currentPlayer.wizard!.movementLeft = this.game.currentPlayer.wizard!.speed;
+
+        // Give Spells
+        this.game.currentPlayer.wizard!.hasCast = false;
         // <<-- /Creer-Merge: before-turn -->>
     }
 
@@ -59,9 +64,21 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
         // <<-- Creer-Merge: after-turn -->>
         // add logic here after the current player's turn starts
         // This is where speed would be restored after Calming Blast
-        //this.updateArrays();
-        //this.updateUnits();
-        //this.updateOtherStuff();
+        
+        // Restore speed
+        this.game.currentPlayer.wizard!.speed = 2;
+
+        // Now we have to update items
+        for (let i = 0; i < this.game.mapWidth * this.game.mapHeight; i++) {
+            if (this.game.tiles[i].object){
+                this.game.tiles[i].object!.lifetime += 1;
+                if (this.game.tiles[i].object!.max_life && this.game.tiles[i].object.lifetime > this.game.tiles[i].object.max_life) {
+                    // TODO: DELETE THE ITEM
+                    this.game.tiles[i].object = undefined;
+                }
+            }
+        }
+        
         // <<-- /Creer-Merge: after-turn -->>
     }
 
