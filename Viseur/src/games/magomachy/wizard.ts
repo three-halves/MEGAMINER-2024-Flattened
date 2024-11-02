@@ -1,6 +1,6 @@
 // This is a class to represent the Wizard object in the game.
 // If you want to render it in the game do so here.
-import { ease, Immutable } from "src/utils";
+import { ease, Immutable, PixiSpriteOptions } from "src/utils";
 import { Viseur } from "src/viseur";
 import { makeRenderable } from "src/viseur/game";
 import { GameObject } from "./game-object";
@@ -38,8 +38,17 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
     // shorted version of wizard's specialty
     public typeSuffix: string;
 
+    // used so the spell anim plays only once. not sure why this is needed
+    public spellAnimatedThisTurn: boolean;
+
     // a dict of dicts representing all wizard sprites. Outermost dict
-    public sprites: { [type: string]: { [direction: string]: PIXI.Sprite } };
+    public wizSprites: {
+        [type: string]: { [direction: string]: PIXI.Sprite };
+    };
+
+    public spellSprites: {
+        [spell: string]: PIXI.Sprite;
+    };
     // <<-- /Creer-Merge: variables -->>
 
     /**
@@ -61,8 +70,10 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         this.type = state.specialty;
         this.typeSuffix = state.specialty.substring(0, 2);
 
+        this.spellAnimatedThisTurn = false;
+
         const hide = { visible: false };
-        this.sprites = {
+        this.wizSprites = {
             aggressive: {
                 north: this.addSprite.wiz_ag_n(hide),
                 east: this.addSprite.wiz_ag_e(hide),
@@ -87,6 +98,10 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                 south: this.addSprite.wiz_st_s(hide),
                 west: this.addSprite.wiz_st_w(hide),
             },
+        };
+
+        this.spellSprites = {
+            Punch: this.addSprite.test(hide),
         };
 
         // <<-- /Creer-Merge: constructor -->>
@@ -123,7 +138,7 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
 
         // render position
         const dir = this.dirAsString(next.direction);
-        const sprite = this.sprites[this.type][dir];
+        const sprite = this.wizSprites[this.type][dir];
         sprite.visible = true;
         this.container.position.set(
             ease(current.tile.x, next.tile.x, dt),
@@ -131,10 +146,21 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         );
 
         // try to render spell
+        for (const s in this.spellSprites) {
+            this.spellSprites[s].visible = false;
+        }
+        const spellSprite = this.spellSprites[next.lastSpell];
+
         switch (next.lastSpell) {
             case undefined:
                 break;
             case "Punch":
+                spellSprite.visible = true;
+                spellSprite.position.set(
+                    ease(0, next.lastTargetTile.x - next.tile.x, dt),
+                    ease(0, next.lastTargetTile.y - next.tile.y, dt),
+                );
+                this.spellAnimatedThisTurn = true;
                 break;
         }
 
@@ -204,6 +230,7 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
 
         // <<-- Creer-Merge: state-updated -->>
         // update the Wizard based off its states
+        this.spellAnimatedThisTurn = false;
         // <<-- /Creer-Merge: state-updated -->>
     }
 
