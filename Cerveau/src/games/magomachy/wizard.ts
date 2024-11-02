@@ -576,7 +576,7 @@ export class Wizard extends GameObject {
         this.tile.wizard = undefined;
         this.tile = tile;
         tile.wizard = this;
-        // TODO: UPDATE VARIABLE STATING HOW MUCH MOVEMENT LEFT
+        this.movementLeft -= 1;
 
         return true;
         // <<-- /Creer-Merge: move -->>
