@@ -107,6 +107,11 @@ export class Wizard extends GameObject {
     // NOTE: They will not be sent to the AIs, those must be defined
     // in the creer file.
 
+    /**
+     * Where the wizard has a teleport rune out, undefined otherwise. ADD TO CREER
+     */
+    public teleportTile?: Tile;
+
     // <<-- /Creer-Merge: attributes -->>
 
     /**
@@ -135,58 +140,6 @@ export class Wizard extends GameObject {
     // Any public functions can go here for other things in the game to use.
     // NOTE: Client AIs cannot call these functions, those must be defined
     // in the creer file.
-
-    // SIGH
-    // I'm gonna store the spells here initially, but they will
-    // have to be copied into the right place after the creer
-    // program is run again.
-
-
-
-    /**
-     * Invalidation function for move. Try to find a reason why the passed in
-     * parameters are invalid, and return a human readable string telling them
-     * why it is invalid.
-     * 
-     * @param player: The player that called this.
-     * @param tile: The Tile that this Wizard should move to.
-     * @returns If the arguments are invalid, return a string explainig to
-     * human players why it is invalid. If it is valid return nothing, or an
-     * object with new arguments to use in the actual function.
-     */
-    protected invalidateMove(
-        player: Player,
-        tile: Tile,
-    ): void | string | WizardMoveArgs {
-        // COMMENT MERGE CREER HERE
-
-        const reason = this.invalidate(player);
-        if (reason) {
-            return reason;
-        }
-
-        // TODO: add variables tracking whether unit moved/cast spell or not each turn
-        if (!this.tile) {
-            throw new Error('${this} has no Tile!');
-        }
-
-        // Calculate distance of target tile
-        const dx = this.tile.x - tile.x;
-        const dy = this.tile.y - tile.y;
-        const distSq = dx * dx + dy * dy;
-
-        if (distSq > this.speed ** 2) {
-            return `${tile} is too far away to reach this turn!`;
-        }
-
-        if (tile.type === "wall") {
-            return `${this} can't phase through walls! (Yet...)`;
-        }
-
-        if (tile.wizard) {
-            return `${tile} is occupied by a wizard!`;
-        }
-    }
 
     public bressenham(x0: number, y0: number, x1: number, y1: number, current: Tile): Tile | undefined {
         // First we describe the slope of the line
@@ -517,13 +470,25 @@ export class Wizard extends GameObject {
                 break;
             }
             case "Teleport Rune": {
-                this.lastSpell = "Teleport Rune";
                 this.lastTargetTile = tile;
-                tile.object = this.manager.create.item({
-                    form: "teleport rune",
-                    lifetime: 0,
-                    tile: tile,
-                })
+                if(!this.teleport){
+                    this.lastSpell = "Teleport Rune Place";
+                    tile.object = this.manager.create.item({
+                        form: "teleport rune",
+                        lifetime: 0,
+                        tile: tile,
+                    })
+                    this.teleport = tile;
+                }
+                else {
+                    this.lastSpell = "Teleport Rune Use";
+                    this.tile!.wizard = undefined;
+                    this.tile = teleport!;
+                    this.tile!.wizard = this;
+                    this.teleport.object = undefined;
+                    this.teleport = undefined;
+                    // ACTUALLY DELETE THE FREAKING ITEM TOO
+                }
                 break;
             }
             case "Charge Rune": {
@@ -558,6 +523,40 @@ export class Wizard extends GameObject {
      * human players why it is invalid. If it is valid return nothing, or an
      * object with new arguments to use in the actual function.
      */
+    protected invalidateMove(
+        player: Player,
+        tile: Tile,
+    ): void | string | WizardMoveArgs {
+        // <<-- Creer-Merge: invalidate-move -->>
+
+        const reason = this.invalidate(player);
+        if (reason) {
+            return reason;
+        }
+
+        // TODO: add variables tracking whether unit moved/cast spell or not each turn
+        if (!this.tile) {
+            throw new Error('${this} has no Tile!');
+        }
+
+        // Calculate distance of target tile
+        const dx = this.tile.x - tile.x;
+        const dy = this.tile.y - tile.y;
+        const distSq = dx * dx + dy * dy;
+
+        if (distSq > this.speed ** 2) {
+            return `${tile} is too far away to reach this turn!`;
+        }
+
+        if (tile.type === "wall") {
+            return `${this} can't phase through walls! (Yet...)`;
+        }
+
+        if (tile.wizard) {
+            return `${tile} is occupied by a wizard!`;
+        }
+        // <<-- /Creer-Merge: invalidate-move -->>
+    }
 
     /**
      * Moves this Wizard from its current Tile to another empty Tile.
@@ -632,6 +631,53 @@ export class Wizard extends GameObject {
                 this.direction = 3;
             }
         }
+        return true;
+    }
+
+    /**
+     *
+     * Use an item on a tile.
+     * 
+     * @param item - the target item
+     * @returns True if the item was used, false otherwise.
+     */
+    private useItem(
+        item: item,
+    ): boolean {
+        switch(item.form!) {
+            case "health flask": {
+                this.health += 5;
+                break;
+            }
+            case "aether flask": {
+                this.aether += 5;
+                break;
+            }
+            case "explosion rune": {
+                this.health -= 4;
+                break;
+            }
+            case "heal rune": {
+                this.health += 5;
+                break;
+            }
+            case "teleport rune": {
+                // Do nothing. This is handled in cast.
+                break;
+            }
+            case "charge rune": {
+                this.health -= item.lifetime;
+                break;
+            }
+            default: {
+                throw new Error(`${this} cannot use item!']`);
+                // These are probably useless statement but ehhhh
+                return false;
+                break;
+            }
+        }
+        // DELETE THE ITEM
+        item.tile.object = undefined;
         return true;
     }
     // <<-- /Creer-Merge: protected-private-functions -->>

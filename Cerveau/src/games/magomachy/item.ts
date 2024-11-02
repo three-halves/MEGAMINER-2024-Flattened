@@ -32,6 +32,11 @@ export class Item extends GameObject {
     // NOTE: They will not be sent to the AIs, those must be defined
     // in the creer file.
 
+    /**
+     * How long the item is allowed to last for. Ideally, should be in YAML.
+     */
+    public max_life?: number;
+
     // <<-- /Creer-Merge: attributes -->>
 
     /**

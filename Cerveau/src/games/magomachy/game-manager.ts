@@ -44,7 +44,13 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
 
         // <<-- Creer-Merge: before-turn -->>
         // add logic here for before the current player's turn starts
-        //this.updateArrays();
+        if(this.game.currentPlayer.Wizard) {
+            // Give Movement
+            this.game.currentPlayer.wizard!.movementLeft = this.game.currentPlayer.wizard!.speed;
+
+            // Give Spells
+            this.game.currentPlayer.wizard!.hasCast = false;
+        }
         // <<-- /Creer-Merge: before-turn -->>
     }
 
@@ -59,9 +65,45 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
         // <<-- Creer-Merge: after-turn -->>
         // add logic here after the current player's turn starts
         // This is where speed would be restored after Calming Blast
-        //this.updateArrays();
-        //this.updateUnits();
-        //this.updateOtherStuff();
+        
+        // Restore speed
+        if (this.game.currentPlayer.wizard) {
+            this.game.currentPlayer.wizard!.speed = 2;
+        }
+        else {
+            if(!this.game.players[0].wizard && !this.game.players[1].wizard && this.game.players[0].wizardChoice && this.game.players[1].wizardChoice) {
+                this.game.players[0].wizard = this.manager.create.wizard({
+                    owner: this.game.players[0],
+                    health: 10,
+                    aether: 10,
+                    tile: this.game.getTile(1, Math.floor(this.game.mapHeight) / 2),
+                    specialty: this.game.players[0].wizardChoice!,
+                    speed: 2
+                });
+                this.game.players[0].wizard.tile!.wizard = this.players[0].wizard;
+                
+                this.game.players[1].wizard = this.manager.create.wizard({
+                    owner: this.game.players[1],
+                    health: 10,
+                    aether: 10,
+                    tile: this.game.getTile(this.mapWidth - 2, Math.floor(this.game.mapHeight) / 2),
+                    specialty: this.game.players[1].wizardChoice!,
+                    speed: 2
+                });
+                this.game.players[1].wizard.tile!.wizard = this.players[1].wizard;
+            }
+        }
+
+        // Now we have to update items
+        for (let i = 0; i < this.game.mapWidth * this.game.mapHeight; i++) {
+            if (this.game.tiles[i].object){
+                this.game.tiles[i].object!.lifetime += 1;
+                if (this.game.tiles[i].object!.max_life && this.game.tiles[i].object.lifetime > this.game.tiles[i].object.max_life) {
+                    this.game.tiles[i].object = undefined;
+                }
+            }
+        }
+        
         // <<-- /Creer-Merge: after-turn -->>
     }
 
@@ -78,11 +120,18 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
 
         // <<-- Creer-Merge: primary-win-conditions -->>
         // Add logic here checking for the primary win condition(s)
+
+        // I sure hope currentPlayer hasnt been updated yet
+        if (!this.game.currentPlayer.wizard) {
+            this.declareWinner("Your opponent didn't show up to the duel!", this.game.currentPlayer.opponent);
+            this.declareLoser("You didn't pick a wizard in time for the duel!", this.game.currentPlayer);
+            return true;
+        }
         const killedOff = this.game.players.filter(
-            (p) => p.wizard.health <= 0 || p.wizard.aether <= 0)
+            (p) => p.wizard.health <= 0 || p.wizard.aether <= 0);
 
         if (killedOff.length == 2) {
-            this.secondaryWinConditions("Both wizards have died!")
+            this.secondaryWinConditions("Both wizards have died!");
         }
         else if (killedOff.length == 1) {
             const loser = killedOff[0];
