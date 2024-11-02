@@ -143,17 +143,17 @@ export class Wizard extends GameObject {
 
     public bressenham(x0: number, y0: number, x1: number, y1: number, current: Tile): Tile | undefined {
         // First we describe the slope of the line
-        let dx = Math.abs(x1 - x0);
+        let dx = x1 - x0;
         let sx = x0 < x1 ? 1 : -1;
 
-        let dy = Math.abs(y1 - y0);
+        let dy = y1 - y0;
         let sy = y0 < y1 ? 1 : -1;
 
         let cx = dx > dy ? 1 : 0.5
         let cy = dx > dy ? 0.5 : 1
 
         // If the line is diagonal, we have to note it
-        let isDiag = (dx === dy)
+        let isDiag = (Math.abs(dx) === Math.abs(dy))
 
         // We also need the y-intercept
         // Thankfully TypeScript stores all numbers as floats by default
@@ -178,7 +178,7 @@ export class Wizard extends GameObject {
             horiz = "East";
         }
 
-        if (dy > dx) {
+        if (Math.abs(dy) > Math.abs(dx)) {
             let neighbor = current.getNeighbor(vert);
             if (isDiag || f > 0) {
                 return neighbor?.getNeighbor(horiz);
