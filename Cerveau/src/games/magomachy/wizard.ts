@@ -112,6 +112,16 @@ export class Wizard extends GameObject {
      */
     public teleportTile?: Tile;
 
+    /**
+     * Max health of wizard.
+     */
+    public maxHealth!: number;
+
+    /**
+     * Max aether of wizard.
+     */
+    public maxAether!: number;
+
     // <<-- /Creer-Merge: attributes -->>
 
     /**
@@ -132,6 +142,8 @@ export class Wizard extends GameObject {
 
         // <<-- Creer-Merge: constructor -->>
         // setup any thing you need here
+        this.maxAether = this.aether;
+        this.maxHealth = this.health;
         // <<-- /Creer-Merge: constructor -->>
     }
 
@@ -542,7 +554,7 @@ export class Wizard extends GameObject {
                 this.lastSpell = "Rock Lob";
                 this.lastTargetTile = tile;
                 tile.wizard!.health -= 2;
-                this.aether -= 2
+                this.aether -= 2;
                 break;
             }
             case "Force Push": {
@@ -659,6 +671,9 @@ export class Wizard extends GameObject {
                 }
                 else {
                     this.lastSpell = "Teleport Rune Use";
+                    if (this.teleportTile!.wizard) {
+                        this.teleportTile!.wizard!.health = 0;
+                    }
                     this.tile!.wizard = undefined;
                     this.tile = this.teleportTile!;
                     this.tile!.wizard = this;
@@ -869,6 +884,13 @@ export class Wizard extends GameObject {
                 return false;
                 break;
             }
+        }
+        // remove overhealing
+        if (this.health > this.maxHealth) {
+            this.health = this.maxHealth;
+        }
+        if (this.aether > this.maxAether) {
+            this.aether = this.maxAether;
         }
         // DELETE THE ITEM
         item.tile.object = undefined;
