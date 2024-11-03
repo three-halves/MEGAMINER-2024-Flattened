@@ -101,7 +101,7 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         };
 
         this.spellSprites = {
-            Punch: this.addSprite.test(hide),
+            Punch: this.addSprite.spell_punch(hide),
         };
 
         // <<-- /Creer-Merge: constructor -->>
@@ -141,7 +141,7 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         const sprite = this.wizSprites[this.type][dir];
         sprite.visible = true;
         this.container.position.set(
-            ease(current.tile.x, next.tile.x, dt),
+            ease(current.tile.x, next.tile.x, dt, "linear"),
             ease(current.tile.y, next.tile.y, dt),
         );
 

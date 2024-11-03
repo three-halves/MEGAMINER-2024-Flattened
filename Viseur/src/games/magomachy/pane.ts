@@ -99,7 +99,7 @@ export class Pane extends BasePane<GameState, PlayerState> {
 
         stats.push({
             title: "aether",
-            icon: "user-secret",
+            icon: "star",
             get: (player) => player.wizard.aether,
         });
         // <<-- /Creer-Merge: player-stats -->>
