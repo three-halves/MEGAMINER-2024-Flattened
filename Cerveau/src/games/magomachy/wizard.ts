@@ -361,7 +361,7 @@ export class Wizard extends GameObject {
                     nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, prevTile);
                 }
                 if (prevTile.wizard) {
-                    // Collect item here
+                    prevTile.wizard!.useItem(prevTile.object);
                 }
                 break;
             }
@@ -578,6 +578,10 @@ export class Wizard extends GameObject {
         tile.wizard = this;
         this.movementLeft -= 1;
 
+        if(this.tile!.object) {
+            this.useItem(this.tile!.object);
+        }
+
         return true;
         // <<-- /Creer-Merge: move -->>
     }
@@ -666,7 +670,7 @@ export class Wizard extends GameObject {
                 break;
             }
             case "charge rune": {
-                this.health -= item.lifetime;
+                //this.health -= item.lifetime;
                 break;
             }
             default: {
