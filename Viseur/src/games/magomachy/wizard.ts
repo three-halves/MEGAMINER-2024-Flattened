@@ -141,25 +141,34 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         for (const s in this.spellSprites) {
             this.spellSprites[s].visible = false;
         }
-        const spellSprite = this.spellSprites[next.lastSpell];
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        if (delta.data?.run?.functionName === "cast" && Number(current.id) - 102 === Number(delta.data.player.id)) {
-            switch (next.lastSpell) {
-                case undefined:
-                    break;
-                case "Punch":
-                    spellSprite.visible = true;
-                    spellSprite.position.set(
-                        ease(0, next.lastTargetTile.x - next.tile.x, dt),
-                        ease(0, next.lastTargetTile.y - next.tile.y, dt),
-                    );
-                    break;
+        const run = delta.data?.run;
+
+        if (run !== undefined && current.id === run.caller?.id) {
+            const spellSprite = this.spellSprites[run.args.spellName];
+            switch(run.functionName) {
+                case "cast":
+                    const targX = Math.floor((run.args.tile.id - 2) / this.game.current.mapWidth);
+                    const targY = (run.args.tile.id - 2) % this.game.current.mapWidth; 
+                    switch (run.args.spellName) {
+                        case undefined:
+                            break;
+                        case "Punch":
+                            spellSprite.visible = true;
+                            spellSprite.position.set(
+                                ease(0, targX - next.tile.x, dt),
+                                ease(0, targY - next.tile.y, dt),
+                            );
+                            break;
+                    }
             }
         }
 
+
         // render hurn anim
-        if (next.health < current.health) {
+        if (delta.reversed?.gameObjects !== undefined && delta.reversed?.gameObjects[current.id] !== undefined && 
+            current.health < delta.reversed["gameObjects"][current.id]["health"]) {
             sprite.anchor.set(0.5);
             sprite.tint = ease(0xff1010, 0xffffff, dt, "cubicInOut");
             sprite.angle = ease(
