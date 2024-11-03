@@ -38,9 +38,6 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
     // shorted version of wizard's specialty
     public typeSuffix: string;
 
-    // used so the spell anim plays only once. not sure why this is needed
-    public spellAnimatedThisTurn: boolean;
-
     // a dict of dicts representing all wizard sprites. Outermost dict
     public wizSprites: {
         [type: string]: { [direction: string]: PIXI.Sprite };
@@ -69,8 +66,6 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
 
         this.type = state.specialty;
         this.typeSuffix = state.specialty.substring(0, 2);
-
-        this.spellAnimatedThisTurn = false;
 
         const hide = { visible: false };
         this.wizSprites = {
@@ -133,15 +128,12 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
 
         // <<-- Creer-Merge: render -->>
         // render where the Wizard is
-        // eslint-disable-next-line no-console
-        // eslint-disable-next-line no-console
-
         // render position
         const dir = this.dirAsString(next.direction);
         const sprite = this.wizSprites[this.type][dir];
         sprite.visible = true;
         this.container.position.set(
-            ease(current.tile.x, next.tile.x, dt, "linear"),
+            ease(current.tile.x, next.tile.x, dt),
             ease(current.tile.y, next.tile.y, dt),
         );
 
@@ -151,17 +143,19 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         }
         const spellSprite = this.spellSprites[next.lastSpell];
 
-        switch (next.lastSpell) {
-            case undefined:
-                break;
-            case "Punch":
-                spellSprite.visible = true;
-                spellSprite.position.set(
-                    ease(0, next.lastTargetTile.x - next.tile.x, dt),
-                    ease(0, next.lastTargetTile.y - next.tile.y, dt),
-                );
-                this.spellAnimatedThisTurn = true;
-                break;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        if (delta.data?.run?.functionName === "cast" && Number(current.id) - 102 === Number(delta.data.player.id)) {
+            switch (next.lastSpell) {
+                case undefined:
+                    break;
+                case "Punch":
+                    spellSprite.visible = true;
+                    spellSprite.position.set(
+                        ease(0, next.lastTargetTile.x - next.tile.x, dt),
+                        ease(0, next.lastTargetTile.y - next.tile.y, dt),
+                    );
+                    break;
+            }
         }
 
         // render hurn anim
@@ -230,7 +224,6 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
 
         // <<-- Creer-Merge: state-updated -->>
         // update the Wizard based off its states
-        this.spellAnimatedThisTurn = false;
         // <<-- /Creer-Merge: state-updated -->>
     }
 
