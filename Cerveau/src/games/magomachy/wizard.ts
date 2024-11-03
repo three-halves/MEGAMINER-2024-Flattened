@@ -251,6 +251,155 @@ export class Wizard extends GameObject {
                 }
                 break;
             }
+            case "Furious Telekenesis": {
+                if (player.wizard.specialty != "aggressive") {
+                    return `You do not have the knowledge to use that spell`;
+                }
+                if (!tile.object || tile.wizard) {
+                    return `You cannot through that!`;
+                }
+                break;
+            }
+            case "Thunderous Dash": {
+                if (player.wizard.specialty != "aggressive") {
+                    return `You do not have the knowledge to use that spell`
+                }
+                if (tile.wizard != this) {
+                    return `You can only use this on yourself!`;
+                }
+                break;
+            }
+            case "Rock Lob": {
+                if (player.wizard.specialty != "defensive") {
+                    return `You do not have the knowledge to use that spell`;
+                }
+                if (tile.wizard == this) {
+                    return `You are a very wise wizard, and you know that attacking yourself is dumb`;
+                }
+                if (!tile.wizard) {
+                    return `Curses! The enemy wizard isn\'t at ${tile}!`;
+                }
+                if (distSq != 2) {
+                    return `You are wise enough to know that the spell won't reach there`;
+                }
+                break;
+            }
+            case "Force Push": {
+                if (player.wizard.specialty != "defensive") {
+                    return `You do not have the knowledge to use that spell`;
+                }
+                if (tile.wizard == this) {
+                    return `How? like, How do you push yourself?`;
+                }
+                if (!tile.wizard) {
+                    return `You can't push what is not at ${tile}`;
+                }
+                break;
+            }
+            case "Stone Summon": {
+                if (player.wizard.specialty != "defensive") {
+                    return `You do not have the knowledge to use this spell`;
+                }
+                if (tile.object) {
+                    return `Two things cannot exist on the same spot, or VERY bad things can happen`;
+                }
+                if (tile.type == "wall") {
+                    return `You cannot place that on a wall`;
+                }
+                break;
+            }
+            case "Calming Blast": {
+                if (player.wizard.specialty != "sustaining") {
+                    return `You do not have the knowledge to use this`;
+                }
+                if (dx != 0 && dy != 0) {
+                    return `This only goes in a straight line`;
+                }
+                break;
+            }
+            case "Teleport": {
+                if (player.wizard.specialty != "sustaining") {
+                    return `You do not have the knowledge to use this`;
+                }
+                if (distSq > 3) {
+                    return `You can only reach so far with this spell`;
+                }
+                if (tile.wizard) {
+                    return `Two things cannot exist on the same spot, or VERY bad things can happen`;
+                }
+                if (tile.type == "wall") {
+                    return `The bounds of this challange are 2 dimensional, you cannot go above the walls`;
+                }
+                break;
+            }
+            case "Dispel Magic": {
+                if (player.wizard.specialty != "sustaining") {
+                    return `You do not have the knowledge to use this`;
+                }
+                if (distSq != 1) {
+                    return `Unfortunatly, that is not in range`;
+                }
+                if (!tile.object) {
+                    return `This spell needs an item for its components`;
+                }
+                if (tile.wizard) {
+                    return `Unfortunatly, wizards are not a proper component for this spell`
+                }
+                break;
+            }
+            case "Explosion Rune": {
+                if (player.wizard.specialty != "strategic") {
+                    return `You do not have the knowledge to use this`;
+                }
+                if (tile.type == `wall`) {
+                    return `The bounds of this challenge are 2 dimensional, you cannot go above the walls`
+                }
+                if (distSq != 1) {
+                    return `You cannot reach there`;
+                }
+                break;
+            }
+            case "Heal Rune" : {
+                if (player.wizard.specialty != "strategic") {
+                    return `You do not have the knowledge to use this`;
+                }
+                if (tile.type == `wall`) {
+                    return `The bounds of this challenge are 2 dimensional, you cannot go above the walls`
+                }
+                if (distSq != 1) {
+                    return `You cannot reach there`;
+                }
+
+                break;
+            }
+            case "Teleport Rune" : {
+                if (player.wizard.specialty != "strategic") {
+                    return `You do not have the knowledge to use this`;
+                }
+                if (player.wizard.teleportTile) {
+                    if (player.wizard.teleportTile.wizard) {
+                        return `Two things cannot exist on the same spot, or VERY bad things can happen`;
+                    }
+                }
+                else {
+                    if (tile.type == `wall`) {
+                        return `The bounds of this challenge are 2 dimensional, you cannot go above the walls`
+                    }
+                }
+                if (distSq != 1) {
+                    return `You cannot reach there`;
+                }
+                break;
+            }
+            case "Charge Rune" : {
+                if (player.wizard.specialty != "strategic") {
+                    return `You do not have the knowledge to use this`;
+                }
+                if (tile.type == `wall`) {
+                    return `The bounds of this challange are 2 dimensional, you cannot go above the walls`
+                }
+                break;
+            }
             default: {
                 throw new Error("I've never heard of that spell...");
             }
