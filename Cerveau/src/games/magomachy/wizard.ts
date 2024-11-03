@@ -447,9 +447,10 @@ export class Wizard extends GameObject {
                 if (tile.object) {
                     return 'There is already an item there!'
                 }
-                if (distSq > 1) {
-                        return `You cannot reach there`;
-                }
+                // No range check to make strategist more powerful
+                //if (distSq > 1) {
+                //        return `You cannot reach there`;
+                //}
                 break;
             }
             default: {
