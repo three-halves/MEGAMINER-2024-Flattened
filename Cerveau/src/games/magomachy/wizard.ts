@@ -417,6 +417,7 @@ export class Wizard extends GameObject {
                     form: "stone",
                     lifetime: 0,
                     tile: tile,
+                    max_life: 10,
                 });
                 break;
             }
