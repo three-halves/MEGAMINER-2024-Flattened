@@ -3,7 +3,7 @@ import { WizardCastArgs, WizardConstructorArgs, WizardMoveArgs } from "./";
 import { GameObject } from "./game-object";
 import { Player } from "./player";
 import { Tile } from "./tile";
-
+import { Item } from "./item"
 // <<-- Creer-Merge: imports -->>
 // any additional imports you want can be placed here safely between creer runs
 // <<-- /Creer-Merge: imports -->>
@@ -620,22 +620,22 @@ export class Wizard extends GameObject {
             }
             case "Teleport Rune": {
                 this.lastTargetTile = tile;
-                if(!this.teleport){
+                if(!this.teleportTile){
                     this.lastSpell = "Teleport Rune Place";
                     tile.object = this.manager.create.item({
                         form: "teleport rune",
                         lifetime: 0,
                         tile: tile,
                     })
-                    this.teleport = tile;
+                    this.teleportTile = tile;
                 }
                 else {
                     this.lastSpell = "Teleport Rune Use";
                     this.tile!.wizard = undefined;
-                    this.tile = teleport!;
+                    this.tile = this.teleportTile!;
                     this.tile!.wizard = this;
-                    this.teleport.object = undefined;
-                    this.teleport = undefined;
+                    this.teleportTile.object = undefined;
+                    this.teleportTile = undefined;
                     // ACTUALLY DELETE THE FREAKING ITEM TOO
                 }
                 break;
@@ -759,7 +759,7 @@ export class Wizard extends GameObject {
      * @returns True if direction set, false otherwise.
      */
     private setDirection(
-        tile: tile,
+        tile: Tile,
     ): boolean {
         const dx = tile.x - this.tile!.x;
         const dy = tile.y - this.tile!.y;
@@ -791,7 +791,7 @@ export class Wizard extends GameObject {
      * @returns True if the item was used, false otherwise.
      */
     private useItem(
-        item: item,
+        item: Item,
     ): boolean {
         switch(item.form!) {
             case "health flask": {
