@@ -99,6 +99,18 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
             if (this.game.tiles[i].object){
                 this.game.tiles[i].object!.lifetime += 1;
                 if (this.game.tiles[i].object!.max_life && this.game.tiles[i].object.lifetime > this.game.tiles[i].object.max_life) {
+                    // Here's where the charge rune gets handled
+                    if (this.games.tiles[i].object!.form === "charge rune") {
+                        let dx = 0;
+                        let dy = 0;
+                        for (let j = 0; j < this.game.mapWidth * this.game.mapHeight; j++) {
+                            dx = this.games.tiles[i].x - this.game.tiles[j].x;
+                            dy = this.games.tiles[i].y - this.game.tiles[j].y;
+                            if (this.game.tiles[j].wizard && (dx*dx + dy*dy) <= 16) {
+                                this.game.tiles[j].wizard!.health -= 5;
+                            }
+                        }
+                    }
                     this.game.tiles[i].object = undefined;
                 }
             }
