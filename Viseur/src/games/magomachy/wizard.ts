@@ -97,6 +97,7 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
 
         this.spellSprites = {
             Punch: this.addSprite.spell_punch(hide),
+            "Fire Slash": this.addSprite.spell_flame({visible: false, width: 3}),
         };
 
         // <<-- /Creer-Merge: constructor -->>
@@ -147,10 +148,15 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
 
         if (run !== undefined && current.id === run.caller?.id) {
             const spellSprite = this.spellSprites[run.args.spellName];
-            switch(run.functionName) {
+            switch (run.functionName) {
                 case "cast":
-                    const targX = Math.floor((run.args.tile.id - 2) / this.game.current.mapWidth);
-                    const targY = (run.args.tile.id - 2) % this.game.current.mapWidth; 
+                    // eslint-disable-next-line no-case-declarations
+                    const targX = Math.floor(
+                        (run.args.tile?.id - 2) / this.game.current.mapWidth,
+                    );
+                    // eslint-disable-next-line no-case-declarations
+                    const targY =
+                        (run.args.tile?.id - 2) % this.game.current.mapWidth;
                     switch (run.args.spellName) {
                         case undefined:
                             break;
@@ -161,14 +167,27 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                                 ease(0, targY - next.tile.y, dt),
                             );
                             break;
+                        case "Fire Slash":
+                            spellSprite.visible = true;
+                            spellSprite.anchor.set(0.5)
+                            spellSprite.angle = this.dirAsAngle(next.direction);
+                            spellSprite.anchor.set(0.0, 1.0)
+                            spellSprite.position.set(
+                                this.dirAsPosDelta(next.direction).x + 1,
+                                this.dirAsPosDelta(next.direction).y * 2
+                            );
+
                     }
             }
         }
 
-
         // render hurn anim
-        if (delta.reversed?.gameObjects !== undefined && delta.reversed?.gameObjects[current.id] !== undefined && 
-            current.health < delta.reversed["gameObjects"][current.id]["health"]) {
+        if (
+            delta.reversed?.gameObjects !== undefined &&
+            delta.reversed?.gameObjects[current.id] !== undefined &&
+            current.health <
+                delta.reversed["gameObjects"][current.id]["health"]
+        ) {
             sprite.anchor.set(0.5);
             sprite.tint = ease(0xff1010, 0xffffff, dt, "cubicInOut");
             sprite.angle = ease(
@@ -240,6 +259,15 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
     // You can add additional public functions here
     dirAsString(direction: number): string {
         return ["north", "east", "south", "west"][direction];
+    }
+
+    dirAsPosDelta(direction: number): {x: number, y: number} {
+        return [{x: 0, y: -1}, {x: 1, y: 0}, {x: 0, y: 1}, {x: -1, y: 0}][direction];
+    }
+
+    // assuming default sprite faces right
+    dirAsAngle(direction: number): number {
+        return [270, 0, 90, 180][direction];
     }
     // <<-- /Creer-Merge: public-functions -->>
 

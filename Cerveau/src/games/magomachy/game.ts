@@ -127,7 +127,7 @@ export class MagomachyGame extends BaseClasses.Game {
             health: 10,
             aether: 10,
             tile: this.getTile(1, Math.floor(this.mapHeight) / 2),
-            specialty: "aggressive",
+            specialty: "sustaining",
             speed: 1
         });
 
@@ -138,7 +138,7 @@ export class MagomachyGame extends BaseClasses.Game {
             health: 10,
             aether: 10,
             tile: this.getTile(this.mapWidth - 2, Math.floor(this.mapHeight) / 2),
-            specialty: "sustaining",
+            specialty: "aggressive",
             speed: 1
         });
 

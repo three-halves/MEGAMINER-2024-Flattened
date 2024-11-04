@@ -2,6 +2,7 @@
 
 from typing import List
 from joueur.base_ai import BaseAI
+import random
 
 # <<-- Creer-Merge: imports -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
 # you can add additional import(s) here
@@ -33,10 +34,12 @@ class AI(BaseAI):
         # <<-- /Creer-Merge: get-name -->>
 
     def start(self) -> None:
+        global validSpells
         """This is called once the game starts and your AI knows its player and game. You can initialize your AI here.
         """
         # <<-- Creer-Merge: start -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         # replace with your start logic
+        validSpells = ["Punch", "Fire Slash", "Furious Telekenesis", "Thunderous Dash"]
         # <<-- /Creer-Merge: start -->>
 
     def game_updated(self) -> None:
@@ -88,8 +91,9 @@ class AI(BaseAI):
         Returns:
             bool: Represents if you want to end your turn. True means end your turn, False means to keep your turn going and re-call this function.
         """
+        random.shuffle(validSpells)
         self.player.wizard.move(self.player.wizard.tile.tile_west)
-        self.player.wizard.cast("Punch", self.player.wizard.tile.tile_west)
+        self.player.wizard.cast(validSpells[0], self.player.wizard.tile.tile_west)
         # <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         # Put your game logic here for runTurn
         return True

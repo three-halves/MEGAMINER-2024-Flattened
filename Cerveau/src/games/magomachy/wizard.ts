@@ -448,9 +448,8 @@ export class Wizard extends GameObject {
                 // Throws a crappy wizard punch within 1 range.
                 this.lastSpell = "Punch";
                 this.lastTargetTile = tile;
-                tile.wizard!.health -= 1;
+                if (tile.wizard !== undefined) tile.wizard.health -= 1;
                 return true;
-                break; 
             }
             case "Magic Missile": {
                 // Debug spell like wii tanks
@@ -472,17 +471,16 @@ export class Wizard extends GameObject {
                         // eh 
                     }
                 }
-                break;
+                return true;
             }
             case "Fire Slash": {
                 // Fire blast
                 // Does it go through walls? I assume so
                 this.lastSpell = "Fire Slash";
                 this.lastTargetTile = tile;
-                
-                tile.wizard!.health -= 3;
+                if (tile.wizard !== undefined) tile.wizard.health -= 3;
                 this.aether -= 2;
-                break;
+                return true;
             }
             case "Thunderous Dash": {
                 // Just add an isDash var to wizards
