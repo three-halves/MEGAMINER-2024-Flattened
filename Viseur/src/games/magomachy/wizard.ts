@@ -134,6 +134,10 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         // render where the Wizard is
         // render position
         const dir = this.dirAsString(next.direction);
+
+        for (let i = 0; i < 4; i++) {
+            this.wizSprites[this.type][this.dirAsString(i)].visible = false;
+        }
         const sprite = this.wizSprites[this.type][dir];
         sprite.visible = true;
         this.container.position.set(
