@@ -545,7 +545,7 @@ export class Wizard extends GameObject {
                 }
                 if (prevTile.wizard) {
                     // Collect item here
-                    prevTile.wizard!.useItem(prevTile.object);
+                    prevTile.wizard!.useItem(prevTile.object!);
                 }
                 break;
             }
@@ -610,11 +610,11 @@ export class Wizard extends GameObject {
                 this.lastTargetTile = tile;
                 let prevTile = this.tile;
                 let nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, tile)
-                while (nextTile && nextTile.type === "floor" && (!prevTile.wizard || prevTile.wizard === this)) {
+                while (nextTile && nextTile.type === "floor" && (!prevTile?.wizard || prevTile?.wizard === this)) {
                     prevTile = nextTile;
                     nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, prevTile);
                 }
-                if (prevTile.wizard && prevTile.wizard !== this) {
+                if (prevTile?.wizard && prevTile?.wizard !== this) {
                     tile.wizard!.speed -= 1;
                     tile.wizard!.health -= 1;
                 }
@@ -740,7 +740,7 @@ export class Wizard extends GameObject {
             return `One tile at a time, please!`;
         }
         
-        if (this.movementLeft <== 0) {
+        if (this.movementLeft <= 0) {
             return 'No movement left this turn';
         }
 

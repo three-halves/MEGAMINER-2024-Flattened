@@ -44,7 +44,7 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
 
         // <<-- Creer-Merge: before-turn -->>
         // add logic here for before the current player's turn starts
-        if(this.game.currentPlayer.Wizard) {
+        if(this.game.currentPlayer.wizard) {
             // Give Movement
             this.game.currentPlayer.wizard!.movementLeft = this.game.currentPlayer.wizard!.speed;
 
@@ -98,14 +98,14 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
         for (let i = 0; i < this.game.mapWidth * this.game.mapHeight; i++) {
             if (this.game.tiles[i].object){
                 this.game.tiles[i].object!.lifetime += 1;
-                if (this.game.tiles[i].object!.max_life && this.game.tiles[i].object.lifetime > this.game.tiles[i].object.max_life) {
+                if (this.game.tiles[i].object!.max_life && this.game.tiles[i].object!.lifetime > this.game.tiles[i].object!.max_life!) {
                     // Here's where the charge rune gets handled
-                    if (this.games.tiles[i].object!.form === "charge rune") {
+                    if (this.game.tiles[i].object!.form === "charge rune") {
                         let dx = 0;
                         let dy = 0;
                         for (let j = 0; j < this.game.mapWidth * this.game.mapHeight; j++) {
-                            dx = this.games.tiles[i].x - this.game.tiles[j].x;
-                            dy = this.games.tiles[i].y - this.game.tiles[j].y;
+                            dx = this.game.tiles[i].x - this.game.tiles[j].x;
+                            dy = this.game.tiles[i].y - this.game.tiles[j].y;
                             if (this.game.tiles[j].wizard && (dx*dx + dy*dy) <= 16) {
                                 this.game.tiles[j].wizard!.health -= 5;
                             }

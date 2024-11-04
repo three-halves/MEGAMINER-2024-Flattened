@@ -45,7 +45,7 @@ export class Tile extends GameObject implements BaseTile {
      * The Tile to the 'West' of this one (x-1, y). Undefined if out of bounds
      * of the map.
      */
-    public readonly tileWest?: Tile;
+    public readonly tileWest: Tile;
 
     /**
      * The type of Tile this is (i.e Grass, Wall).
