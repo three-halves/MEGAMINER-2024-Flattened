@@ -689,6 +689,7 @@ export class Wizard extends GameObject {
                     form: "charge rune",
                     lifetime: 0,
                     tile: tile,
+					max_life: 10,
                 })
                 break;
             }
