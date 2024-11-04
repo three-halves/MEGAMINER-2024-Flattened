@@ -134,7 +134,80 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
         // changing its value in this scope is enough.
 
         if (this.wizardChoice) {
-            return 'You are already a ${wizardChoice}';
+            //return 'You are already a ${wizardChoice}';
+            // Nope, for now this is how you print a tilemap:
+            var tilemap: string[] = [];
+            // TLDR:
+            // WIZARDS:
+            // A: aggressive mage
+            // D: defensive mage
+            // U: sustaining mage (he's sus, monkaS)
+            // S: strategic mage
+            // ITEMS:
+            // h: health
+            // a: aether
+            // e: explosion rune
+            // r: healing rune
+            // t: teleport rune
+            // [a number]: charge rune turns before explosion
+            // s: stone
+            // TILES
+            // #: wall
+            // [empty]: floor
+            for (let i=0; i < this.game.mapHeight; i++) {
+                for (let j=0; j < this.game.mapWidth; j++) {
+                    tile = this.game.tiles[i*this.game.mapWidth + j];
+                    if (tile.wizard) {
+                        if (tile.wizard!.specialty == "aggressive") {
+                            tilemap.push("A");
+                        }
+                        else if (tile.wizard!.specialty == "defensive") {
+                            tilemap.push("D");
+                        }
+                        else if (tile.wizard!.specialty == "sustaining") {
+                            tilemap.push("U");
+                        }
+                        else {
+                            tilemap.push("S");
+                        }
+                    }
+                    else if (tile.object) {
+                        if (tile.object!.form == "health flask") {
+                            tilemap.push("h");
+                        }
+                        else if (tile.object!.form == "aether flask") {
+                            tilemap.push("a");
+                        }
+                        else if (tile.object!.form == "explosion rune") {
+                            tilemap.push("e");
+                        }
+                        else if (tile.object!.form == "heal rune") {
+                            tilemap.push("r");
+                        }
+                        else if (tile.object!.form == "teleport rune") {
+                            tilemap.push("t");
+                        }
+                        else if (tile.object!.form == "charge rune") {
+                            let turnsLeft = tile.object!.max_life! - tile.object!.lifetime;
+                            tilemap.push(turnsLeft.toString());
+                        }
+                        else if (tile.object!.form == "stone") {
+                            tilemap.push("s");
+                        }
+                    }
+                    else
+                    {
+                        if (tile.type == "wall") {
+                            tilemap.push("#");
+                        }
+                        else {
+                            tilemap.push(" ")
+                        }
+                    }
+                }
+                tilemap.push("\n");
+            }
+            return tilemap.join("");
         }
         
         if (wizardClass !== "aggressive"
