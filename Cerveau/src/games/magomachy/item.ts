@@ -24,7 +24,7 @@ export class Item extends GameObject {
     /**
      * The Tile this Item is on.
      */
-    public tile: Tile;
+    public tile!: Tile;
 
     // <<-- Creer-Merge: attributes -->>
 
@@ -49,6 +49,7 @@ export class Item extends GameObject {
         args: ItemConstructorArgs<{
             // <<-- Creer-Merge: constructor-args -->>
             // You can add more constructor args in here
+            max_life?: number;
             // <<-- /Creer-Merge: constructor-args -->>
         }>,
         required: Readonly<BaseGameObjectRequiredData>,
@@ -57,6 +58,9 @@ export class Item extends GameObject {
 
         // <<-- Creer-Merge: constructor -->>
         // setup any thing you need here
+        if (args.max_life && args.max_life > 0) {
+            this.max_life = args.max_life;
+        }
         // <<-- /Creer-Merge: constructor -->>
     }
 

@@ -112,6 +112,16 @@ export class Wizard extends GameObject {
      */
     public teleportTile?: Tile;
 
+    /**
+     * Max health of wizard.
+     */
+    public maxHealth!: number;
+
+    /**
+     * Max aether of wizard.
+     */
+    public maxAether!: number;
+
     // <<-- /Creer-Merge: attributes -->>
 
     /**
@@ -132,6 +142,8 @@ export class Wizard extends GameObject {
 
         // <<-- Creer-Merge: constructor -->>
         // setup any thing you need here
+        this.maxAether = this.aether;
+        this.maxHealth = this.health;
         // <<-- /Creer-Merge: constructor -->>
     }
 
@@ -220,7 +232,12 @@ export class Wizard extends GameObject {
         }
 
         if (!tile) {
-           throw new Error('${this} has no Tile to target!');
+            //throw new Error('${this} has no Tile to target!');
+            return 'Aim buff spells at your Tile, or attacks on another Tile.';
+        }
+
+        if (this.hasCast) {
+            return 'One spell per turn!';
         }
 
         // Calculate distance of target tile
@@ -244,49 +261,62 @@ export class Wizard extends GameObject {
             }
             case "Fire Slash":{
                 if (player.wizard.specialty != "aggressive") {
-                    return `You do not have the knowledge to use that spell`;
+                    return `You do not have the knowledge to use Fire Slash`;
                 }
-                if (tile.hasNeighbor(player.wizard.tile)) {
-                    return ``
+                if (tile.wizard === this) {
+                    return 'You\'re a wizard, why would you be dumb enough to burn yourself?!';
                 }
+                if (!tile.wizard) {
+                    return 'Nobody\'s at ${tile}, champ!';
+                }
+                if (distSq > 9) {
+                    return '${tile} is too far away to get charbroiled!';
+                }
+                // this is a really clever invalidate but its meant for Rock Lob
+                //if (tile.hasNeighbor(player.wizard.tile)) {
+                //    return ``
+                //}
                 break;
             }
-            case "Furious Telekenesis": {
+            case "Furious Telekinesis": {
                 if (player.wizard.specialty != "aggressive") {
-                    return `You do not have the knowledge to use that spell`;
+                    return `You do not have the knowledge to use Furious Telekinesis`;
                 }
                 if (!tile.object || tile.wizard) {
-                    return `You cannot through that!`;
+                    return `Target somewhere with an ITEM!`;
+                }
+                if (distSq > 1) {
+                    return '${tile} is too far away to get shoved!';
                 }
                 break;
             }
             case "Thunderous Dash": {
                 if (player.wizard.specialty != "aggressive") {
-                    return `You do not have the knowledge to use that spell`
+                    return `You do not have the knowledge to use Thunderous Dash`
                 }
-                if (tile.wizard != this) {
+                if (tile.wizard !== this) {
                     return `You can only use this on yourself!`;
                 }
                 break;
             }
             case "Rock Lob": {
                 if (player.wizard.specialty != "defensive") {
-                    return `You do not have the knowledge to use that spell`;
+                    return `You do not have the knowledge to use Rock Lob`;
                 }
-                if (tile.wizard == this) {
+                if (tile.wizard === this) {
                     return `You are a very wise wizard, and you know that attacking yourself is dumb`;
                 }
                 if (!tile.wizard) {
                     return `Curses! The enemy wizard isn\'t at ${tile}!`;
                 }
-                if (distSq != 2) {
+                if (distSq > 2 || distSq <= 1) {
                     return `You are wise enough to know that the spell won't reach there`;
                 }
                 break;
             }
             case "Force Push": {
                 if (player.wizard.specialty != "defensive") {
-                    return `You do not have the knowledge to use that spell`;
+                    return `You do not have the knowledge to use Force Push`;
                 }
                 if (tile.wizard == this) {
                     return `How? like, How do you push yourself?`;
@@ -294,50 +324,57 @@ export class Wizard extends GameObject {
                 if (!tile.wizard) {
                     return `You can't push what is not at ${tile}`;
                 }
+                if (distSq > 1) {
+                    return '${tile} is too far away to get shoved!';
+                }
                 break;
             }
             case "Stone Summon": {
                 if (player.wizard.specialty != "defensive") {
-                    return `You do not have the knowledge to use this spell`;
+                    return `You do not have the knowledge to use Stone Summon`;
                 }
                 if (tile.object) {
-                    return `Two things cannot exist on the same spot, or VERY bad things can happen`;
+                    return `Two magic items cannot exist on the same spot, or VERY bad things can happen`;
                 }
                 if (tile.type == "wall") {
                     return `You cannot place that on a wall`;
+                }
+                if (distSq > 1) {
+                    return '${tile} is too far away to get stoned! plz laugh';
                 }
                 break;
             }
             case "Calming Blast": {
                 if (player.wizard.specialty != "sustaining") {
-                    return `You do not have the knowledge to use this`;
+                    return `You do not have the knowledge to use Calming Blast`;
                 }
-                if (dx != 0 && dy != 0) {
-                    return `This only goes in a straight line`;
-                }
+                // Please no i spent so much time on implementing bressenham
+                // if (dx != 0 && dy != 0) {
+                //    return `This only goes in a straight line`;
+                //}
                 break;
             }
             case "Teleport": {
                 if (player.wizard.specialty != "sustaining") {
-                    return `You do not have the knowledge to use this`;
+                    return `You do not have the knowledge to use Teleport`;
                 }
-                if (distSq > 3) {
+                if (distSq > 9) {
                     return `You can only reach so far with this spell`;
                 }
                 if (tile.wizard) {
-                    return `Two things cannot exist on the same spot, or VERY bad things can happen`;
+                    return `You are not as versed in telefragging as a certain other wizard!`;
                 }
-                if (tile.type == "wall") {
-                    return `The bounds of this challange are 2 dimensional, you cannot go above the walls`;
+                if (tile.type === "wall") {
+                    return `The bounds of this challenge are 2 dimensional, you cannot go above the walls`;
                 }
                 break;
             }
             case "Dispel Magic": {
                 if (player.wizard.specialty != "sustaining") {
-                    return `You do not have the knowledge to use this`;
+                    return `You do not have the knowledge to use Dispel Magic`;
                 }
                 if (distSq != 1) {
-                    return `Unfortunatly, that is not in range`;
+                    return `Unfortunately, that is not in range`;
                 }
                 if (!tile.object) {
                     return `This spell needs an item for its components`;
@@ -349,59 +386,75 @@ export class Wizard extends GameObject {
             }
             case "Explosion Rune": {
                 if (player.wizard.specialty != "strategic") {
-                    return `You do not have the knowledge to use this`;
+                    return `You do not have the knowledge to use runes`;
                 }
                 if (tile.type == `wall`) {
                     return `The bounds of this challenge are 2 dimensional, you cannot go above the walls`
                 }
-                if (distSq != 1) {
+                if (distSq > 1) {
                     return `You cannot reach there`;
+                }
+                if (tile.object) {
+                    return 'There is already an item there!'
                 }
                 break;
             }
             case "Heal Rune" : {
                 if (player.wizard.specialty != "strategic") {
-                    return `You do not have the knowledge to use this`;
+                    return `You do not have the knowledge to use runes`;
                 }
                 if (tile.type == `wall`) {
                     return `The bounds of this challenge are 2 dimensional, you cannot go above the walls`
                 }
-                if (distSq != 1) {
+                if (distSq > 1) {
                     return `You cannot reach there`;
                 }
-
+                if (tile.object) {
+                    return 'There is already an item there!'
+                }
                 break;
             }
             case "Teleport Rune" : {
                 if (player.wizard.specialty != "strategic") {
-                    return `You do not have the knowledge to use this`;
+                    return `You do not have the knowledge to use runes`;
                 }
                 if (player.wizard.teleportTile) {
-                    if (player.wizard.teleportTile.wizard) {
-                        return `Two things cannot exist on the same spot, or VERY bad things can happen`;
-                    }
+                    // hehehehehehe
+                    //if (player.wizard.teleportTile.wizard) {
+                    //    return `Two things cannot exist on the same spot, or VERY bad things can happen`;
+                    //}
                 }
                 else {
                     if (tile.type == `wall`) {
                         return `The bounds of this challenge are 2 dimensional, you cannot go above the walls`
                     }
-                }
-                if (distSq != 1) {
-                    return `You cannot reach there`;
+                    if (tile.object) {
+                        return 'There is already an item there!'
+                    }
+                    if (distSq > 1) {
+                        return `You cannot reach there`;
+                    }
                 }
                 break;
             }
             case "Charge Rune" : {
                 if (player.wizard.specialty != "strategic") {
-                    return `You do not have the knowledge to use this`;
+                    return `You do not have the knowledge to use runes`;
                 }
                 if (tile.type == `wall`) {
-                    return `The bounds of this challange are 2 dimensional, you cannot go above the walls`
+                    return `The bounds of this challenge are 2 dimensional, you cannot go above the walls`
                 }
+                if (tile.object) {
+                    return 'There is already an item there!'
+                }
+                // No range check to make strategist more powerful
+                //if (distSq > 1) {
+                //        return `You cannot reach there`;
+                //}
                 break;
             }
             default: {
-                throw new Error("I've never heard of that spell...");
+                return 'Check your spelling and spell list because no such spell exists!';
             }
         }
 
@@ -413,6 +466,8 @@ export class Wizard extends GameObject {
         // - Not in range.
         // - Don't have access to the spell.
         // - No target on tile.
+        // We could have done this by just flipping a few booleans
+        // But...eh.
 
         // Check all the arguments for cast here and try to
         // return a string explaining why the input is wrong.
@@ -451,28 +506,6 @@ export class Wizard extends GameObject {
                 if (tile.wizard !== undefined) tile.wizard.health -= 1;
                 return true;
             }
-            case "Magic Missile": {
-                // Debug spell like wii tanks
-                this.lastSpell = "Magic Missile";
-                this.lastTargetTile = tile;
-                
-                this.aether -= 2;
-
-                let bouncesLeft = 4;
-                let prevTile = tile;
-                let x0 = this.tile!.x;
-                let y0 = this.tile!.y;
-                let x1 = tile.x;
-                let y1 = tile.y;
-
-                while(bouncesLeft > 0) {
-                    let nextTile = this.bressenham(x0,y0,x1,y1,prevTile);
-                    if(!nextTile || nextTile.type === "wall") {
-                        // eh 
-                    }
-                }
-                return true;
-            }
             case "Fire Slash": {
                 // Fire blast
                 // Does it go through walls? I assume so
@@ -487,8 +520,9 @@ export class Wizard extends GameObject {
                 this.lastSpell = "Thunderous Dash";
                 this.lastTargetTile = tile;
                 this.movementLeft += 3;
-                this.effects.push("Dash");
-                this.effectTimes.push(0);
+                this.speed += 3;
+                //this.effects.push("Dash");
+                //this.effectTimes.push(0);
                 this.aether -= 3;
                 break;
             }
@@ -499,7 +533,7 @@ export class Wizard extends GameObject {
 
                 let prevTile = tile;
                 let nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, tile)
-                while (nextTile && nextTile.type === "floor" && !prevTile.wizard) {
+                while (nextTile && nextTile.type === "floor" && !nextTile.object && !prevTile.wizard) {
                     prevTile.object!.tile = nextTile;
                     nextTile.object = prevTile.object!;
                     prevTile.object = undefined;
@@ -509,6 +543,7 @@ export class Wizard extends GameObject {
                 }
                 if (prevTile.wizard) {
                     // Collect item here
+                    prevTile.wizard!.useItem(prevTile.object!);
                 }
                 break;
             }
@@ -518,7 +553,7 @@ export class Wizard extends GameObject {
                 this.lastSpell = "Rock Lob";
                 this.lastTargetTile = tile;
                 tile.wizard!.health -= 2;
-                this.aether -= 2
+                this.aether -= 2;
                 break;
             }
             case "Force Push": {
@@ -531,7 +566,7 @@ export class Wizard extends GameObject {
                 let distLeft = 3;
                 let prevTile = tile;
                 let nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, tile)
-                while (nextTile && nextTile.type === "floor" && distLeft > 0) {
+                while (nextTile && nextTile.type === "floor" && !(nextTile.object?.form === "stone") && distLeft > 0) {
                     prevTile.wizard!.tile = nextTile;
                     nextTile.wizard = prevTile.wizard;
                     prevTile.wizard = undefined;
@@ -564,17 +599,23 @@ export class Wizard extends GameObject {
                     form: "stone",
                     lifetime: 0,
                     tile: tile,
+                    max_life: 10,
                 });
                 break;
             }
             case "Calming Blast": {
-                // So this requires editing the game manager to heal speeds after every turn.
-                // Until that is done, DO NOT UNCOMMENT THIS CODE!
-                // ^^^ Hello, it's me, I'm doing it anyway, sorry
                 this.lastSpell = "Calming Blast";
                 this.lastTargetTile = tile;
-                tile.wizard!.speed -= 1;
-                tile.wizard!.health -= 1;
+                let prevTile = this.tile;
+                let nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, tile)
+                while (nextTile && nextTile.type === "floor" && (!prevTile?.wizard || prevTile?.wizard === this)) {
+                    prevTile = nextTile;
+                    nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, prevTile);
+                }
+                if (prevTile?.wizard && prevTile?.wizard !== this) {
+                    tile.wizard!.speed -= 1;
+                    tile.wizard!.health -= 1;
+                }
                 this.aether -= 3;
                 break;
             }
@@ -592,8 +633,8 @@ export class Wizard extends GameObject {
                 this.lastSpell = "Dispel Magic";
                 this.lastTargetTile = tile;
                 tile.object = undefined;
-                this.health += 4;
-                this.aether += 2;
+                //this.health += 4;
+                this.aether -= 2;
                 break;
             }
             case "Explosion Rune": {
@@ -629,6 +670,9 @@ export class Wizard extends GameObject {
                 }
                 else {
                     this.lastSpell = "Teleport Rune Use";
+                    if (this.teleportTile!.wizard) {
+                        this.teleportTile!.wizard!.health = 0;
+                    }
                     this.tile!.wizard = undefined;
                     this.tile = this.teleportTile!;
                     this.tile!.wizard = this;
@@ -681,7 +725,6 @@ export class Wizard extends GameObject {
             return reason;
         }
 
-        // TODO: add variables tracking whether unit moved/cast spell or not each turn
         if (!this.tile) {
             throw new Error('${this} has no Tile!');
         }
@@ -691,17 +734,27 @@ export class Wizard extends GameObject {
         const dy = this.tile.y - tile.y;
         const distSq = dx * dx + dy * dy;
 
-        if (distSq > this.speed ** 2) {
-            return `${tile} is too far away to reach this turn!`;
+        if (distSq != 1) {
+            return `One tile at a time, please!`;
+        }
+        
+        if (this.movementLeft <= 0) {
+            return 'No movement left this turn';
         }
 
-        if (tile.type === "wall") {
+        if (!tile || tile.type === "wall") {
             return `${this} can't phase through walls! (Yet...)`;
         }
 
-        if (tile.wizard) {
+        if (tile.wizard && !(this.lastSpell === "Thunderous Dash" && this.speed > 2)) {
             return `${tile} is occupied by a wizard!`;
         }
+
+        if (tile.object && tile.object!.form === "stone") {
+            return '${tile} is blocked by a statue!';
+        }
+
+        return undefined;
         // <<-- /Creer-Merge: invalidate-move -->>
     }
 
@@ -724,6 +777,10 @@ export class Wizard extends GameObject {
         this.tile = tile;
         tile.wizard = this;
         this.movementLeft -= 1;
+
+        if(this.tile?.object) {
+            this.useItem(this.tile!.object);
+        }
 
         return true;
         // <<-- /Creer-Merge: move -->>
@@ -813,7 +870,11 @@ export class Wizard extends GameObject {
                 break;
             }
             case "charge rune": {
-                this.health -= item.lifetime;
+                //this.health -= item.lifetime;
+                break;
+            }
+            case "stone": {
+                // EXCEPTIONALLY rare case since walls block moves
                 break;
             }
             default: {
@@ -822,6 +883,13 @@ export class Wizard extends GameObject {
                 return false;
                 break;
             }
+        }
+        // remove overhealing
+        if (this.health > this.maxHealth) {
+            this.health = this.maxHealth;
+        }
+        if (this.aether > this.maxAether) {
+            this.aether = this.maxAether;
         }
         // DELETE THE ITEM
         item.tile.object = undefined;
