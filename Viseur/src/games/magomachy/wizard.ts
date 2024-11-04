@@ -97,7 +97,10 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
 
         this.spellSprites = {
             Punch: this.addSprite.spell_punch(hide),
-            "Fire Slash": this.addSprite.spell_flame({visible: false, width: 3}),
+            "Fire Slash": this.addSprite.spell_flame({
+                visible: false,
+                width: 3,
+            }),
         };
 
         // <<-- /Creer-Merge: constructor -->>
@@ -146,7 +149,11 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const run = delta.data?.run;
 
-        if (run !== undefined && current.id === run.caller?.id) {
+        if (
+            run !== undefined &&
+            current.id === run.caller?.id &&
+            (delta.data.invalid === undefined || delta.data.invalid === "")
+        ) {
             const spellSprite = this.spellSprites[run.args.spellName];
             switch (run.functionName) {
                 case "cast":
