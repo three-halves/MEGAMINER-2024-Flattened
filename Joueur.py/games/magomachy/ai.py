@@ -34,12 +34,11 @@ class AI(BaseAI):
         # <<-- /Creer-Merge: get-name -->>
 
     def start(self) -> None:
-        global validSpells
         """This is called once the game starts and your AI knows its player and game. You can initialize your AI here.
         """
         # <<-- Creer-Merge: start -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         # replace with your start logic
-        validSpells = ["Punch", "Fire Slash", "Furious Telekenesis", "Thunderous Dash"]
+        self.player.choose_wizard("aggressive")
         # <<-- /Creer-Merge: start -->>
 
     def game_updated(self) -> None:
@@ -91,6 +90,8 @@ class AI(BaseAI):
         Returns:
             bool: Represents if you want to end your turn. True means end your turn, False means to keep your turn going and re-call this function.
         """
+        self.player.choose_wizard("aggressive")
+        validSpells = ["Punch", "Fire Slash", "Furious Telekenesis", "Thunderous Dash"]
         random.shuffle(validSpells)
         self.player.wizard.move(self.player.wizard.tile.tile_west)
         self.player.wizard.cast(validSpells[0], self.player.wizard.tile.tile_west)

@@ -156,7 +156,7 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
             // [empty]: floor
             for (let i=0; i < this.game.mapHeight; i++) {
                 for (let j=0; j < this.game.mapWidth; j++) {
-                    tile = this.game.tiles[i*this.game.mapWidth + j];
+                    const tile = this.game.tiles[i*this.game.mapWidth + j];
                     if (tile.wizard) {
                         if (tile.wizard!.specialty == "aggressive") {
                             tilemap.push("A");
@@ -207,7 +207,7 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
                 }
                 tilemap.push("\n");
             }
-            return tilemap.join("");
+            return "\n" + tilemap.join("");
         }
         
         if (wizardClass !== "aggressive"
