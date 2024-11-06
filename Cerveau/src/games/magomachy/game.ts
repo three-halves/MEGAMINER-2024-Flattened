@@ -87,6 +87,16 @@ export class MagomachyGame extends BaseClasses.Game {
     // NOTE: They will not be sent to the AIs, those must be defined
     // in the creer file.
 
+    /**
+     * Where player 1's wizard should be placed.
+     */
+    public wizard1_tile!: tile;
+
+    /**
+     * Where player 2's wizard should be placed.
+     */
+    public wizard2_tile!: tile;
+
     // <<-- /Creer-Merge: attributes -->>
 
     /**
@@ -105,45 +115,55 @@ export class MagomachyGame extends BaseClasses.Game {
         // setup any thing you need here
 
 
-        // init map for testing
+        const visualMap: string = `M
+                        ##########
+                        #///////2#
+                        #/#/##/#/#
+                        #////////#
+                        #/#/a//#/#
+                        #/#//a/#/#
+                        #////////#
+                        #/#/##/#/#
+                        #1///////#
+                        ##########`;
+
+        const strMap = visualMap.replace(/ /g, "").replace(/[\r\n\t]+/gm, "").replace("M","");
+        
         for (let i = 0; i < this.mapWidth * this.mapHeight; i++) {
             const x = i % this.mapWidth;
             const y = Math.floor(i / this.mapWidth);
-
-            // this.manager.create.tile({});
-
+        
             // TODO Manually create arrays of tiles/strings for different maps
             const tile = (this.tiles[i] as MutableTile);
-
-            tile.type = (x === 0 || x === this.mapWidth - 1 ||
-            y === 0 || y === this.mapHeight - 1)
+            const mark = strMap.charAt(i);
+        
+            tile.type = (mark === "#")
                 ? "wall"
                 : "floor";
+        
+            if (mark === "a") {
+                tile.object = this.manager.create.item({
+                    form: "aether flask",
+                    lifetime: 0,
+                    tile: tile
+                });
             }
-
-        // TEMP init wizards for testing
-        this.players[0].wizard = this.manager.create.wizard({
-            owner: this.players[0],
-            health: 10,
-            aether: 10,
-            tile: this.getTile(1, Math.floor(this.mapHeight) / 2),
-            specialty: "sustaining",
-            speed: 1
-        });
-
-        this.players[0].wizard.tile!.wizard = this.players[0].wizard;
-
-        this.players[1].wizard = this.manager.create.wizard({
-            owner: this.players[1],
-            health: 10,
-            aether: 10,
-            tile: this.getTile(this.mapWidth - 2, Math.floor(this.mapHeight) / 2),
-            specialty: "aggressive",
-            speed: 1
-        });
-
-        this.players[1].wizard.tile!.wizard = this.players[1].wizard;
-
+            else if (mark === "h") {
+                tile.object = this.manager.create.item({
+                    form: "health flask",
+                    lifetime: 0,
+                    tile: tile,
+                });
+            }
+            else if (mark === "1") {
+                // MARK WIZARD 1 LOCATION
+                this.wizard1_tile = tile;
+            }
+            else if (mark === "2") {
+                // MARK WIZARD 2 LOCATION
+                this.wizard2_tile = tile;
+            }
+        }
         // <<-- /Creer-Merge: constructor -->>
     }
 
