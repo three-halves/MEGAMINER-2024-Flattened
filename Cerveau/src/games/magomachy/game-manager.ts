@@ -81,6 +81,7 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
                     speed: 2
                 });
                 this.game.players[0].wizard.tile!.wizard = this.players[0].wizard;
+                this.game.wizards.push(this.players[0].wizard);
                 
                 this.game.players[1].wizard = this.manager.create.wizard({
                     owner: this.game.players[1],
@@ -91,6 +92,7 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
                     speed: 2
                 });
                 this.game.players[1].wizard.tile!.wizard = this.players[1].wizard;
+                this.game.wizards.push(this.players[1].wizard);
             }
         }
 
@@ -134,7 +136,7 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
         // Add logic here checking for the primary win condition(s)
 
         // I sure hope currentPlayer hasnt been updated yet
-        if (!this.game.currentPlayer.wizard) {
+        if (!this.game.currentPlayer.wizardChoice) {
             this.declareWinner("Your opponent didn't show up to the duel!", this.game.currentPlayer.opponent);
             this.declareLoser("You didn't pick a wizard in time for the duel!", this.game.currentPlayer);
             return true;
