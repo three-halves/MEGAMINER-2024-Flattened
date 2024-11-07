@@ -15,8 +15,8 @@ Magomachy is a two-player, tile-based game in which two wizards selected by each
 ### Win Conditions
 Kill the other player's wizard without running out of health or aether to win. 
 Otherwise:
-1. The player with the most aether wins.
-2. The player with the most health wins.
+1. The player with the most health wins.
+2. The player with the most aether wins.
 3. A random player wins.
 4. There is also a fourth, secret win condition involving a specific wizard!
 
@@ -65,6 +65,15 @@ Tiles have the following properties:
 
 ### Wizard
 The big one! Your Wizard is your main pawn of the game, but you won't have immediate access to it. Instead, you'll use your Player to select a specialty (aggressive, defensive, sustaining, strategic) via chooseWizard() on your first turn, and then use the Player's reference to the newly created Wizard on subsequent turns to actually play the game.
+
+One thing to note is that most Wizard attributes are either meant for our Visualizer or are just not implemented. What you will need to carry about are:
+1. tile: the Tile your Wizard is located at
+2. aether: resource to be spent on spells
+3. health: how much more damage you can take before losing
+4. hasCast: whether you cast a spell this turn
+5. speed: number of moves per turn
+6. movementLeft: number of remaining moves this turn
+7. specialty: the exact kind of Wizard you are
 
 On each turn, your Wizard will be allowed to move up to two spaces, barring buffs and debuffs.
 To do this, call the Wizard's move() function for each single-tile movement you want to make.
@@ -116,6 +125,28 @@ This wizard doesn't attack directly, but rather places tactical ~~landmines~~ ru
 | Heal Rune | Targeted (Wizard) | 5 | -5 | 1 | Rune heals 5 damage when activated. |
 | Teleport Rune | Rune | 3/0 | - | 1/Infinity | Rune cannot be activated normally. When this spell is used a second time, immediately teleports this Wizard to the rune, then destroys it.  |
 | Charge Rune | Rune | 4 | 5 | Infinity/3 | Rune cannot be activated normally. After 5 turns, rune deals 5 damage to any wizard within 3 tiles, then is destroyed. |
+
+## Items
+Any temporary Game Object is treated as an Item. These include healing items spawned in the map such as health or aether flasks as well as runes placed by Wizards. Since most of the logic handling the use of Items is stored on our server, the actual Item class is deceptively light and is just there to store the following attributes:
+
+| Name | Description |
+|---|---|
+| form | Type of Item |
+| lifetime | How long this Item has existed for |
+| tile | The Tile containing this Item |
+| max_life | How many turns this Item may exist for (undefined if infinite) |
+
+*Generally speaking*, an Item is activated by stepping on top of it. However, certain Items only activate under special conditions instead. More details on each Item you can expect to encounter are provided below:
+
+| Form | Activation | Description |
+|---|---|---|
+| health flask | Contact | Restores 5 health. |
+| aether flask | Contact | Restores 5 aether. |
+| explosion rune | Contact | Deals 4 damage. |
+| heal rune | Contact | Restores 5 health. |
+| teleport rune | Special | Teleports the mage that placed this to the rune when the Teleport Rune spell is used again. |
+| charge rune | Special | Deals 5 damage in a 3 Tile radius after 10 turns. |
+| stone | Special | Blocks movement; disappears after 10 turns. |
 
 Example Code Block
 ```js
