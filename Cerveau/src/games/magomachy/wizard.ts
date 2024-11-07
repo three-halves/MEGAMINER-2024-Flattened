@@ -348,6 +348,9 @@ export class Wizard extends GameObject {
                 if (player.wizard.specialty != "sustaining") {
                     return `You do not have the knowledge to use Calming Blast`;
                 }
+		if (this.tile === tile) {
+		    return `You cannot aim this at your own Tile`;
+		}
                 // Please no i spent so much time on implementing bressenham
                 // if (dx != 0 && dy != 0) {
                 //    return `This only goes in a straight line`;
@@ -543,7 +546,7 @@ export class Wizard extends GameObject {
                 }
                 if (prevTile.wizard) {
                     // Collect item here
-                    prevTile.wizard!.useItem(prevTile.object!);
+                    prevTile.wizard!.useItem(prevTile.object!,force=true);
                 }
                 break;
             }
@@ -572,6 +575,10 @@ export class Wizard extends GameObject {
                     prevTile.wizard = undefined;
                     // NOTE: If wizard touches item, collect it
                     // Honestly may be best to have a generic move function
+		    if (nextTile.object) {
+                        // Collect item here
+                        nextTile.wizard!.useItem(nextTile.object!,force=true);
+                    }
 
                     distLeft--;
                     prevTile = nextTile;
@@ -601,6 +608,7 @@ export class Wizard extends GameObject {
                     tile: tile,
                     max_life: 10,
                 });
+		this.aether -= 4;
                 break;
             }
             case "Calming Blast": {
@@ -626,6 +634,7 @@ export class Wizard extends GameObject {
                 this.tile!.wizard = undefined;
                 this.tile = tile;
                 tile.wizard = this;
+		this.aether -= 3;
                 break;
             }
             case "Dispel Magic": {
@@ -645,6 +654,7 @@ export class Wizard extends GameObject {
                     lifetime: 0,
                     tile: tile,
                 })
+		this.aether -= 2;
                 break;
             }
             case "Heal Rune": {
@@ -655,6 +665,7 @@ export class Wizard extends GameObject {
                     lifetime: 0,
                     tile: tile,
                 })
+		this.aether -= 5;
                 break;
             }
             case "Teleport Rune": {
@@ -666,6 +677,7 @@ export class Wizard extends GameObject {
                         lifetime: 0,
                         tile: tile,
                     })
+		    this.aether -= 3;
                     this.teleportTile = tile;
                 }
                 else {
@@ -689,8 +701,9 @@ export class Wizard extends GameObject {
                     form: "charge rune",
                     lifetime: 0,
                     tile: tile,
-					max_life: 10,
+		    max_life: 10,
                 })
+		this.aether -= 4;
                 break;
             }
             default: { 
@@ -773,10 +786,16 @@ export class Wizard extends GameObject {
         }
 
         this.setDirection(tile);
-
+	let swapWiz? = tile.wizard;
+	let swapTile = this.tile;
+	    
         this.tile.wizard = undefined;
         this.tile = tile;
         tile.wizard = this;
+	if (swapWiz) {
+	    swapWiz!.tile = swapTile;
+	    swapTile!.wizard = swapWiz;
+    	}
         this.movementLeft -= 1;
 
         if(this.tile?.object) {
@@ -844,11 +863,14 @@ export class Wizard extends GameObject {
      * Use an item on a tile.
      * 
      * @param item - the target item
+     * @param force - whether to force use the item
      * @returns True if the item was used, false otherwise.
      */
     private useItem(
         item: Item,
+	force=false,
     ): boolean {
+	let destroy = true;
         switch(item.form!) {
             case "health flask": {
                 this.health += 5;
@@ -868,14 +890,19 @@ export class Wizard extends GameObject {
             }
             case "teleport rune": {
                 // Do nothing. This is handled in cast.
+		destroy = false;
                 break;
             }
             case "charge rune": {
                 //this.health -= item.lifetime;
+		destroy = false;
                 break;
             }
             case "stone": {
                 // EXCEPTIONALLY rare case since walls block moves
+		if !force {
+		    destroy = false;
+		}
                 break;
             }
             default: {
@@ -893,7 +920,9 @@ export class Wizard extends GameObject {
             this.aether = this.maxAether;
         }
         // DELETE THE ITEM
-        item.tile.object = undefined;
+	if (destroy) {
+            item.tile.object = undefined;
+	}
         return true;
     }
     // <<-- /Creer-Merge: protected-private-functions -->>
