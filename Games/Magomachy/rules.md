@@ -1,134 +1,123 @@
-# MMAI 21: [Pirates]
+# MMAI 20-something: [Magomachy]
 
-Pirates is a math-heavy game where you must gain more infamy than your opponent. To gain infamy, you must either steal it from your opponent by killing their units, or kill merchant units. At the beginning, neither player will have any infamy. This means the primary source of infamy is merchant ships. Unlike many previous games, **killing your opponent is not the main objective**, and it may be difficult to win directly by doing so. Also, a lot of error messages from performing invalid actions will be thematic. Feel free to ask if they're unclear, but they should be pretty straightforward. We can change them if they're causing problems.
+## Game Description
+Magomachy is a two-player, tile-based game in which two wizards selected by each player face off in a duel to the death. At the start of the game, players choose 1 of 4 different types of wizards, then attempt to kill the other wizard by using their aether pool to cast a variety of spells. A wizard wins by reducing the other wizard to 0 health; however, if they reach 0 health or 0 aether before this happens, they lose instead.
 
-## [Map][Map]
+### [Map][Map]
 - Tile-based
-- Fairly large, around 40 x 28
-- Two types of tiles: water and land
-- Ocean with islands generated in it
-  - Can generate several small islands or fewer larger islands
-  - There should not be any "lakes". All water will be part of the main "ocean".
-- Half of the map is generated, then that half is mirrored and flipped to generate the other half
+- Fairly small, around 10 x 10
+- Two types of tiles: floor and wall
+- Enclosed arena with pillars and cover
+- Multiple layouts, handcrafted and chosen ahead of time
 - Players spawn on opposite sides
-- Two merchant ports are spawned on opposite sides of the map
+- Health and aether items are placed near the center
 
-## Win Conditions
-Destroy all of your opponent's units. If they're out of units and can't afford to build another ship, you win. Otherwise:
-1. The player with the most infamy wins.
-2. The player with the highest net worth wins.
+### Win Conditions
+Kill the other player's wizard without running out of health or aether to win. 
+Otherwise:
+1. The player with the most aether wins.
+2. The player with the most health wins.
 3. A random player wins.
+4. There is also a fourth, secret win condition involving a specific wizard!
 
-## [Tiles][Tile]
+## How to Play
+To play the game, you must create an AI using the Jouer program provided in this repo. To do this, select a Jouer folder corresponding to the programming language you'd like to use and then navigate to the Magomachy folder. Edit the name function to return your team's name, and then put your acual logic in the runTurn function. (The other functions are either basic accessors or optional skeletons to help organize your code). 
+
+**Do not edit any other files in your Jouer folder.** The files in the Magomachy folder give you key information for playing the game and will be explained in the next section, while the other files handle communications with our game server. Tampering with these files could break your AI at best or the entire game at worst, either of which may disqualify you from MegaMiner!
+
+## Game Objects
+While your AI logic is stored in your ai file, the functions and variables you'll need to access are actually listed in the other files of the Magomachy folder. They define the **Game Objects** you'll need to interact with to play the game. These are automatically synchronized with the game server, so there's no need to worry about unexpected disconnects between what your AI sees vs what is actually happening in the game.
+
+Because of this, just as you shouldn't edit the Jouer files, **you should not directly edit game objects in your code**. To be clear, referencing an object is fine, reading its variables is fine, calling its functions is (usually) fine. The issues come from attempting to replace the object or modify any of its attributes; that's the server's job! So don't directly change any attributes of the objects, and always keep track of whether you are passing by value or passing by reference.
+
+A more detailed list of these objects is provided below:
+
+### Game
+When the server matches you with an opponent, a single, top-level Game object will first be created. This represents the current state of the game at a high level and sort of acts as the "master" object storing the rest of the game pieces. If you see a lot of variable initializations at the top, ignore them; they will be overwritten by the server almost immediately upon matching with an opponent. Instead, the main use of this file for you is to provide several accessor functions storing global variables like the turn count or tile map. (Read the function documentation in the game file for more information). Your AI file comes with a reference to this object.
+
+Note that, from now on, this master object will be referred to as the Game.
+
+### Game_Object
+Confusing name aside, this is more of a niche extension of the Game rather than its own thing. It's meant to store debug variables like game IDs or output logs. Probably not very useful to you, but feel free to check it out anyway.
+
+### Player
+The next-highest tier of objects in the game hierarchy are the Players, objects containing information about the clients participating in the game. Each Game contains two such objects, one representing you and the other made for your opponent. You are provided a reference to the former in your ai file, which in turn stores a reference to the latter as a member variable.
+
+For you, the most important parts of this object are the parts referring to your wizard. In addition to the actual object (which will be explained in their own section), you are provided a chooseWizard() function for picking a wizard specialty on your first turn. You'll only ever *need* to call this function once per game, but if you call it a second time in the exact same way, your console will print an ASCII representation of the game board! It doesn't provide any information you couldn't get elsewhere, but it's great for debugging purposes.
+
+Most of the other variables refer to client-side information to help with connecting to the server or telling you how you performed once the game ends. Since your client console should already display this information, there variables probably are not very helpful, but they're there if you want them.
+
+### Tile
+Tiles form the grid representing the playing field of Magomachy. If you want to access the full map, it is stored in the tiles arrays in the game file. However, be warned that it is NOT a 2D array, but rather a 1D array stored in row-major order.
+
+Most functions you will be using take **references to Tiles** as an argument rather than just their coordinates, so plan accordingly! You could just access them straight from the tiles array in the game class as stated above, but you'll be MUCH better off using the get_tile_at function in that class instead. Alternatively, get familiar with the neighbor functions provided in the tile class by reading the documentation there.
+
 Tiles have the following properties:
 
 | Name | Description |
 |---|---|
-| Type | Either 'land' or 'water' |
-| Unit | The unit on this tile, if any |
-| Port | The port on this tile, if any |
-| Gold | Any gold buried on this tile. Every turn, the gold increases by 2.5% |
-| Decoration | Used by the visualizer to indicate "deep sea" and "grassy" tiles, but does not affect gameplay |
+| Type | Either 'floor' or 'wall' |
+| Wizard | The wizard on this tile, if any |
+| Object | The item on this tile, if any |
+| x | The tile's horizontal coordinate, starting from 0 and increasing left to right |
+| y | The tile's vertical coordinate, starting from 0 and increasing top to bottom |
+| tile\[direction\] | Adjacent tile in a particular direction: East, North, South, West |
 
-## [Units][Unit]
-There are two types of units: crew, and ships. **A single Unit object may contain any number of crew and optionally a ship.** Players cannot control units without crew. This means that players must have crew on their ships, otherwise the ship is considered neutral and unowned (even in ports).
+### Wizard
+The big one! Your Wizard is your main pawn of the game, but you won't have immediate access to it. Instead, you'll use your Player to select a specialty (aggressive, defensive, sustaining, strategic) via chooseWizard() on your first turn, and then use the Player's reference to the newly created Wizard on subsequent turns to actually play the game.
 
-Units cannot move or perform actions the turn they are spawned. If a unit is spawned on top of another unit, they are merged and cannot move or act for the rest of that turn.
+On each turn, your Wizard will be allowed to move up to two spaces, barring buffs and debuffs.
+To do this, call the Wizard's move() function for each single-tile movement you want to make.
 
-Merchant ships will move from one merchant port to another. They carry 600 gold and 3 crew. They only move 1 tile per turn, and the ships have only half as much health as player ships. Each turn, if there is a player ship in range, they will deal damage to it. The player they attack alternates each turn, so they will never attack the same player two turns in a row.
+More importantly, you will also be allowed to cast a single spell per turn at any point during your movement. To do so, call the Wizard's cast() function with the spell's name as the first argument and the Tile you wish to target as the second. The exact tile you'll want to aim at depends on the type of spell, as listed below:
 
-Units have the following properties:
+| Type | Target | Description |
+|---|---|---|
+| Targeted (Object) | Tile with a type of Game Object | Directly affects a Game Object in range. |
+| Buff | Tile with your Wizard | Temporarily makes your Wizard stronger. |
+| Projectile | Tile to aim at | Fires a projectile toward a Tile in range. The projectile moves until it hits an obstacle. The exact path is calculated with the Bressenham algorithm. |
+| Rune | empty Tile | Places a rune on a Tile that activates when ANY Wizard steps on it. |
 
-| Name | Description |
-|---|---|
-| Owner | The owner of this unit. Merchant ships and neutral ships have no owner. To check if a ship is a merchant ship, check if it has a target port. |
-| Tile | The tile this unit is on. |
-| Crew | The number of crew this unit has. This number will never be higher than the total health of all the crew. |
-| Crew Health | The total health of all the crew in this unit. This number will never be less than the number of crew on this unit. If it would drop below the number of crew, then crew die. |
-| Ship Health | If this unit has no ship, then this number is just 0. Otherwise, indicates how much health is left on this unit's ship. |
-| Gold | How much gold this unit is carrying. There is no limit to how much gold a single unit can carry. |
-| Moves | How many more times this unit can move this turn. |
-| Acted | Whether this unit has performed an action this turn. Actions are attacking, resting, and boarding ships. However, units that have acted cannot move/split. |
-| Path | Used by merchant ships to indicate the path they are following. This will only change if they run into an obstacle. |
-| Target Port | Used by merchant ships to indicate which port they are going to. All merchant ships have a target port. |
-| Stun Turns | Used by merchant ships to indicate how many more turns they will be stunned for. While stunned, they cannot move, but they will still attack. |
+Every Wizard has access to a basic Punch "spell," a zero-aether Targeted (Wizard) spell with 1 range and 1 damage. The rest of the spells you can use depend on your wizard's specialty, as explained below:
 
-Each type of unit has the following properties:
+#### Aggressive Mage
+This wizard aims to be as aggressive as possible, rushing down the enemy and blasting them with powerful fire spells.
 
-| Name | HP | Damage | Moves | Range* | Cost | Description |
-|---|---|---|---|---|---|---|
-| Crew | 4 | 1 | 2 | 1 | 200 | Land only, can board neutral or friendly ships, can bury/dig gold. Can only attack crew. |
-| Ship | 20 | 2 | 3 | 3 | 600 | Water only, crew dies when ship sinks, requires friendly crew to control the ship (otherwise it's neutral). Can only attack ships. |
+| Name | Type | Aether Cost | Damage | Range | Description |
+|---|---|---|---|---|---|
+| Fire Slash | Targeted (Wizard) | 2 | 3 | 3 | Simple fire attack. Good damage. |
+| Thunderous Dash | Buff | 3 | - | 0 | Gives 3 extra speed for 1 turn and lets your Wizard move through the enemy Wizard's. |
+| Furious Telekinesis | Targeted (Item) | 4 | - | 1 | Pushes an item or rune away from your Wizard until it hits another item, a wall, or an opponent. Immediately activates the item/rune in that last case, though charge runes are simply dispelled instead. |
 
-**\* Range is circular**
+#### Defensive Mage
+This wizard patiently counters their opponent until an opportunity to retaliate presents itself.
 
-A unit's max crew health is 4 times the number of crew it has. That means more crew on one unit will provide a higher buffer of damage before crew start to die.
+| Name | Type | Aether Cost | Damage | Range | Description |
+|---|---|---|---|---|---|
+| Rock Lob | Targeted (Wizard) | 2 | 2 | 2* | Throws a rock at an opponent *exactly* two tiles away. |
+| Force Push | Targeted (Wizard) | 3 | 2* | 1 | Pushes an enemy Wizard up to 3 spaces away. If they touch an item they can use, they use it. If they hit a wall before moving 3 spaces, they take 2 damage and stop moving. |
+| Stone Summon | Rune | 4 | - | 1 | Summons an impassable statue for 10 total turns. |
 
-Units are created at the friendly port. They can carry any amount of gold. They may perform one action per turn. All units can do the following things:
+#### Sustaining Mage
+This wizard aims to outlast their opponent in a forced war of attrition.
 
-| Name | Unit | Details |
-|---|---|--|
-| Move | Any | Costs 1 move. Move to an adjacent (not diagonal) tile. If crew moving onto a ship, costs an action. |
-| Attack | Any | Attack any unit in range. Must specify if attacking 'crew' or 'ship'. Costs an action, and consumes any remaining moves. If all the crew on a ship are killed, that ship's health is set to 1. |
-| Bury | Crew | Bury any amount of gold on the unit's tile. Must be performed at least 10 tiles away from the home port, **using circular distance**. Formulas are provided below. |
-| Dig | Crew | Dig up gold buried on this unit's tile. |
-| Deposit | Any | Put gold into the player's gold pool. Must be used adjacent to (or on top of) its owner's port. If near a merchant port, invests money into the merchant port instead. (If in range of both somehow, then deposits into the player's gold pool) |
-| Withdraw | Any | Take gold from the player's gold pool. Must be used adjacent to (or on top of) its owner's port. |
-| Split | Any | Move some crew off of this unit. The crew that move consume a move. Crew health is split proportional to the number of crew being moved. Those crew may also take gold with them. Crew may be split onto other units, causing the other unit to merge with the crew. If crew splitting onto a ship, costs an action. |
-| Rest | Any | Heals the unit. This also repairs ships. Must be used adjacent to (or on top of) its owner's port. Heals 25% of the ships health and max crew health, rounded up. |
+| Name | Type | Aether Cost | Damage | Range | Description |
+|---|---|---|---|---|---|
+| Calming Blast | Projectile | 3 | 1 | Infinity | Fires a basic projectile. If it hits an opposing Wizard, decreases their maximum movement by 1 for one turn. |
+| Teleport | Targeted (None) | 3 | - | 3 | Immediately moves this Wizard to targeted empty tile, regardless of obstacles in the way. |
+| Dispel Magic | Targeted (Item) | 2 | - | 1 | Deletes an Item in range. |
 
-## [Ports][Port]
+#### Strategic Mage
+This wizard doesn't attack directly, but rather places tactical ~~landmines~~ runes all over the map.
 
-Each player is given a port at the start of the game. Ports are used to spawn units. Each turn, players may spawn 600 gold worth of units. This means they can either spawn 1 ship or 3 crew. Merchant ports spawn ships every 24 turns. More specifically, they gain 100 gold each turn, and spawn a ship when they have 2400 gold.
+| Name | Type | Aether Cost | Damage | Range | Description |
+|---|---|---|---|---|---|
+| Explosion Rune | Rune | 2 | 4 | 1 | Rune deals 4 damage when activated. |
+| Heal Rune | Targeted (Wizard) | 5 | -5 | 1 | Rune heals 5 damage when activated. |
+| Teleport Rune | Rune | 3/0 | - | 1/Infinity | Rune cannot be activated normally. When this spell is used a second time, immediately teleports this Wizard to the rune, then destroys it.  |
+| Charge Rune | Rune | 4 | 5 | Infinity/3 | Rune cannot be activated normally. After 5 turns, rune deals 5 damage to any wizard within 3 tiles, then is destroyed. |
 
-Ports have the following properties:
-
-| Name | Description |
-|---|---|
-| Owner | The owner of this port, or null for merchant ports. |
-| Tile | The tile this port is on. |
-| Gold | For players, how much more gold can be spent at this port this turn. For merchants, how much gold this port has accumulated. Merchant ports spawn a ship when they have 2400 gold. By default, the ship has half as much health as a player ship and 3 crew. |
-| Investment | How much gold is invested into this port. See below. |
-
-## Gold
-Gold is obtained by destroying/capturing merchant ships or burying gold. Merchant ships spawn with 600 gold + 1.1 times their investment. After a merchant ship is spawned, the investment on that port is reset to 0. Buried gold increases in value by 2.5% each turn, but it must be buried at least 10 tiles (circular distance) away from the player's port. It can also be obtained by destroying/capturing enemy units that are carrying gold.
-
-## Infamy
-Although gold is an important resource, players need to earn infamy to win. To get infamy, players can destroy their opponent's units or merchant ships.
-- If a player destroys a merchant unit, they gain 600 infamy for the ship plus 200 infamy for each crew on it. By default, that's 1200 infamy.
-- If a player destroy an opponent's unit and the players have the same net worth, they gain 600 infamy for each ship plus 200 infamy for each crew. If their opponent has a higher net worth, the player gains twice that much. If their opponent has a lower net worth, the player gains half that much.
-  - Net worth is calculated as 600 * ships + 200 * crew + their gold + the gold on their units. It's calculated before combat, so any units that die are also part of the calculation.
-
-This means that the player who is worth less will gain more infamy per unit than the player who is worth more when attacking each other.
-
-## Investment
-Players may invest money into merchant ports. This increases the strength and value of the next ship that spawns. When a merchant ship spawns, it has 600 gold + 1.1 times the investment, and 3 crew + (1.1 times the investment / 200). They will always have half the ship health as a player's unit.
-
-## Formulas
-### Circular (Euclidean) Distance
-This is used for calculating attack range and required distance from the player's port to bury gold.
-```js
-let distanceX = x1 - x2;
-let distanceY = y1 - y2;
-distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
-```
-One trick is to skip the costly square root function and square the range instead:
-```js
-distanceX * distanceX + distanceY * distanceY <= range * range
-```
-
-### Interest for Buried Gold
-Each turn, this is applied to every tile on the map:
-```js
-tile.gold = 1.025 * tile.gold;
-```
-This means that the gold increases by 1.050625 times every two turns. Additionally, the following formula can be used to calculate the gold after any given number of turns:
-```js
-tile.gold = Math.pow(1.025, numberOfTurns) * tile.gold;
-```
-
-### Merchant Ships
-When a merchant ship is spawned, the following formulas are used:
+Example Code Block
 ```js
 ship.shipHealth = 10;
 ship.crew = 3 + (1.1 * investment) / 200;
