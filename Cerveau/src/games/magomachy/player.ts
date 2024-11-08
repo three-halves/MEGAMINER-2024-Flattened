@@ -133,7 +133,7 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
         // If you need to change an argument for the real function, then
         // changing its value in this scope is enough.
 
-        if (this.wizardChoice) {
+        if (this.wizardChoice || wizardClass === "map") {
             //return 'You are already a ${wizardChoice}';
             // Nope, for now this is how you print a tilemap:
             var tilemap: string[] = [];
