@@ -236,6 +236,15 @@ export class Wizard extends GameObject {
             return 'Aim buff spells at your Tile, or attacks on another Tile.';
         }
 
+	if (!tile.x || !tile.y ||
+	    tile.x < 0 || tile.y < 0 || 
+	    tile.x >= this.game.mapWidth || tile.y >= this.game.mapHeight) {
+	    return `WHOA! That Tile's not on the map! Did you forget to send a reference?`;
+	}
+	
+	// So clients don't hack into Tiles	
+	tile = this.game.getTile(Math.round(tile.x), Math.round(tile.y));
+
         if (this.hasCast) {
             return 'One spell per turn!';
         }
@@ -495,11 +504,9 @@ export class Wizard extends GameObject {
         tile: Tile,
     ): Promise<boolean> {
         // <<-- Creer-Merge: cast -->>
-
-        // Add logic here for cast.
-
-        // TODO: replace this with actual logic
-        // Process each spell separately
+	// So clients don't hack into Tiles	
+	tile = this.game.getTile(Math.round(tile.x), Math.round(tile.y));
+	    
         this.setDirection(tile);
         switch(spellName) { 
             case "Punch": {
@@ -743,6 +750,15 @@ export class Wizard extends GameObject {
             throw new Error('${this} has no Tile!');
         }
 
+	if (!tile.x || !tile.y ||
+	    tile.x < 0 || tile.y < 0 || 
+	    tile.x >= this.game.mapWidth || tile.y >= this.game.mapHeight) {
+	    return `WHOA! That Tile's not on the map! Did you forget to send a reference?`;
+	}
+	
+	// So clients don't hack into Tiles	
+	tile = this.game.getTile(Math.round(tile.x), Math.round(tile.y));
+
         // Calculate distance of target tile
         const dx = this.tile.x - tile.x;
         const dy = this.tile.y - tile.y;
@@ -784,6 +800,9 @@ export class Wizard extends GameObject {
         if (!this.tile) {
             throw new Error(`${this} has no Tile to move from!']`);
         }
+
+	// So clients don't hack into Tiles	
+	tile = this.game.getTile(Math.round(tile.x), Math.round(tile.y));
 
         this.setDirection(tile);
 	let swapWiz? = tile.wizard;
