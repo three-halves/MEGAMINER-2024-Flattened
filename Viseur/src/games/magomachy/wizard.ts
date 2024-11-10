@@ -133,6 +133,7 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         // <<-- Creer-Merge: render -->>
         // render where the Wizard is
         // render position
+        if (current === undefined) return;
         const dir = this.dirAsString(next.direction);
 
         for (let i = 0; i < 4; i++) {
@@ -272,8 +273,13 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         return ["north", "east", "south", "west"][direction];
     }
 
-    dirAsPosDelta(direction: number): {x: number, y: number} {
-        return [{x: 0, y: -1}, {x: 1, y: 0}, {x: 0, y: 1}, {x: -1, y: 0}][direction];
+    dirAsPosDelta(direction: number): { x: number; y: number } {
+        return [
+            { x: 0, y: -1 },
+            { x: 1, y: 0 },
+            { x: 0, y: 1 },
+            { x: -1, y: 0 },
+        ][direction];
     }
 
     // assuming default sprite faces right
