@@ -160,7 +160,7 @@ export class Wizard extends GameObject {
 			this.attack = 10;
 			this.aether = 10;
 		}
-		else if (this.specialty as string === "strategic") {
+		else {
 			this.health = 10;
 			this.defense = 10;
 			this.attack = 10; // not actually used
@@ -272,6 +272,10 @@ export class Wizard extends GameObject {
         if (this.hasCast) {
             return 'One spell per turn!';
         }
+
+		if (this.health! <= 0 || this.aether! <= 0) {
+			return `Sorry, you're dead!`;
+		}
 
         // Calculate distance of target tile
         const dx = this.tile!.x - tile.x;
@@ -795,6 +799,10 @@ export class Wizard extends GameObject {
         if (this.movementLeft <= 0) {
             return 'No movement left this turn';
         }
+
+		if (this.health! <= 0 || this.aether! <= 0) {
+			return `Sorry, you're dead!`;
+		}
 
         if (!tile || tile.type === "wall") {
             return `${this} can't phase through walls! (Yet...)`;
