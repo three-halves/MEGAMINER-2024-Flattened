@@ -190,6 +190,13 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                                 this.dirAsPosDelta(next.direction).x + 1,
                                 this.dirAsPosDelta(next.direction).y * 2,
                             );
+                            break;
+                        case "Rock Lob":
+                            spellSprite.visible = true;
+                            spellSprite.position.set(
+                                ease(0, targX - next.tile.x, dt),
+                                ease(0, targY - next.tile.y, dt),
+                            );
                     }
             }
         }
