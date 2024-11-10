@@ -318,7 +318,7 @@ export class Wizard extends GameObject {
                 if (!tile.wizard) {
                     return `Curses! The enemy wizard isn\'t at ${tile}!`;
                 }
-                if (distSq > 2 || distSq <= 1) {
+                if (distSq > 4 || distSq <= 2) {
                     return `You are wise enough to know that the spell won't reach there`;
                 }
                 break;
@@ -657,7 +657,7 @@ export class Wizard extends GameObject {
                 this.lastSpell = "Explosion Rune";
                 this.lastTargetTile = tile;
                 tile.object = this.manager.create.item({
-                    form: "explosive rune",
+                    form: "explosion rune",
                     lifetime: 0,
                     tile: tile,
                 })

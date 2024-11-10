@@ -90,11 +90,15 @@ class AI(BaseAI):
         Returns:
             bool: Represents if you want to end your turn. True means end your turn, False means to keep your turn going and re-call this function.
         """
+        notChosen = True
         print("Your turn! Here's the map:")
         while(True):
             self.player.choose_wizard("map")
-            if not self.player.wizard:
+            if not self.player.wizard and notChosen:
                 print("WARNING: You have not chosen a wizard. Do that ASAP!")
+            elif self.player.wizard:
+                print("HEALTH:",self.player.wizard.health)
+                print("AETHER",self.player.wizard.aether)
             
             choice = input('What next? Type help for a list of commands.')
             components = choice.split()
@@ -125,6 +129,7 @@ class AI(BaseAI):
                 
                 if wizard:
                     self.player.choose_wizard(wizard)
+                    notChosen = False
             elif components[0] == 'move':
                 tile = None
                 if len(components) != 2:
