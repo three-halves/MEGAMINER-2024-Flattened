@@ -318,7 +318,7 @@ export class Wizard extends GameObject {
                 if (!tile.wizard) {
                     return `Curses! The enemy wizard isn\'t at ${tile}!`;
                 }
-                if (distSq > 4 || distSq <= 2) {
+                if (distSq > 4 || distSq <= 1) {
                     return `You are wise enough to know that the spell won't reach there`;
                 }
                 break;
@@ -521,7 +521,7 @@ export class Wizard extends GameObject {
                 // Does it go through walls? I assume so
                 this.lastSpell = "Fire Slash";
                 this.lastTargetTile = tile;
-                if (tile.wizard !== undefined) tile.wizard.health -= 3;
+                if (tile.wizard !== undefined) this.damage(tile.wizard, 3);//tile.wizard.health -= 3;
                 this.aether -= 2;
                 return true;
             }
@@ -562,7 +562,7 @@ export class Wizard extends GameObject {
                 // Anyhoo throws rock in exactly 2 range
                 this.lastSpell = "Rock Lob";
                 this.lastTargetTile = tile;
-                tile.wizard!.health -= 2;
+                this.attack(tile.wizard!,2);//tile.wizard!.health -= 2;
                 this.aether -= 2;
                 break;
             }
@@ -592,7 +592,7 @@ export class Wizard extends GameObject {
                     nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, prevTile);
                 }
                 if (distLeft > 0) {
-                    prevTile.wizard!.health -= 2;
+                    this.damage(prevTile.wizard!,2);//prevTile.wizard!.health -= 2;
                 }
                 break;
             }
@@ -629,7 +629,7 @@ export class Wizard extends GameObject {
                 }
                 if (prevTile?.wizard && prevTile?.wizard !== this) {
                     tile.wizard!.speed -= 1;
-                    tile.wizard!.health -= 1;
+                    this.damage(tile.wizard!,1);//tile.wizard!.health -= 1;
                 }
                 this.aether -= 3;
                 break;
@@ -944,5 +944,24 @@ export class Wizard extends GameObject {
 	}
         return true;
     }
+
+	/**
+ 	 * Attack an enemy Wizard.
+ 	 *
+ 	 * @param enemy - The Wizard to attack.
+ 	 * @param dmg - The raw damage the spell does.
+ 	 * @returns True if successfully cast, false otherwise.
+ 	 */
+	private damage(
+		enemy: Wizard
+  		dmg: number
+	): boolean {
+		let modifier = Math.round((this.attack - enemy.defense)/2);
+		if (modifier < 0) {
+			modifier = 0
+		}
+  		enemy.health -= dmg + modifier;
+  		return true;
+	}
     // <<-- /Creer-Merge: protected-private-functions -->>
 }
