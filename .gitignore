@@ -41,3 +41,14 @@ Thumbs.db
 node_modules
 output
 package-lock.json
+
+# Joueur Files #
+################
+Joueur.cpp
+Joueur.cs 
+Joueur.go
+Joueur.java
+Joueur.js 
+Joueur.lua
+Joueur.py
+Joueur.ts

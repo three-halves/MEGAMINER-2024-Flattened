@@ -38,7 +38,7 @@ class AI(BaseAI):
         """
         # <<-- Creer-Merge: start -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         # replace with your start logic
-        self.player.choose_wizard("aggressive")
+        self.player.choose_wizard("map")
         # <<-- /Creer-Merge: start -->>
 
     def game_updated(self) -> None:
@@ -90,28 +90,77 @@ class AI(BaseAI):
         Returns:
             bool: Represents if you want to end your turn. True means end your turn, False means to keep your turn going and re-call this function.
         """
-        # print(self.game.current_turn)
-        # if(self.game.current_turn % 2 == 0):
-        #     self.player.choose_wizard("sustaining")
-        #     print(self.player.wizard.specialty)
-        #     validSpells = ["Calming Blast", "Teleport"]
-        #     random.shuffle(validSpells)
-        #     self.player.wizard.move(self.player.wizard.tile.tile_east)
-        #     if(validSpells[0] == "Teleport"):
-        #         coords = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-        #         random.shuffle(coords)
-        #         x = coords[0]
-        #         y = coords[1]
-        #         self.game.tiles[x+y*self.game.map_width]
-        #     else:
-        #         self.player.wizard.cast(validSpells[0], self.player.wizard.tile.tile_east)
-        # elif(self.game.current_turn % 2 == 1):
-        #     self.player.choose_wizard("aggressive")
-        #     print(self.player.wizard.specialty)
-        #     validSpells = ["Punch", "Fire Slash", "Furious Telekenesis", "Thunderous Dash"]
-        #     random.shuffle(validSpells)
-        #     self.player.wizard.move(self.player.wizard.tile.tile_west)
-        #     self.player.wizard.cast(validSpells[0], self.player.wizard.tile.tile_west)
+        print("Your turn! Here's the map:")
+        while(True):
+            self.player.choose_wizard("map")
+            if not self.player.wizard:
+                print("WARNING: You have not chosen a wizard. Do that ASAP!")
+            
+            choice = input('What next? Type help for a list of commands.')
+            components = choice.split()
+            if len(components) == 0:
+                pass
+            elif components[0] == 'help':
+                print("Valid commands:")
+                print("choose [wizardClass]: pick a class at the start of the game")
+                print("move [up, down, right, left]: move in specified direction.")
+                print("cast [spell] [x] [y]: cast spell at specified coordinate")
+            elif components[0] == 'end':
+                print("Ending turn...")
+                break;
+            elif components[0] == 'choose':
+                wizard = None
+                
+                if self.player.wizard:
+                    print("You've already chosen a wizard!")
+                elif len(components) != 2:
+                    print("Wrong number of arguments!")
+                elif (components[1] == 'aggressive'
+                or components[1] == 'defensive'
+                or components[1] == 'sustaining'
+                or components[1] == 'strategic'):
+                    wizard = components[1]
+                else:
+                    print("Choose aggressive, defensive, sustaining, or strategic.")
+                
+                if wizard:
+                    self.player.choose_wizard(wizard)
+            elif components[0] == 'move':
+                tile = None
+                if len(components) != 2:
+                    tile = None
+                elif components[1] == 'left':
+                    tile = self.player.wizard.tile.tile_west
+                elif components[1] == 'right':
+                    tile = self.player.wizard.tile.tile_east
+                elif components[1] == 'down':
+                    tile = self.player.wizard.tile.tile_south
+                elif components[1] == 'up':
+                    tile = self.player.wizard.tile.tile_north
+                if tile:
+                    self.player.wizard.move(tile)
+                else:
+                    print("Command not executed. Choose a direction.")
+            elif components[0] == 'cast':
+                if self.player.wizard.has_cast:
+                    print("You've already cast a spell this turn...")
+                elif len(components) < 4 or len(components) > 5:
+                    print("Wrong number of arguments")
+                else:
+                    spell = components[1]
+                    x = components[2]
+                    y = components[3]
+                    if len(components) == 5:
+                        spell = components[1] + " " + components[2]
+                        x = components[3]
+                        y = components[4]
+                    if not x.isdigit or not y.isdigit:
+                        print("Choose actual coordinates...")
+                    else:
+                        tile = self.game.get_tile_at(int(x),int(y))
+                        self.player.wizard.cast(spell,tile)
+            else:
+                print("Command not recognized, try again")
         # <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         # Put your game logic here for runTurn
         return True

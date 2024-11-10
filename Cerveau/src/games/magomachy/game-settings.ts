@@ -38,7 +38,7 @@ export class MagomachyGameSettingsManager extends BaseClasses.GameSettings {
             // Base settings
             playerStartingTime: {
                 // <<-- Creer-Merge: player-starting-time -->>
-                default: 6e10, // 1 min in ns
+                default: 6e12, // 1 min in ns
                 // <<-- /Creer-Merge: player-starting-time -->>
                 min: 0,
                 description: "The starting time (in ns) for each player.",
