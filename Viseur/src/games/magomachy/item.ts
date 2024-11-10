@@ -1,6 +1,6 @@
 // This is a class to represent the Item object in the game.
 // If you want to render it in the game do so here.
-import { Immutable } from "src/utils";
+import { ease, Immutable } from "src/utils";
 import { Viseur } from "src/viseur";
 import { makeRenderable } from "src/viseur/game";
 import { GameObject } from "./game-object";
@@ -104,6 +104,10 @@ export class Item extends makeRenderable(GameObject, SHOULD_RENDER) {
 
         // <<-- Creer-Merge: render -->>
         // render where the Item is
+        this.container.position.set(
+            ease(current.tile.x, next.tile.x, dt, "quadOut"),
+            ease(current.tile.y, next.tile.y, dt, "quadOut"),
+        );
         // <<-- /Creer-Merge: render -->>
     }
 
