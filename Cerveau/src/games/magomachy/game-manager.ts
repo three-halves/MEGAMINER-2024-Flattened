@@ -74,8 +74,6 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
             if(!this.game.players[0].wizard && !this.game.players[1].wizard && this.game.players[0].wizardChoice && this.game.players[1].wizardChoice) {
                 this.game.players[0].wizard = this.create.wizard({
                     owner: this.game.players[0],
-                    health: 10,
-                    aether: 10,
                     tile: this.game.wizard1_tile,
                     specialty: this.game.players[0].wizardChoice!,
                     speed: 2
@@ -85,8 +83,6 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
                 
                 this.game.players[1].wizard = this.create.wizard({
                     owner: this.game.players[1],
-                    health: 10,
-                    aether: 10,
                     tile: this.game.wizard2_tile,
                     specialty: this.game.players[1].wizardChoice!,
                     speed: 2
