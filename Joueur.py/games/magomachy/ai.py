@@ -93,8 +93,9 @@ class AI(BaseAI):
         self.player.choose_wizard("aggressive")
         validSpells = ["Punch", "Fire Slash", "Furious Telekenesis", "Thunderous Dash"]
         random.shuffle(validSpells)
-        self.player.wizard.move(self.player.wizard.tile.tile_west)
-        self.player.wizard.cast(validSpells[0], self.player.wizard.tile.tile_west)
+        if self.player.wizard != None:
+            self.player.wizard.move(self.player.wizard.tile.tile_west)
+            self.player.wizard.cast(validSpells[0], self.player.wizard.tile.tile_west)
         # <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         # Put your game logic here for runTurn
         return True

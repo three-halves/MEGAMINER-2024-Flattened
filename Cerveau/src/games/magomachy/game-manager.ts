@@ -68,11 +68,11 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
         
         // Restore speed
         if (this.game.currentPlayer.wizard) {
-            this.game.currentPlayer.wizard!.speed = 2;
+            this.game.currentPlayer.wizard.speed = 2;
         }
         else {
             if(!this.game.players[0].wizard && !this.game.players[1].wizard && this.game.players[0].wizardChoice && this.game.players[1].wizardChoice) {
-                this.game.players[0].wizard = this.manager.create.wizard({
+                this.game.players[0].wizard = this.create.wizard({
                     owner: this.game.players[0],
                     health: 10,
                     aether: 10,
@@ -80,10 +80,10 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
                     specialty: this.game.players[0].wizardChoice!,
                     speed: 2
                 });
-                this.game.players[0].wizard.tile!.wizard = this.players[0].wizard;
-                this.game.wizards.push(this.players[0].wizard);
+                this.game.players[0].wizard.tile!.wizard = this.game.players[0].wizard;
+                this.game.wizards.push(this.game.players[0].wizardChoice);
                 
-                this.game.players[1].wizard = this.manager.create.wizard({
+                this.game.players[1].wizard = this.create.wizard({
                     owner: this.game.players[1],
                     health: 10,
                     aether: 10,
@@ -91,8 +91,8 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
                     specialty: this.game.players[1].wizardChoice!,
                     speed: 2
                 });
-                this.game.players[1].wizard.tile!.wizard = this.players[1].wizard;
-                this.game.wizards.push(this.players[1].wizard);
+                this.game.players[1].wizard.tile!.wizard = this.game.players[1].wizard;
+                this.game.wizards.push(this.game.players[1].wizardChoice);
             }
         }
 
@@ -141,20 +141,24 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
             this.declareLoser("You didn't pick a wizard in time for the duel!", this.game.currentPlayer);
             return true;
         }
-        const killedOff = this.game.players.filter(
-            (p) => p.wizard.health <= 0 || p.wizard.aether <= 0);
 
-        if (killedOff.length == 2) {
-            this.secondaryWinConditions("Both wizards have died!");
-        }
-        else if (killedOff.length == 1) {
-            const loser = killedOff[0];
-            this.declareWinner("You defeated the other wizard!", loser.opponent);
-            this.declareLoser(
-                "The other wizard's arcane might proved too much for you.", loser
-            );
-
-            return true;
+        if (this.game.wizards[0] !== undefined && this.game.wizards[1] !== undefined)
+        {
+            const killedOff = this.game.players.filter(
+                (p) => p.wizard.health <= 0 || p.wizard.aether <= 0);
+    
+            if (killedOff.length == 2) {
+                this.secondaryWinConditions("Both wizards have died!");
+            }
+            else if (killedOff.length == 1) {
+                const loser = killedOff[0];
+                this.declareWinner("You defeated the other wizard!", loser.opponent);
+                this.declareLoser(
+                    "The other wizard's arcane might proved too much for you.", loser
+                );
+    
+                return true;
+            }
         }
         // <<-- /Creer-Merge: primary-win-conditions -->>
 

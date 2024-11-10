@@ -243,7 +243,7 @@ export class Wizard extends GameObject {
 	}
 	
 	// So clients don't hack into Tiles	
-	tile = this.game.getTile(Math.round(tile.x), Math.round(tile.y));
+	tile = this.game.getTile(Math.round(tile.x), Math.round(tile.y))!;
 
         if (this.hasCast) {
             return 'One spell per turn!';
@@ -505,7 +505,7 @@ export class Wizard extends GameObject {
     ): Promise<boolean> {
         // <<-- Creer-Merge: cast -->>
 	// So clients don't hack into Tiles	
-	tile = this.game.getTile(Math.round(tile.x), Math.round(tile.y));
+	tile = this.game.getTile(Math.round(tile.x), Math.round(tile.y))!;
 	    
         this.setDirection(tile);
         switch(spellName) { 
@@ -553,7 +553,7 @@ export class Wizard extends GameObject {
                 }
                 if (prevTile.wizard) {
                     // Collect item here
-                    prevTile.wizard!.useItem(prevTile.object!,force=true);
+                    prevTile.wizard!.useItem(prevTile.object!, true);
                 }
                 break;
             }
@@ -584,7 +584,7 @@ export class Wizard extends GameObject {
                     // Honestly may be best to have a generic move function
 		    if (nextTile.object) {
                         // Collect item here
-                        nextTile.wizard!.useItem(nextTile.object!,force=true);
+                        nextTile.wizard!.useItem(nextTile.object!, true);
                     }
 
                     distLeft--;
@@ -757,7 +757,7 @@ export class Wizard extends GameObject {
 	}
 	
 	// So clients don't hack into Tiles	
-	tile = this.game.getTile(Math.round(tile.x), Math.round(tile.y));
+	tile = this.game.getTile(Math.round(tile.x), Math.round(tile.y))!;
 
         // Calculate distance of target tile
         const dx = this.tile.x - tile.x;
@@ -802,11 +802,11 @@ export class Wizard extends GameObject {
         }
 
 	// So clients don't hack into Tiles	
-	tile = this.game.getTile(Math.round(tile.x), Math.round(tile.y));
+	    tile = this.game.getTile(Math.round(tile.x), Math.round(tile.y))!;
 
         this.setDirection(tile);
-	let swapWiz? = tile.wizard;
-	let swapTile = this.tile;
+        let swapWiz = tile.wizard;
+        let swapTile = this.tile;
 	    
         this.tile.wizard = undefined;
         this.tile = tile;
@@ -919,7 +919,7 @@ export class Wizard extends GameObject {
             }
             case "stone": {
                 // EXCEPTIONALLY rare case since walls block moves
-		if !force {
+		if (!force) {
 		    destroy = false;
 		}
                 break;

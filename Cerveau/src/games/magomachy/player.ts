@@ -154,7 +154,7 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
             // TILES
             // #: wall
             // [empty]: floor
-            for (let k=0; i < this.game.mapWidth; k++) {
+            for (let k=0; k < this.game.mapWidth; k++) {
                 tilemap.push(k.toString());
             }
             for (let i=0; i < this.game.mapHeight; i++) {
