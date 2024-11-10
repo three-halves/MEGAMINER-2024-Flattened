@@ -181,14 +181,15 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                             break;
                         case "Fire Slash":
                             spellSprite.visible = true;
-                            spellSprite.anchor.set(0.5)
-                            spellSprite.angle = this.dirAsAngle(next.direction);
-                            spellSprite.anchor.set(0.0, 1.0)
+                            spellSprite.anchor.set(0.5);
+                            spellSprite.angle = this.dirAsAngle(
+                                next.direction,
+                            );
+                            spellSprite.anchor.set(0.0, 1.0);
                             spellSprite.position.set(
                                 this.dirAsPosDelta(next.direction).x + 1,
-                                this.dirAsPosDelta(next.direction).y * 2
+                                this.dirAsPosDelta(next.direction).y * 2,
                             );
-
                     }
             }
         }
@@ -270,7 +271,7 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
     // <<-- Creer-Merge: public-functions -->>
     // You can add additional public functions here
     dirAsString(direction: number): string {
-        return ["north", "east", "south", "west"][direction];
+        return ["south", "east", "north", "west"][direction];
     }
 
     dirAsPosDelta(direction: number): { x: number; y: number } {

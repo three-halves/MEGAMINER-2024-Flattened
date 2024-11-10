@@ -90,29 +90,20 @@ class AI(BaseAI):
         Returns:
             bool: Represents if you want to end your turn. True means end your turn, False means to keep your turn going and re-call this function.
         """
-        # print(self.game.current_turn)
-        # if(self.game.current_turn % 2 == 0):
-        #     self.player.choose_wizard("sustaining")
-        #     print(self.player.wizard.specialty)
-        #     validSpells = ["Calming Blast", "Teleport"]
-        #     random.shuffle(validSpells)
-        #     self.player.wizard.move(self.player.wizard.tile.tile_east)
-        #     if(validSpells[0] == "Teleport"):
-        #         coords = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-        #         random.shuffle(coords)
-        #         x = coords[0]
-        #         y = coords[1]
-        #         self.game.tiles[x+y*self.game.map_width]
-        #     else:
-        #         self.player.wizard.cast(validSpells[0], self.player.wizard.tile.tile_east)
-        # elif(self.game.current_turn % 2 == 1):
-        #     self.player.choose_wizard("aggressive")
-        #     print(self.player.wizard.specialty)
-        #     validSpells = ["Punch", "Fire Slash", "Furious Telekenesis", "Thunderous Dash"]
-        #     random.shuffle(validSpells)
-        #     self.player.wizard.move(self.player.wizard.tile.tile_west)
-        #     self.player.wizard.cast(validSpells[0], self.player.wizard.tile.tile_west)
-        # <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
+        if (self.player.wizard == None): 
+            self.player.choose_wizard("aggressive")
+            return True
+
+        for i in range (0, 5):
+            dir = random.randint(0, 3)
+            if dir == 0:
+                self.player.wizard.move(self.player.wizard.tile.tile_north);
+            elif dir == 1:
+                self.player.wizard.move(self.player.wizard.tile.tile_east);
+            elif dir == 2:
+                self.player.wizard.move(self.player.wizard.tile.tile_south);
+            else:
+                self.player.wizard.move(self.player.wizard.tile.tile_west);
         # Put your game logic here for runTurn
         return True
         # <<-- /Creer-Merge: runTurn -->>

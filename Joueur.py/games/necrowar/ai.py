@@ -1,5 +1,6 @@
 # This is where you build your AI for the Necrowar game.
 
+import random
 from typing import List
 from joueur.base_ai import BaseAI
 
@@ -37,6 +38,7 @@ class AI(BaseAI):
         """
         # <<-- Creer-Merge: start -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         # replace with your start logic
+        self.player.choose_wizard("aggressive")
         # <<-- /Creer-Merge: start -->>
 
     def game_updated(self) -> None:
@@ -64,6 +66,18 @@ class AI(BaseAI):
         """
         # <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
         # Put your game logic here for runTurn
+        self.player.choose_wizard("aggressive")
+        
+
+        dir = random.randint(0, 3)
+        if dir == 0:
+            self.player.wizard.move(self.player.wizard.tile.tile_north);
+        elif dir == 1:
+            self.player.wizard.move(self.player.wizard.tile.tile_east);
+        elif dir == 2:
+            self.player.wizard.move(self.player.wizard.tile.tile_south);
+        else:
+            self.player.wizard.move(self.player.wizard.tile.tile_west);
         return True
         # <<-- /Creer-Merge: runTurn -->>
 

@@ -12,7 +12,7 @@ import { ItemState, MagomachyDelta } from "./state-interfaces";
 
 // <<-- Creer-Merge: should-render -->>
 // Set this variable to `true`, if this class should render.
-const SHOULD_RENDER = undefined;
+const SHOULD_RENDER = true;
 // <<-- /Creer-Merge: should-render -->>
 
 /**
@@ -31,6 +31,8 @@ export class Item extends makeRenderable(GameObject, SHOULD_RENDER) {
 
     // <<-- Creer-Merge: variables -->>
     // You can add additional member variables here
+
+    public sprite: PIXI.Sprite;
     // <<-- /Creer-Merge: variables -->>
 
     /**
@@ -46,7 +48,33 @@ export class Item extends makeRenderable(GameObject, SHOULD_RENDER) {
         super(state, viseur);
 
         // <<-- Creer-Merge: constructor -->>
+        this.container.position.set(state.tile.x, state.tile.y);
+
         // You can initialize your new Item here.
+        this.container.setParent(this.game.layers.game);
+        switch (state.form) {
+            case "health flask":
+                this.sprite = this.addSprite.item_health();
+                break;
+            case "aether flask":
+                this.sprite = this.addSprite.item_aether();
+                break;
+            case "explosion rune":
+                this.sprite = this.addSprite.rune_explode();
+                break;
+            case "heal rune":
+                this.sprite = this.addSprite.rune_health();
+                break;
+            case "teleport rune":
+                this.sprite = this.addSprite.rune_tele();
+                break;
+            case "charge rune":
+                this.sprite = this.addSprite.rune_charge();
+                break;
+            case "stone":
+                this.sprite = this.addSprite.wall();
+                break;
+        }
         // <<-- /Creer-Merge: constructor -->>
     }
 

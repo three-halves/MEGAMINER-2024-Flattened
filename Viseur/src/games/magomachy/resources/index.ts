@@ -31,6 +31,15 @@ export const GameResources = createResources("Magomachy", {
     wiz_st_s: load("sprites-st/face-south.png"),
     wiz_st_w: load("sprites-st/face-west.png"),
 
+    item_health: load("sprites-items/flask-health.png"),
+    item_aether: load("sprites-items/flask-aether.png"),
+
+    rune_health: load("sprites-items/heal.png"),
+    rune_tele: load("sprites-items/teleport.png"),
+    rune_explode: load("sprites-items/lightning.png"),
+    rune_charge: load("sprites-items/poison.png"),
+    // rune_stone: load("wall.png"),
+
     spell_punch: load("sprites-spells/punch.png"),
     spell_flame: load("sprites-spells/firefist.png"),
 
