@@ -3,6 +3,8 @@ import { Viseur } from "src/viseur";
 import { BasePane, PaneStat } from "src/viseur/game";
 import { Game } from "./game";
 import { GameState, PlayerState } from "./state-interfaces";
+import { Player } from "./player";
+import { get } from "store";
 
 // <<-- Creer-Merge: imports -->>
 // Add additional imports you need here
@@ -94,13 +96,13 @@ export class Pane extends BasePane<GameState, PlayerState> {
         stats.push({
             title: "health",
             icon: "heart",
-            get: (player) => player.wizard.health,
+            get: (player) => player.wizard?.health,
         });
 
         stats.push({
             title: "aether",
             icon: "star",
-            get: (player) => player.wizard.aether,
+            get: (player) => player.wizard?.aether,
         });
         // <<-- /Creer-Merge: player-stats -->>
 
