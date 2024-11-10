@@ -142,8 +142,32 @@ export class Wizard extends GameObject {
 
         // <<-- Creer-Merge: constructor -->>
         // setup any thing you need here
-        this.maxAether = this.aether;
-        this.maxHealth = this.health;
+		if (this.specialty as string === "aggressive") {
+			this.health = 10;
+			this.defense = 5;
+			this.attack = 15;
+			this.aether = 10;
+		}
+		else if (this.specialty as string === "defensive") {
+			this.health = 10;
+			this.defense = 15;
+			this.attack = 5;
+			this.aether = 10;
+		}
+		else if (this.specialty as string === "sustaining") {
+			this.health = 15;
+			this.defense = 10;
+			this.attack = 10;
+			this.aether = 10;
+		}
+		else if (this.specialty as string === "strategic") {
+			this.health = 10;
+			this.defense = 10;
+			this.attack = 10; // not actually used
+			this.aether = 15;
+		}
+		this.maxAether = this.aether;
+		this.maxHealth = this.health;
         // <<-- /Creer-Merge: constructor -->>
     }
 
