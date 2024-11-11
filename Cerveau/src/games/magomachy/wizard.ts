@@ -315,9 +315,12 @@ export class Wizard extends GameObject {
                 if (!tile.wizard) {
                     return 'Nobody\'s at ${tile}, champ!';
                 }
-                if (distSq > 9) {
+                if (distSq > 4) {
                     return '${tile} is too far away to get charbroiled!';
                 }
+		if (dx != 0 && dy != 0) {
+		    return `This spell only goes directly vertical or horizontal!`;
+		}
                 // this is a really clever invalidate but its meant for Rock Lob
                 //if (tile.hasNeighbor(player.wizard.tile)) {
                 //    return ``
@@ -566,8 +569,8 @@ export class Wizard extends GameObject {
                 // Just add an isDash var to wizards
                 this.lastSpell = "Thunderous Dash";
                 this.lastTargetTile = tile;
-                this.movementLeft += 3;
-                this.speed += 3;
+                this.movementLeft += 2;
+                this.speed += 2;
                 //this.effects.push("Dash");
                 //this.effectTimes.push(0);
                 this.aether -= 3;
@@ -610,7 +613,7 @@ export class Wizard extends GameObject {
                 this.lastTargetTile = tile;
                 this.aether -= 3;
 
-                let distLeft = 3;
+                let distLeft = 4;
                 let prevTile = tile;
                 let nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, tile)
                 while (nextTile && nextTile.type === "floor" && !(nextTile.object?.form === "stone") && distLeft > 0) {
