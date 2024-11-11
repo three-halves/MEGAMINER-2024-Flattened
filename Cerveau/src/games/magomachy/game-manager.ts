@@ -50,6 +50,7 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
 
             // Give Spells
             this.game.currentPlayer.wizard!.hasCast = false;
+	    this.game.currentPlayer.wizard!.hasTeleported = false;
         }
         // <<-- /Creer-Merge: before-turn -->>
     }
