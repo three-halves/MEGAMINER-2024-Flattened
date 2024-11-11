@@ -116,10 +116,10 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
 			else if (this.game.tiles[i].object_spawn && !this.game.tiles[i].wizard) {
 				this.game.tiles[i].spawn_timer! -= 1;
 				if (this.game.tiles[i].spawn_timer! === 0) {
-					tile.object = this.manager.create.item({
+					this.game.tiles[i].object = this.create.item({
                     	form: this.game.tiles[i].object_spawn!,
                     	lifetime: 0,
-                    	tile: tile,
+                    	tile: this.game.tiles[i],
                 	});
 					this.game.tiles[i].spawn_timer = 10;
 				}

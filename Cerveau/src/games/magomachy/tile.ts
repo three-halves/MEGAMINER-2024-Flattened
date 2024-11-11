@@ -76,12 +76,12 @@ export class Tile extends GameObject implements BaseTile {
 	/**
 	 * What item spawns on this tile.
 	 **/
-	public readonly object_spawn?: string;
+	public object_spawn?: string;
 
 	/**
 	 * Turns until item should spawn
 	 */
-	public readonly spawn_timer?: number;
+	public spawn_timer?: number;
 
     // <<-- /Creer-Merge: attributes -->>
 

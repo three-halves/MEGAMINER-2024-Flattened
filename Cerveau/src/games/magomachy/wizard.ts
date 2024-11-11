@@ -275,10 +275,10 @@ export class Wizard extends GameObject {
 	// So clients don't hack into Tiles	
 	tile = this.game.getTile(Math.round(tile.x), Math.round(tile.y))!;
 
-        if (this.hasCast && spellname !== "Teleport") {
+        if (this.hasCast && spellName !== "Teleport") {
             return 'One non-teleport spell per turn!';
         }
-	if (this.hasTeleported && spellname === "Teleport") {
+	if (this.hasTeleported && spellName === "Teleport") {
 		return `One teleport per turn!`;
 	}
 
@@ -599,7 +599,7 @@ export class Wizard extends GameObject {
                 // Anyhoo throws rock in exactly 2 range
                 this.lastSpell = "Rock Lob";
                 this.lastTargetTile = tile;
-                this.attack(tile.wizard!,2);//tile.wizard!.health -= 2;
+                this.damage(tile.wizard!,2);//tile.wizard!.health -= 2;
                 this.aether -= 2;
                 break;
             }
@@ -665,10 +665,13 @@ export class Wizard extends GameObject {
                     nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, prevTile);
                 }
                 if (prevTile?.wizard && prevTile?.wizard !== this) {
-                    prevtile.wizard!.speed -= 1;
+                    prevTile.wizard!.speed -= 1;
                     this.damage(prevTile.wizard!,1);//tile.wizard!.health -= 1;
                 }
                 this.aether -= 3;
+                if (this.health < this.maxHealth!) {
+                    this.health += 1;
+                }
                 break;
             }
             case "Teleport": {
@@ -756,7 +759,7 @@ export class Wizard extends GameObject {
                 break; 
             } 
         }
-	if spellname !== "Teleport" {
+	if (spellName !== "Teleport") {
 		this.hasCast = true;
 	}
         return true;
@@ -997,7 +1000,7 @@ export class Wizard extends GameObject {
  	 * @returns True if successfully cast, false otherwise.
  	 */
 	private damage(
-		enemy: Wizard
+		enemy: Wizard,
   		dmg: number
 	): boolean {
 		let modifier = Math.round((this.attack - enemy.defense)/2);
