@@ -108,6 +108,7 @@ export class Item extends makeRenderable(GameObject, SHOULD_RENDER) {
             ease(current.tile.x, next.tile.x, dt, "quadOut"),
             ease(current.tile.y, next.tile.y, dt, "quadOut"),
         );
+
         // <<-- /Creer-Merge: render -->>
     }
 
