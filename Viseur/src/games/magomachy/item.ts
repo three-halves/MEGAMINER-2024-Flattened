@@ -51,7 +51,7 @@ export class Item extends makeRenderable(GameObject, SHOULD_RENDER) {
         this.container.position.set(state.tile.x, state.tile.y);
 
         // You can initialize your new Item here.
-        this.container.setParent(this.game.layers.game);
+        this.container.setParent(this.game.layers.items);
         switch (state.form) {
             case "health flask":
                 this.sprite = this.addSprite.item_health();

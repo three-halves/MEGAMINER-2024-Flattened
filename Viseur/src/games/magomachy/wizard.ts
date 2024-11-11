@@ -5,6 +5,7 @@ import { Viseur } from "src/viseur";
 import { makeRenderable } from "src/viseur/game";
 import { GameObject } from "./game-object";
 import { MagomachyDelta, TileState, WizardState } from "./state-interfaces";
+import { linear } from "eases";
 
 // <<-- Creer-Merge: imports -->>
 // any additional imports you want can be added here safely between Creer runs
@@ -101,6 +102,7 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                 visible: false,
                 width: 3,
             }),
+            "Rock Lob": this.addSprite.wall2(hide),
         };
 
         // <<-- /Creer-Merge: constructor -->>
@@ -185,17 +187,22 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                             spellSprite.angle = this.dirAsAngle(
                                 next.direction,
                             );
-                            spellSprite.anchor.set(0.0, 1.0);
+                            spellSprite.anchor.set(0.0);
                             spellSprite.position.set(
-                                this.dirAsPosDelta(next.direction).x + 1,
-                                this.dirAsPosDelta(next.direction).y * 2,
+                                this.dirAsPosDelta(next.direction).x,
+                                this.dirAsPosDelta(next.direction).y,
                             );
                             break;
                         case "Rock Lob":
                             spellSprite.visible = true;
                             spellSprite.position.set(
-                                ease(0, targX - next.tile.x, dt),
-                                ease(0, targY - next.tile.y, dt),
+                                ease(0, targX - next.tile.x, dt, linear),
+                                ease(
+                                    0,
+                                    targY - next.tile.y,
+                                    dt,
+                                    (t) => 2 * (-((2 * t - 1) ** 2) + 1),
+                                ),
                             );
                     }
             }
@@ -283,16 +290,16 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
 
     dirAsPosDelta(direction: number): { x: number; y: number } {
         return [
-            { x: 0, y: -1 },
-            { x: 1, y: 0 },
             { x: 0, y: 1 },
+            { x: 1, y: 0 },
+            { x: 0, y: -1 },
             { x: -1, y: 0 },
         ][direction];
     }
 
     // assuming default sprite faces right
     dirAsAngle(direction: number): number {
-        return [270, 0, 90, 180][direction];
+        return [90, 0, 270, 180][direction];
     }
     // <<-- /Creer-Merge: public-functions -->>
 
