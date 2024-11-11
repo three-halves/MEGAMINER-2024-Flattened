@@ -514,7 +514,7 @@ export class Wizard extends GameObject {
                 this.lastSpell = "Punch";
                 this.lastTargetTile = tile;
                 if (tile.wizard !== undefined) tile.wizard.health -= 1;
-                return true;
+                break;
             }
             case "Fire Slash": {
                 // Fire blast
@@ -523,7 +523,7 @@ export class Wizard extends GameObject {
                 this.lastTargetTile = tile;
                 if (tile.wizard !== undefined) tile.wizard.health -= 3;
                 this.aether -= 2;
-                return true;
+                break;
             }
             case "Thunderous Dash": {
                 // Just add an isDash var to wizards
@@ -622,14 +622,14 @@ export class Wizard extends GameObject {
                 this.lastSpell = "Calming Blast";
                 this.lastTargetTile = tile;
                 let prevTile = this.tile;
-                let nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, tile)
+                let nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, this.tile!)
                 while (nextTile && nextTile.type === "floor" && (!prevTile?.wizard || prevTile?.wizard === this)) {
                     prevTile = nextTile;
                     nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, prevTile);
                 }
                 if (prevTile?.wizard && prevTile?.wizard !== this) {
-                    tile.wizard!.speed -= 1;
-                    tile.wizard!.health -= 1;
+                    prevTile.wizard!.speed -= 1;
+                    prevTile.wizard!.health -= 1;
                 }
                 this.aether -= 3;
                 break;
