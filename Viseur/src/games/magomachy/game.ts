@@ -63,6 +63,7 @@ export class Game extends BaseGame {
         /** Bottom most layer, for background elements. */
         background: this.createLayer(),
         /** Middle layer, for moving game objects. */
+        items: this.createLayer(),
         game: this.createLayer(),
         /** Top layer, for UI elements above the game. */
         ui: this.createLayer(),
