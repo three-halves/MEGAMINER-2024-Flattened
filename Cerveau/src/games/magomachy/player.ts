@@ -195,7 +195,7 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
                         }
                         else if (tile.object!.form == "charge rune") {
                             let turnsLeft = tile.object!.max_life! - tile.object!.lifetime;
-                            tilemap.push(turnsLeft.toString());
+                            tilemap.push(Math.min(turnsLeft,9).toString());
                         }
                         else if (tile.object!.form == "stone") {
                             tilemap.push("s");
