@@ -189,8 +189,16 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                             );
                             spellSprite.anchor.set(0.0);
                             spellSprite.position.set(
-                                this.dirAsPosDelta(next.direction).x,
-                                this.dirAsPosDelta(next.direction).y,
+                                this.dirAsPosDelta(next.direction).x +
+                                    (next.direction === 3 ||
+                                    next.direction === 0
+                                        ? 1
+                                        : 0),
+                                this.dirAsPosDelta(next.direction).y +
+                                    (next.direction === 3 ||
+                                    next.direction === 2
+                                        ? 1
+                                        : 0),
                             );
                             break;
                         case "Rock Lob":
