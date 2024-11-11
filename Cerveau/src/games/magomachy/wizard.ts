@@ -122,6 +122,11 @@ export class Wizard extends GameObject {
      */
     public maxAether!: number;
 
+    /**
+     * Whether or not this Wizard has cast a teleport spell this turn.
+     */
+    public hasTeleported!: boolean;
+
     // <<-- /Creer-Merge: attributes -->>
 
     /**
@@ -168,6 +173,7 @@ export class Wizard extends GameObject {
 		}
 		this.maxAether = this.aether;
 		this.maxHealth = this.health;
+	    	this.hasTeleported = false;
         // <<-- /Creer-Merge: constructor -->>
     }
 
@@ -269,9 +275,12 @@ export class Wizard extends GameObject {
 	// So clients don't hack into Tiles	
 	tile = this.game.getTile(Math.round(tile.x), Math.round(tile.y))!;
 
-        if (this.hasCast) {
-            return 'One spell per turn!';
+        if (this.hasCast && spellname !== "Teleport") {
+            return 'One non-teleport spell per turn!';
         }
+	if (this.hasTeleported && spellname === "Teleport") {
+		return `One teleport per turn!`;
+	}
 
 		if (this.health! <= 0 || this.aether! <= 0) {
 			return `Sorry, you're dead!`;
@@ -670,6 +679,7 @@ export class Wizard extends GameObject {
                 this.tile = tile;
                 tile.wizard = this;
 		this.aether -= 3;
+		this.hasTeleported = true;
                 break;
             }
             case "Dispel Magic": {
@@ -746,7 +756,9 @@ export class Wizard extends GameObject {
                 break; 
             } 
         }
-        this.hasCast = true;
+	if spellname !== "Teleport" {
+		this.hasCast = true;
+	}
         return true;
 
         // <<-- /Creer-Merge: cast -->>
