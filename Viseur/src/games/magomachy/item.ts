@@ -109,7 +109,7 @@ export class Item extends makeRenderable(GameObject, SHOULD_RENDER) {
             ease(current.tile.y, next.tile.y, dt, "quadOut"),
         );
 
-        this.container.visible = (current.tile.object !== null)
+        this.container.visible = (current.tile.object !== null);
 
         // <<-- /Creer-Merge: render -->>
     }

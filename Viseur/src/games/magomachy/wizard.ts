@@ -102,7 +102,7 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                 visible: false,
                 width: 3,
             }),
-            "Rock Lob": this.addSprite.wall2(hide),
+            "Rock Lob": this.addSprite.spell_rock(hide),
         };
 
         // <<-- /Creer-Merge: constructor -->>
@@ -171,14 +171,27 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                     // eslint-disable-next-line no-case-declarations
                     const targY =
                         (run.args.tile?.id - 2) % this.game.current.mapWidth;
+                    
+                    const rotOffset = {x: (next.direction === 3 ||
+                        next.direction === 0
+                            ? 1
+                            : 0), y: (next.direction === 3 ||
+                                next.direction === 2
+                                    ? 1
+                                    : 0)};
                     switch (run.args.spellName) {
                         case undefined:
                             break;
                         case "Punch":
                             spellSprite.visible = true;
+                            spellSprite.anchor.set(0.5);
+                            spellSprite.angle = this.dirAsAngle(
+                                next.direction,
+                            );
+                            spellSprite.anchor.set(0.0);
                             spellSprite.position.set(
-                                ease(0, targX - next.tile.x, dt),
-                                ease(0, targY - next.tile.y, dt),
+                                ease(rotOffset.x, targX - next.tile.x + rotOffset.x, dt),
+                                ease(rotOffset.y, targY - next.tile.y + rotOffset.y, dt),
                             );
                             break;
                         case "Fire Slash":
@@ -189,28 +202,16 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                             );
                             spellSprite.anchor.set(0.0);
                             spellSprite.position.set(
-                                this.dirAsPosDelta(next.direction).x +
-                                    (next.direction === 3 ||
-                                    next.direction === 0
-                                        ? 1
-                                        : 0),
-                                this.dirAsPosDelta(next.direction).y +
-                                    (next.direction === 3 ||
-                                    next.direction === 2
-                                        ? 1
-                                        : 0),
+                                this.dirAsPosDelta(next.direction).x + rotOffset.x,
+                                this.dirAsPosDelta(next.direction).y + rotOffset.y,
                             );
                             break;
                         case "Rock Lob":
+                            const yOffset = 3 * (-((2 * dt - 1) ** 2) + 1)
                             spellSprite.visible = true;
                             spellSprite.position.set(
-                                ease(0, targX - next.tile.x, dt, linear),
-                                ease(
-                                    0,
-                                    targY - next.tile.y,
-                                    dt,
-                                    (t) => 2 * (-((2 * t - 1) ** 2) + 1),
-                                ),
+                                ease(0, targX - next.tile.x, dt, "linear"),
+                                ease(0, targY - next.tile.y - yOffset, dt, "linear"),
                             );
                     }
             }

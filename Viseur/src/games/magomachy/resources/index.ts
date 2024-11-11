@@ -42,6 +42,7 @@ export const GameResources = createResources("Magomachy", {
 
     spell_punch: load("sprites-spells/punch.png"),
     spell_flame: load("sprites-spells/firefist.png"),
+    spell_rock: load("sprites-spells/rock.png"),
 
     // <<-- /Creer-Merge: resources -->>
 });
