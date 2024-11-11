@@ -199,7 +199,7 @@ export class Wizard extends GameObject {
 
         // We also need the y-intercept
         // Thankfully TypeScript stores all numbers as floats by default
-        let b = y0 - dx / dy * x0;
+        let b = y0 - dy / dx * x0;
 
         // If a point (x,y) is on the line, then dy*x - dx*y + dx*b = 0.
         // Its parity also tells us how good a nearby tile approximates the line.
@@ -222,7 +222,7 @@ export class Wizard extends GameObject {
 
         if (Math.abs(dy) > Math.abs(dx)) {
             let neighbor = current.getNeighbor(vert);
-            if (isDiag || f > 0) {
+            if (isDiag || f > 0 || dx === 0) {
                 return neighbor?.getNeighbor(horiz);
             }
             return neighbor;
