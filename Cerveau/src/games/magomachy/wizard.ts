@@ -358,7 +358,7 @@ export class Wizard extends GameObject {
                 if (!tile.wizard) {
                     return `Curses! The enemy wizard isn\'t at ${tile}!`;
                 }
-                if (distSq > 9 || distSq < 4) {
+                if (distSq > 4 || distSq <= 1) {
                     return `You are wise enough to know that the spell won't reach there`;
                 }
                 break;
