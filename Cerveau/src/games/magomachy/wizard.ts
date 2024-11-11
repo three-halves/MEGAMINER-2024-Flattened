@@ -936,11 +936,11 @@ export class Wizard extends GameObject {
 	let destroy = true;
         switch(item.form!) {
             case "health flask": {
-                this.health += 5;
+                this.health += Math.round(this.maxHealth! / 2);
                 break;
             }
             case "aether flask": {
-                this.aether += 5;
+                this.aether += Math.round(this.maxAether! / 2);
                 break;
             }
             case "explosion rune": {
