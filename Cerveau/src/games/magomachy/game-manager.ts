@@ -50,6 +50,7 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
 
             // Give Spells
             this.game.currentPlayer.wizard!.hasCast = false;
+	    this.game.currentPlayer.wizard!.hasTeleported = false;
         }
         // <<-- /Creer-Merge: before-turn -->>
     }
@@ -74,8 +75,6 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
             if(!this.game.players[0].wizard && !this.game.players[1].wizard && this.game.players[0].wizardChoice && this.game.players[1].wizardChoice) {
                 this.game.players[0].wizard = this.create.wizard({
                     owner: this.game.players[0],
-                    health: 10,
-                    aether: 10,
                     tile: this.game.wizard1_tile,
                     specialty: this.game.players[0].wizardChoice!,
                     speed: 2
@@ -85,8 +84,6 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
                 
                 this.game.players[1].wizard = this.create.wizard({
                     owner: this.game.players[1],
-                    health: 10,
-                    aether: 10,
                     tile: this.game.wizard2_tile,
                     specialty: this.game.players[1].wizardChoice!,
                     speed: 2
@@ -116,6 +113,17 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
                     this.game.tiles[i].object = undefined;
                 }
             }
+			else if (this.game.tiles[i].object_spawn && !this.game.tiles[i].wizard) {
+				this.game.tiles[i].spawn_timer! -= 1;
+				if (this.game.tiles[i].spawn_timer! === 0) {
+					tile.object = this.manager.create.item({
+                    	form: this.game.tiles[i].object_spawn!,
+                    	lifetime: 0,
+                    	tile: tile,
+                	});
+					this.game.tiles[i].spawn_timer = 10;
+				}
+			}
         }
         
         // <<-- /Creer-Merge: after-turn -->>

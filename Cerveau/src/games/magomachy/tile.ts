@@ -73,6 +73,16 @@ export class Tile extends GameObject implements BaseTile {
     // NOTE: They will not be sent to the AIs, those must be defined
     // in the creer file.
 
+	/**
+	 * What item spawns on this tile.
+	 **/
+	public readonly object_spawn?: string;
+
+	/**
+	 * Turns until item should spawn
+	 */
+	public readonly spawn_timer?: number;
+
     // <<-- /Creer-Merge: attributes -->>
 
     /**

@@ -122,6 +122,11 @@ export class Wizard extends GameObject {
      */
     public maxAether!: number;
 
+    /**
+     * Whether or not this Wizard has cast a teleport spell this turn.
+     */
+    public hasTeleported!: boolean;
+
     // <<-- /Creer-Merge: attributes -->>
 
     /**
@@ -142,8 +147,33 @@ export class Wizard extends GameObject {
 
         // <<-- Creer-Merge: constructor -->>
         // setup any thing you need here
-        this.maxAether = this.aether;
-        this.maxHealth = this.health;
+		if (this.specialty as string === "aggressive") {
+			this.health = 10;
+			this.defense = 5;
+			this.attack = 15;
+			this.aether = 10;
+		}
+		else if (this.specialty as string === "defensive") {
+			this.health = 10;
+			this.defense = 15;
+			this.attack = 5;
+			this.aether = 10;
+		}
+		else if (this.specialty as string === "sustaining") {
+			this.health = 15;
+			this.defense = 10;
+			this.attack = 10;
+			this.aether = 10;
+		}
+		else {
+			this.health = 10;
+			this.defense = 10;
+			this.attack = 10; // not actually used
+			this.aether = 15;
+		}
+		this.maxAether = this.aether;
+		this.maxHealth = this.health;
+	    	this.hasTeleported = false;
         // <<-- /Creer-Merge: constructor -->>
     }
 
@@ -245,9 +275,16 @@ export class Wizard extends GameObject {
 	// So clients don't hack into Tiles	
 	tile = this.game.getTile(Math.round(tile.x), Math.round(tile.y))!;
 
-        if (this.hasCast) {
-            return 'One spell per turn!';
+        if (this.hasCast && spellname !== "Teleport") {
+            return 'One non-teleport spell per turn!';
         }
+	if (this.hasTeleported && spellname === "Teleport") {
+		return `One teleport per turn!`;
+	}
+
+		if (this.health! <= 0 || this.aether! <= 0) {
+			return `Sorry, you're dead!`;
+		}
 
         // Calculate distance of target tile
         const dx = this.tile!.x - tile.x;
@@ -318,7 +355,7 @@ export class Wizard extends GameObject {
                 if (!tile.wizard) {
                     return `Curses! The enemy wizard isn\'t at ${tile}!`;
                 }
-                if (distSq > 4 || distSq <= 2) {
+                if (distSq > 4 || distSq <= 1) {
                     return `You are wise enough to know that the spell won't reach there`;
                 }
                 break;
@@ -521,7 +558,7 @@ export class Wizard extends GameObject {
                 // Does it go through walls? I assume so
                 this.lastSpell = "Fire Slash";
                 this.lastTargetTile = tile;
-                if (tile.wizard !== undefined) tile.wizard.health -= 3;
+                if (tile.wizard !== undefined) this.damage(tile.wizard, 3);//tile.wizard.health -= 3;
                 this.aether -= 2;
                 break;
             }
@@ -562,7 +599,7 @@ export class Wizard extends GameObject {
                 // Anyhoo throws rock in exactly 2 range
                 this.lastSpell = "Rock Lob";
                 this.lastTargetTile = tile;
-                tile.wizard!.health -= 2;
+                this.attack(tile.wizard!,2);//tile.wizard!.health -= 2;
                 this.aether -= 2;
                 break;
             }
@@ -592,7 +629,7 @@ export class Wizard extends GameObject {
                     nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, prevTile);
                 }
                 if (distLeft > 0) {
-                    prevTile.wizard!.health -= 2;
+                    this.damage(prevTile.wizard!,2);//prevTile.wizard!.health -= 2;
                 }
                 break;
             }
@@ -628,8 +665,8 @@ export class Wizard extends GameObject {
                     nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, prevTile);
                 }
                 if (prevTile?.wizard && prevTile?.wizard !== this) {
-                    prevTile.wizard!.speed -= 1;
-                    prevTile.wizard!.health -= 1;
+                    prevtile.wizard!.speed -= 1;
+                    this.damage(prevTile.wizard!,1);//tile.wizard!.health -= 1;
                 }
                 this.aether -= 3;
                 break;
@@ -642,6 +679,7 @@ export class Wizard extends GameObject {
                 this.tile = tile;
                 tile.wizard = this;
 		this.aether -= 3;
+		this.hasTeleported = true;
                 break;
             }
             case "Dispel Magic": {
@@ -718,7 +756,9 @@ export class Wizard extends GameObject {
                 break; 
             } 
         }
-        this.hasCast = true;
+	if spellname !== "Teleport" {
+		this.hasCast = true;
+	}
         return true;
 
         // <<-- /Creer-Merge: cast -->>
@@ -771,6 +811,10 @@ export class Wizard extends GameObject {
         if (this.movementLeft <= 0) {
             return 'No movement left this turn';
         }
+
+		if (this.health! <= 0 || this.aether! <= 0) {
+			return `Sorry, you're dead!`;
+		}
 
         if (!tile || tile.type === "wall") {
             return `${this} can't phase through walls! (Yet...)`;
@@ -892,11 +936,11 @@ export class Wizard extends GameObject {
 	let destroy = true;
         switch(item.form!) {
             case "health flask": {
-                this.health += 5;
+                this.health += Math.round(this.maxHealth! / 2);
                 break;
             }
             case "aether flask": {
-                this.aether += 5;
+                this.aether += Math.round(this.maxAether! / 2);
                 break;
             }
             case "explosion rune": {
@@ -944,5 +988,24 @@ export class Wizard extends GameObject {
 	}
         return true;
     }
+
+	/**
+ 	 * Attack an enemy Wizard.
+ 	 *
+ 	 * @param enemy - The Wizard to attack.
+ 	 * @param dmg - The raw damage the spell does.
+ 	 * @returns True if successfully cast, false otherwise.
+ 	 */
+	private damage(
+		enemy: Wizard
+  		dmg: number
+	): boolean {
+		let modifier = Math.round((this.attack - enemy.defense)/2);
+		if (modifier < 0) {
+			modifier = 0
+		}
+  		enemy.health -= dmg + modifier;
+  		return true;
+	}
     // <<-- /Creer-Merge: protected-private-functions -->>
 }

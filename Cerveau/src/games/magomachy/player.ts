@@ -154,13 +154,15 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
             // TILES
             // #: wall
             // [empty]: floor
-            tilemap.push(" ");
+            tilemap.push("  ");
             for (let k=0; k < this.game.mapWidth; k++) {
                 tilemap.push(k.toString());
+                tilemap.push(" ");
             }
             tilemap.push("\n");
             for (let i=0; i < this.game.mapHeight; i++) {
                 tilemap.push(i.toString());
+                tilemap.push(" ")
                 for (let j=0; j < this.game.mapWidth; j++) {
                     const tile = this.game.tiles[i*this.game.mapWidth + j];
                     if (tile.wizard) {
@@ -195,7 +197,7 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
                         }
                         else if (tile.object!.form == "charge rune") {
                             let turnsLeft = tile.object!.max_life! - tile.object!.lifetime;
-                            tilemap.push(turnsLeft.toString());
+                            tilemap.push(Math.min(turnsLeft,9).toString());
                         }
                         else if (tile.object!.form == "stone") {
                             tilemap.push("s");
@@ -207,9 +209,10 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
                             tilemap.push("#");
                         }
                         else {
-                            tilemap.push(" ")
+                            tilemap.push(".")
                         }
                     }
+                    tilemap.push(" ")
                 }
                 tilemap.push("\n");
             }

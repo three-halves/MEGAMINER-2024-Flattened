@@ -147,6 +147,8 @@ export class MagomachyGame extends BaseClasses.Game {
                     lifetime: 0,
                     tile: tile
                 });
+				tile.object_spawn = "aether flask";
+				tile.spawn_timer = 10;
             }
             else if (mark === "h") {
                 tile.object = this.manager.create.item({
@@ -154,6 +156,8 @@ export class MagomachyGame extends BaseClasses.Game {
                     lifetime: 0,
                     tile: tile,
                 });
+				tile.object_spawn = "health flask";
+				tile.spawn_timer = 10;
             }
             else if (mark === "1") {
                 // MARK WIZARD 1 LOCATION
