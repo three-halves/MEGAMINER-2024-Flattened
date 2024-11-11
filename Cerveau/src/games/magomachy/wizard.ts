@@ -416,7 +416,7 @@ export class Wizard extends GameObject {
                 if (tile.wizard) {
                     return `You are not as versed in telefragging as a certain other wizard!`;
                 }
-                if (tile.type === "wall") {
+                if (tile.type === "wall" || (tile.object && tile.object!.form === "stone")) {
                     return `The bounds of this challenge are 2 dimensional, you cannot go above the walls`;
                 }
                 break;
@@ -681,8 +681,12 @@ export class Wizard extends GameObject {
                 this.tile!.wizard = undefined;
                 this.tile = tile;
                 tile.wizard = this;
+		if (tile.object) {
+		    this.useItem(tile.object,false);
+		}
 		this.aether -= 3;
 		this.hasTeleported = true;
+		this.movementLeft = 0;
                 break;
             }
             case "Dispel Magic": {
