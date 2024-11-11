@@ -109,6 +109,28 @@ class AI(BaseAI):
                 print("choose [wizardClass]: pick a class at the start of the game")
                 print("move [up, down, right, left]: move in specified direction.")
                 print("cast [spell] [x] [y]: cast spell at specified coordinate")
+                print("spells [wizardClass]: see spell list for given wizard")
+            elif components[0] == 'spells':
+                print("Punch: 0 aether, 1 damage, 1 range")
+                if components[1] == 'aggressive':
+                    print("Fire Slash: 2 aether, 3 damage, 3 range")
+                    print("Thunderous Dash: 3 aether, boosts speed by 3 for 1 turn")
+                    print("Furious Telekinesis: 4 aether, 1 range, pushes item away")
+                elif components[1] == 'defensive':
+                    print("Rock Lob: 2 aether, 2 damage, exactly 2 range")
+                    print("Force Push: 3 aether, pushes adjacent opponent up to 3 spaces, 2 damage if they hit something")
+                    print("Stone Summon: 4 aether, 1 range, summon impassable stone for 10 total turns")
+                elif components[1] == 'sustaining':
+                    print("Calming Blast: 3 aether, 1 damage, fires projectile, decrease speed for 1 turn")
+                    print("Teleport: 3 aether, 3 range, move to target tile")
+                    print("Dispel Magic: 2 aether, 1 range, deletes target item/rune")
+                elif components[1] == 'strategic':
+                    print("Explosion Rune: 2 aether, 4 damage, 1 range, blows up for 4 damage when stepped on")
+                    print("Heal Rune: 5 aether, 1 range, heals for 5 HP when stepped on (up to max)")
+                    print("Teleport Rune: 3 aether, 1 range, places teleport rune if none exists, or teleports you to it otherwise")
+                    print("Charge Rune: 4 aether, infinite range, blows up for 5 damage in 3 tile radius after 5 turns")
+                else:
+                    print("That's not a wizard! Choose aggressive, defensive, sustaining, or strategic.")
             elif components[0] == 'end':
                 print("Ending turn...")
                 break;
