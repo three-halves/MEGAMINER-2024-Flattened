@@ -45,7 +45,7 @@ The next-highest tier of objects in the game hierarchy are the Players, objects 
 
 For you, the most important parts of this object are the parts referring to your wizard. In addition to the actual object (which will be explained in their own section), you are provided a chooseWizard() function for picking a wizard specialty on your first turn. You'll only ever *need* to call this function once per game, but if you call it a second time in the exact same way, your console will print an ASCII representation of the game board! It doesn't provide any information you couldn't get elsewhere, but it's great for debugging purposes.
 
-Most of the other variables refer to client-side information to help with connecting to the server or telling you how you performed once the game ends. Since your client console should already display this information, there variables probably are not very helpful, but they're there if you want them.
+Most of the other variables refer to client-side information to help with connecting to the server or telling you how you performed once the game ends. Since your client console should already display this information, these variables probably are not very helpful, but they're there if you want them.
 
 ### Tile
 Tiles form the grid representing the playing field of Magomachy. If you want to access the full map, it is stored in the tiles arrays in the game file. However, be warned that it is NOT a 2D array, but rather a 1D array stored in row-major order.
@@ -86,6 +86,11 @@ More importantly, you will also be allowed to cast a single spell per turn at an
 | Buff | Tile with your Wizard | Temporarily makes your Wizard stronger. |
 | Projectile | Tile to aim at | Fires a projectile toward a Tile in range. The projectile moves until it hits an obstacle. The exact path is calculated with the Bressenham algorithm. |
 | Rune | empty Tile | Places a rune on a Tile that activates when ANY Wizard steps on it. |
+
+Furthermore, Wizards have their own statistics, listed below. Note that spell damage is calculated as (raw_damage + (attacker.attack + defender.defense) / 2), rounded to the nearest integer: FINISH
+
+| Type | Attack | Defense | Health | Aether |
+|---|---|---|---|---|
 
 Every Wizard has access to a basic Punch "spell," a zero-aether Targeted (Wizard) spell with 1 range and 1 damage. The rest of the spells you can use depend on your wizard's specialty, as explained below:
 
