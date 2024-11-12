@@ -199,7 +199,7 @@ export class Wizard extends GameObject {
 
         // We also need the y-intercept
         // Thankfully TypeScript stores all numbers as floats by default
-        let b = y0 - dx / dy * x0;
+        let b = y0 - dy / dx * x0;
 
         // If a point (x,y) is on the line, then dy*x - dx*y + dx*b = 0.
         // Its parity also tells us how good a nearby tile approximates the line.
@@ -222,7 +222,7 @@ export class Wizard extends GameObject {
 
         if (Math.abs(dy) > Math.abs(dx)) {
             let neighbor = current.getNeighbor(vert);
-            if (isDiag || f > 0) {
+            if (isDiag || f > 0 || dx === 0) {
                 return neighbor?.getNeighbor(horiz);
             }
             return neighbor;
@@ -315,9 +315,12 @@ export class Wizard extends GameObject {
                 if (!tile.wizard) {
                     return 'Nobody\'s at ${tile}, champ!';
                 }
-                if (distSq > 9) {
+                if (distSq > 4) {
                     return '${tile} is too far away to get charbroiled!';
                 }
+		if (dx != 0 && dy != 0) {
+		    return `This spell only goes directly vertical or horizontal!`;
+		}
                 // this is a really clever invalidate but its meant for Rock Lob
                 //if (tile.hasNeighbor(player.wizard.tile)) {
                 //    return ``
@@ -413,7 +416,7 @@ export class Wizard extends GameObject {
                 if (tile.wizard) {
                     return `You are not as versed in telefragging as a certain other wizard!`;
                 }
-                if (tile.type === "wall") {
+                if (tile.type === "wall" || (tile.object && tile.object!.form === "stone")) {
                     return `The bounds of this challenge are 2 dimensional, you cannot go above the walls`;
                 }
                 break;
@@ -566,8 +569,8 @@ export class Wizard extends GameObject {
                 // Just add an isDash var to wizards
                 this.lastSpell = "Thunderous Dash";
                 this.lastTargetTile = tile;
-                this.movementLeft += 3;
-                this.speed += 3;
+                this.movementLeft += 2;
+                this.speed += 2;
                 //this.effects.push("Dash");
                 //this.effectTimes.push(0);
                 this.aether -= 3;
@@ -610,7 +613,7 @@ export class Wizard extends GameObject {
                 this.lastTargetTile = tile;
                 this.aether -= 3;
 
-                let distLeft = 3;
+                let distLeft = 4;
                 let prevTile = tile;
                 let nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, tile)
                 while (nextTile && nextTile.type === "floor" && !(nextTile.object?.form === "stone") && distLeft > 0) {
@@ -681,8 +684,12 @@ export class Wizard extends GameObject {
                 this.tile!.wizard = undefined;
                 this.tile = tile;
                 tile.wizard = this;
+		if (tile.object) {
+		    this.useItem(tile.object,false);
+		}
 		this.aether -= 3;
 		this.hasTeleported = true;
+		this.movementLeft = 0;
                 break;
             }
             case "Dispel Magic": {
@@ -968,6 +975,9 @@ export class Wizard extends GameObject {
                 // EXCEPTIONALLY rare case since walls block moves
 		if (!force) {
 		    destroy = false;
+		}
+		else {
+		    this.health -= 2;
 		}
                 break;
             }
