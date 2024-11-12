@@ -973,6 +973,9 @@ export class Wizard extends GameObject {
 		if (!force) {
 		    destroy = false;
 		}
+		else {
+		    this.health -= 2;
+		}
                 break;
             }
             default: {
