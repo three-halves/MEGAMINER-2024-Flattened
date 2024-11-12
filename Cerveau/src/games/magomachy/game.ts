@@ -114,6 +114,8 @@ export class MagomachyGame extends BaseClasses.Game {
         // <<-- Creer-Merge: constructor -->>
         // setup any thing you need here
 
+	this.wizards = ["aggressive", "defensive", "sustaining", "strategic"];
+
 
         const visualMap: string = `M
                         ##########
