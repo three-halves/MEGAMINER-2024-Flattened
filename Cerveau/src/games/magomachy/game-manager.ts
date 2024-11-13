@@ -51,6 +51,11 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
             // Give Spells
             this.game.currentPlayer.wizard!.hasCast = false;
 	    this.game.currentPlayer.wizard!.hasTeleported = false;
+
+	    // Regen 1 aether
+	    if (this.game.currentPlayer.wizard!.aether < this.game.currentPlayer.wizard!.maxAether) {
+		this.game.currentPlayer.wizard!.aether += 1;
+	    }
         }
         // <<-- /Creer-Merge: before-turn -->>
     }
