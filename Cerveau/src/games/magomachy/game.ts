@@ -116,17 +116,18 @@ export class MagomachyGame extends BaseClasses.Game {
 
 	this.wizards = ["aggressive", "defensive", "sustaining", "strategic"];
 
-
+	// This is where you set the map you want.
+	// DO NOT DELETE THE M
         const visualMap: string = `M
                         ##########
-                        #///////2#
+                        #///h///2#
                         #/#/##/#/#
                         #////////#
-                        #/#/a//#/#
-                        #/#//a/#/#
+                        #/#/a//#h#
+                        #h#//a/#/#
                         #////////#
                         #/#/##/#/#
-                        #1///////#
+                        #1///h///#
                         ##########`;
 
         const strMap = visualMap.replace(/ /g, "").replace(/[\r\n\t]+/gm, "").replace("M","");

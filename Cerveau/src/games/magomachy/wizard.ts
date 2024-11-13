@@ -222,14 +222,14 @@ export class Wizard extends GameObject {
 
         if (Math.abs(dy) > Math.abs(dx)) {
             let neighbor = current.getNeighbor(vert);
-            if (isDiag || f > 0 || dx === 0) {
+            if ((isDiag || f > 0) && dx !== 0) {
                 return neighbor?.getNeighbor(horiz);
             }
             return neighbor;
         }
         else {
             let neighbor = current.getNeighbor(horiz);
-            if (isDiag || f > 0) {
+            if ((isDiag || f > 0) && dy !== 0) {
                 return neighbor?.getNeighbor(vert);
             }
             return neighbor;
@@ -414,8 +414,11 @@ export class Wizard extends GameObject {
                     return `You can only reach so far with this spell`;
                 }
                 if (tile.wizard) {
-                    return `You are not as versed in telefragging as a certain other wizard!`;
+                    return `You are not as versed in the art of telefragging as other wizards!`;
                 }
+		if (this.movementLeft < 1) {
+		    return `You must have at least 1 movement left to use this spell!`;
+		}
                 if (tile.type === "wall" || (tile.object && tile.object!.form === "stone")) {
                     return `The bounds of this challenge are 2 dimensional, you cannot go above the walls`;
                 }
@@ -504,6 +507,29 @@ export class Wizard extends GameObject {
                 //        return `You cannot reach there`;
                 //}
                 break;
+            }
+	    case "Force Pull": {
+                if (player.wizard.specialty != "strategic") {
+                    return `You do not have the knowledge to use Calming Blast`;
+                }
+		if (this.tile === tile) {
+		    return `You cannot aim this at your own Tile`;
+		}
+                // Please no i spent so much time on implementing bressenham
+                // if (dx != 0 && dy != 0) {
+                //    return `This only goes in a straight line`;
+                //}
+                break;
+            }
+	    // For testing Bressenham
+	    case "Ping Calming Blast": {
+                let prevTile = this.tile;
+                let nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, this.tile!)
+                while (nextTile && nextTile.type === "floor" && (!prevTile?.wizard || prevTile?.wizard === this) && !(nextTile.object?.form === "stone")) {
+                    prevTile = nextTile;
+                    nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, prevTile);
+                }
+		return 'Would hit ${tile}';
             }
             default: {
                 return 'Check your spelling and spell list because no such spell exists!';
@@ -663,7 +689,7 @@ export class Wizard extends GameObject {
                 this.lastTargetTile = tile;
                 let prevTile = this.tile;
                 let nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, this.tile!)
-                while (nextTile && nextTile.type === "floor" && (!prevTile?.wizard || prevTile?.wizard === this)) {
+                while (nextTile && nextTile.type === "floor" && (!prevTile?.wizard || prevTile?.wizard === this) && !(nextTile.object?.form === "stone")) {
                     prevTile = nextTile;
                     nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, prevTile);
                 }
@@ -689,7 +715,7 @@ export class Wizard extends GameObject {
 		}
 		this.aether -= 3;
 		this.hasTeleported = true;
-		this.movementLeft = 0;
+		this.movementLeft -= 1;
                 break;
             }
             case "Dispel Magic": {
@@ -759,6 +785,36 @@ export class Wizard extends GameObject {
 		    max_life: 10,
                 })
 		this.aether -= 4;
+                break;
+            }
+	    case "Force Pull": {
+                // Requires Bressenham to find path
+                // After that, keep pushing until wall is hit or out of range
+                this.lastSpell = "Force Pull";
+                this.lastTargetTile = tile;
+                this.aether -= 3;
+
+		let path: Tile[] = [];
+                let distLeft = 3;
+                let prevTile = this.tile;
+                let nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, this.tile)
+                while (nextTile && nextTile.type === "floor" && prevTile.wizard !== this.player.opponent.wizard && !(nextTile.object?.form === "stone") && distLeft > 0) {
+                    distLeft--;
+                    prevTile = nextTile;
+                    nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, prevTile);
+		    path.unshift(prevTile);
+                }
+                if (prevTile.wizard === this.player.opponent.wizard) {
+		    path.forEach((pathTile: Tile) => {
+    		    	prevTile.wizard!.tile = pathTile;
+			pathTile.wizard = prevTile.wizard;
+			prevTile.wizard = undefined;
+
+			if (nextTile.object) {
+			    nextTile.wizard!.useItem(nextTile.object!, true);
+			}
+		    });
+		}
                 break;
             }
             default: { 

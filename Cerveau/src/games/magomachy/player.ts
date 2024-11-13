@@ -153,7 +153,9 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
             // s: stone
             // TILES
             // #: wall
-            // [empty]: floor
+            // .: floor
+            // x: Wizard 1 spawn
+            // y: Wizard 2 spawn
             tilemap.push("  ");
             for (let k=0; k < this.game.mapWidth; k++) {
                 tilemap.push(k.toString());
@@ -203,6 +205,12 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
                             tilemap.push("s");
                         }
                     }
+                    else if (tile === this.game.wizard1_tile) {
+                        tilemap.push("x");
+                    }
+                    else if (tile === this.game.wizard2_tile) {
+                        tilemap.push("y");
+                    }
                     else
                     {
                         if (tile.type == "wall") {
@@ -224,6 +232,10 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
             && wizardClass !== "sustaining"
             && wizardClass !== "strategic") {
             return '${wizardClass} is not a valid wizard choice!';
+        }
+
+        if (this != this.game.currentPlayer) {
+            return `It is not your turn!`;
         }
         
         return undefined; // means nothing could be found that was ivalid.
