@@ -41,7 +41,7 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
 
     // a dict of dicts representing all wizard sprites. Outermost dict
     public wizSprites: {
-        [type: string]: { [direction: string]: PIXI.Sprite };
+        [type: string]: { [direction: string]: any };
     };
 
     public spellSprites: {
@@ -71,28 +71,51 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         const hide = { visible: false };
         this.wizSprites = {
             aggressive: {
-                north: this.addSprite.wiz_ag_n(hide),
-                east: this.addSprite.wiz_ag_e(hide),
-                south: this.addSprite.wiz_ag_s(hide),
-                west: this.addSprite.wiz_ag_w(hide),
+                norm:
+                {
+                    north: this.addSprite.wiz_ag_n(hide),
+                    east: this.addSprite.wiz_ag_e(hide),
+                    south: this.addSprite.wiz_ag_s(hide),
+                    west: this.addSprite.wiz_ag_w(hide),
+                },
+                tele: {
+                    north: this.addSprite.wiz_ag_tele_n(hide),
+                    east: this.addSprite.wiz_ag_tele_e(hide),
+                    south: this.addSprite.wiz_ag_tele_s(hide),
+                    west: this.addSprite.wiz_ag_tele_w(hide),
+                },
+                dash: {
+                    north: this.addSprite.wiz_ag_dash_n(hide),
+                    east: this.addSprite.wiz_ag_dash_e(hide),
+                    south: this.addSprite.wiz_ag_dash_s(hide),
+                    west: this.addSprite.wiz_ag_dash_w(hide),
+                },
             },
             defensive: {
-                north: this.addSprite.wiz_de_n(hide),
-                east: this.addSprite.wiz_de_e(hide),
-                south: this.addSprite.wiz_de_s(hide),
-                west: this.addSprite.wiz_de_w(hide),
+                norm:{
+                    north: this.addSprite.wiz_de_n(hide),
+                    east: this.addSprite.wiz_de_e(hide),
+                    south: this.addSprite.wiz_de_s(hide),
+                    west: this.addSprite.wiz_de_w(hide),
+                },
             },
             sustaining: {
-                north: this.addSprite.wiz_su_n(hide),
-                east: this.addSprite.wiz_su_e(hide),
-                south: this.addSprite.wiz_su_s(hide),
-                west: this.addSprite.wiz_su_w(hide),
+                norm: 
+                {
+                    north: this.addSprite.wiz_su_n(hide),
+                    east: this.addSprite.wiz_su_e(hide),
+                    south: this.addSprite.wiz_su_s(hide),
+                    west: this.addSprite.wiz_su_w(hide),
+                }
             },
             strategic: {
-                north: this.addSprite.wiz_st_n(hide),
-                east: this.addSprite.wiz_st_e(hide),
-                south: this.addSprite.wiz_st_s(hide),
-                west: this.addSprite.wiz_st_w(hide),
+                norm: 
+                {
+                    north: this.addSprite.wiz_st_n(hide),
+                    east: this.addSprite.wiz_st_e(hide),
+                    south: this.addSprite.wiz_st_s(hide),
+                    west: this.addSprite.wiz_st_w(hide),
+                }
             },
         };
 
@@ -127,39 +150,26 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         dt: number,
         current: Immutable<WizardState>,
         next: Immutable<WizardState>,
-        delta: Immutable<MagomachyDelta>,
+        delta: Immutable<MagomachyDelta>
         nextDelta: Immutable<MagomachyDelta>,
     ): void {
         super.render(dt, current, next, delta, nextDelta);
 
         // <<-- Creer-Merge: render -->>
-        // render where the Wizard is
-        // render position
-        if (current === undefined) return;
-        const dir = this.dirAsString(next.direction);
-
-        for (let i = 0; i < 4; i++) {
-            this.wizSprites[this.type][this.dirAsString(i)].visible = false;
-        }
-        const sprite = this.wizSprites[this.type][dir];
-        sprite.visible = true;
-        this.container.position.set(
-            ease(current.tile.x, next.tile.x, dt),
-            ease(current.tile.y, next.tile.y, dt),
-        );
-
         // try to render spell
         for (const s in this.spellSprites) {
             this.spellSprites[s].visible = false;
         }
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        const run = delta.data?.run;
+        const run = nextDelta.data?.run;
+        let wizSpriteArg: string? = "norm";
+        let spriteOffset = {x: 0, y: 0};
 
         if (
             run !== undefined &&
             current.id === run.caller?.id &&
-            (delta.data.invalid === undefined || delta.data.invalid === "")
+            (nextDelta.data.invalid === undefined || nextDelta.data.invalid === "")
         ) {
             const spellSprite = this.spellSprites[run.args.spellName];
             switch (run.functionName) {
@@ -206,6 +216,12 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                                 this.dirAsPosDelta(next.direction).y + rotOffset.y,
                             );
                             break;
+                        case "Furious Telekinesis":
+                            wizSpriteArg = "tele";
+                            break;
+                        case "Thunderous Dash":
+                            wizSpriteArg = "dash";
+                            break;
                         case "Rock Lob":
                             const yOffset = 3 * (-((2 * dt - 1) ** 2) + 1)
                             spellSprite.visible = true;
@@ -213,9 +229,34 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                                 ease(0, targX - next.tile.x, dt, "linear"),
                                 ease(0, targY - next.tile.y - yOffset, dt, "linear"),
                             );
+                            break;
                     }
             }
         }
+
+        if (next.speed > 2) wizSpriteArg = "dash";
+
+        // render position
+        if (current === undefined) return;
+        const dir = this.dirAsString(next.direction);
+
+
+        for (const key1 in this.wizSprites) {
+            for (const key2 in this.wizSprites[key1]) {
+                for (let i = 0; i < 4; i++) {
+                    this.wizSprites[key1][key2][this.dirAsString(i)].visible = false;
+                }
+            }
+        }
+        let sprite;
+        if (wizSpriteArg === null) sprite = this.wizSprites[this.type][dir];
+        else sprite = this.wizSprites[this.type][wizSpriteArg][dir];
+
+        sprite.visible = true;
+        this.container.position.set(
+            ease(current.tile.x + spriteOffset.x, next.tile.x + spriteOffset.x, dt),
+            ease(current.tile.y + spriteOffset.y, next.tile.y + spriteOffset.y, dt),
+        );
 
         // render hurn anim
         if (

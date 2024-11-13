@@ -16,6 +16,16 @@ export const GameResources = createResources("Magomachy", {
     wiz_ag_s: load("sprites-ag/face-south.png"),
     wiz_ag_w: load("sprites-ag/face-west.png"),
 
+    wiz_ag_tele_n: load("sprites-ag/Agressive_tele_up.png"),
+    wiz_ag_tele_e: load("sprites-ag/Agressive_tele_right.png"),
+    wiz_ag_tele_s: load("sprites-ag/Agressive_tele_down.png"),
+    wiz_ag_tele_w: load("sprites-ag/Agressive_tele_left.png"),
+
+    wiz_ag_dash_n: load("sprites-ag/Agressive_dash_up.png"),
+    wiz_ag_dash_e: load("sprites-ag/Agressive_dash_right.png"),
+    wiz_ag_dash_s: load("sprites-ag/Agressive_dash_down.png"),
+    wiz_ag_dash_w: load("sprites-ag/Agressive_dash_left.png"),
+
     wiz_de_n: load("sprites-de/face-north.png"),
     wiz_de_e: load("sprites-de/face-east.png"),
     wiz_de_s: load("sprites-de/face-south.png"),
