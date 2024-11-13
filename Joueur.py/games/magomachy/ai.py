@@ -99,6 +99,8 @@ class AI(BaseAI):
             elif self.player.wizard:
                 print("HEALTH:",self.player.wizard.health)
                 print("AETHER",self.player.wizard.aether)
+                print("ATTACK",self.player.wizard.attack)
+                print("DEFENSE",self.player.wizard.defense)
             
             choice = input('What next? Type help for a list of commands.')
             components = choice.split()
@@ -129,6 +131,7 @@ class AI(BaseAI):
                     print("Heal Rune: 5 aether, 1 range, heals for 5 HP when stepped on (up to max)")
                     print("Teleport Rune: 3 aether, 1 range, places teleport rune if none exists, or teleports you to it otherwise")
                     print("Charge Rune: 4 aether, infinite range, blows up for 5 damage in 3 tile radius after 5 turns")
+                    print("Force Pull: 3 aether, 3 range, drags opponent to you, activating items along the way")
                 else:
                     print("That's not a wizard! Choose aggressive, defensive, sustaining, or strategic.")
             elif components[0] == 'end':
