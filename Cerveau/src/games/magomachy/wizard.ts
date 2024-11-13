@@ -719,12 +719,11 @@ export class Wizard extends GameObject {
                 break;
             }
             case "Dispel Magic": {
-                // This is freaking broken lol
                 this.lastSpell = "Dispel Magic";
                 this.lastTargetTile = tile;
                 tile.object = undefined;
                 //this.health += 4;
-                this.aether -= 2;
+                this.aether -= 3;
                 break;
             }
             case "Explosion Rune": {
