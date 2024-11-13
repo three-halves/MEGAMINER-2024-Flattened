@@ -1,3 +1,6 @@
+# This is the player client built for playtesting and available for all players!
+# The logic is in the run_turn function.
+
 # This is where you build your AI for the Magomachy game.
 
 from typing import List
@@ -90,28 +93,47 @@ class AI(BaseAI):
         Returns:
             bool: Represents if you want to end your turn. True means end your turn, False means to keep your turn going and re-call this function.
         """
+        # <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
+        # This is a secondary check to see if a player has chosen a wizard or not.
         notChosen = True
+        
         print("Your turn! Here's the map:")
+        
+        # Most of the client is a loop that will break when the player ends their turn.
         while(True):
+            # We have an ASCII map available for checking the game state.
+            # However, programming limitations means you have to call it by intentionally calling choose_wizard wrong.
+            # Check the markdown rules document for what the characters mean.
             self.player.choose_wizard("map")
+            
+            # This is just a warning if the player hasn't chosen a wizard yet.
+            # Ending your turn before resolving this loses the game!
             if not self.player.wizard and notChosen:
                 print("WARNING: You have not chosen a wizard. Do that ASAP!")
+            
+            # If we have chosen a wizard, we print out stats for the wizard:
             elif self.player.wizard:
                 print("HEALTH:",self.player.wizard.health)
                 print("AETHER",self.player.wizard.aether)
                 print("ATTACK",self.player.wizard.attack)
                 print("DEFENSE",self.player.wizard.defense)
             
+            # Now we prompt for user input
             choice = input('What next? Type help for a list of commands.')
             components = choice.split()
+            
+            # We handle each command separately, starting with a failsafe for empty commands
             if len(components) == 0:
                 pass
+            
+            # Here's the help function:
             elif components[0] == 'help':
                 print("Valid commands:")
                 print("choose [wizardClass]: pick a class at the start of the game")
                 print("move [up, down, right, left]: move in specified direction.")
                 print("cast [spell] [x] [y]: cast spell at specified coordinate")
                 print("spells [wizardClass]: see spell list for given wizard")
+            # Here's the spell list, ignoring attack/defense modifications:
             elif components[0] == 'spells':
                 print("Punch: 0 aether, 1 damage, 1 range")
                 if components[1] == 'aggressive':
@@ -134,9 +156,15 @@ class AI(BaseAI):
                     print("Force Pull: 3 aether, 3 range, drags opponent to you, activating items along the way")
                 else:
                     print("That's not a wizard! Choose aggressive, defensive, sustaining, or strategic.")
+                
+            # Players have to intentionally end their turn. The server won't do it for you unless you time out:
             elif components[0] == 'end':
                 print("Ending turn...")
                 break;
+                
+            # Here's an example of choosing a wizard.
+            # Note that you can only do this on your first turn.
+            # For convenience, this client ends the turn immediately once this is done.
             elif components[0] == 'choose':
                 wizard = None
                 
@@ -157,23 +185,37 @@ class AI(BaseAI):
                     notChosen = False
                     print("Successfully chose wizard, ending turn...")
                     return True
+                    
+            # Now we get into commands that require a wizard to work, like moving.
             elif components[0] == 'move':
-                tile = None
-                if len(components) != 2:
-                    tile = None
-                elif components[1] == 'left':
-                    tile = self.player.wizard.tile.tile_west
-                elif components[1] == 'right':
-                    tile = self.player.wizard.tile.tile_east
-                elif components[1] == 'down':
-                    tile = self.player.wizard.tile.tile_south
-                elif components[1] == 'up':
-                    tile = self.player.wizard.tile.tile_north
-                if tile:
-                    self.player.wizard.move(tile)
+            	if not self.player.wizard:
+                    print("Choose a wizard first!")
+                    
+                # Again, for convenience this client hides actual movement commands as "move left" and so on.
+                # The AI actually has to find the tile they want to move to and send it to the server.
                 else:
-                    print("Command not executed. Choose a direction.")
+                    tile = None
+                	if len(components) != 2:
+                    	tile = None
+                	elif components[1] == 'left':
+                    	tile = self.player.wizard.tile.tile_west
+                	elif components[1] == 'right':
+                    	tile = self.player.wizard.tile.tile_east
+                	elif components[1] == 'down':
+                    	tile = self.player.wizard.tile.tile_south
+                	elif components[1] == 'up':
+                    	tile = self.player.wizard.tile.tile_north
+                    
+                	if tile:
+                    	self.player.wizard.move(tile)
+                	else:
+                    	print("Command not executed. Choose a direction.")
+            # Next up is our cast command.
+            # All such commands MUST include a tile to aim at.
+            # As usual, the client simplifies things by just processing coordinates, but AIs have to actually get the tile. 
             elif components[0] == 'cast':
+            	if not self.player.wizard:
+                    print("Choose a wizard first!")
                 if self.player.wizard.has_cast:
                     print("You've already cast a spell this turn...")
                 elif len(components) < 4 or len(components) > 5:
@@ -191,10 +233,10 @@ class AI(BaseAI):
                     else:
                         tile = self.game.get_tile_at(int(x),int(y))
                         self.player.wizard.cast(spell,tile)
-            else:
+            # And here's our failsafe for completely invalid commands
+        	else:
                 print("Command not recognized, try again")
-        # <<-- Creer-Merge: runTurn -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
-        # Put your game logic here for runTurn
+            # At this point, we repeat the loop unless the player intentionally broke it
         return True
         # <<-- /Creer-Merge: runTurn -->>
 
