@@ -146,7 +146,7 @@ class AI(BaseAI):
                 elif components[1] == 'sustaining':
                     print("Calming Blast: 3 aether, 1 damage, fires projectile, decrease speed for 1 turn")
                     print("Teleport: 3 aether, 3 range, move to target tile")
-                    print("Dispel Magic: 2 aether, 1 range, deletes target item/rune")
+                    print("Dispel Magic: 3 aether, 1 range, deletes target item/rune")
                 elif components[1] == 'strategic':
                     print("Explosion Rune: 2 aether, 4 damage, 1 range, blows up for 4 damage when stepped on")
                     print("Heal Rune: 5 aether, 1 range, heals for 5 HP when stepped on (up to max)")
