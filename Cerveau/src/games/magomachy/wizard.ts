@@ -696,11 +696,11 @@ export class Wizard extends GameObject {
                 if (prevTile?.wizard && prevTile?.wizard !== this) {
                     prevTile.wizard!.speed -= 1;
                     this.damage(prevTile.wizard!,1);//tile.wizard!.health -= 1;
-                }
-                this.aether -= 3;
-                if (this.health < this.maxHealth!) {
-                    this.health += 1;
-                }
+                    this.aether -= 3;
+                    if (this.health < this.maxHealth!) {
+                	this.health += 1;
+                    }
+		}
                 break;
             }
             case "Teleport": {
