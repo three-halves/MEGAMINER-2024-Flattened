@@ -155,6 +155,8 @@ class AI(BaseAI):
                 if wizard:
                     self.player.choose_wizard(wizard)
                     notChosen = False
+                    print("Successfully chose wizard, ending turn...")
+                    return True
             elif components[0] == 'move':
                 tile = None
                 if len(components) != 2:
