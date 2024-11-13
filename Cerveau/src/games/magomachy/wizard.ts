@@ -222,14 +222,14 @@ export class Wizard extends GameObject {
 
         if (Math.abs(dy) > Math.abs(dx)) {
             let neighbor = current.getNeighbor(vert);
-            if (isDiag || f > 0 || dx === 0) {
+            if ((isDiag || f > 0) && dx !== 0) {
                 return neighbor?.getNeighbor(horiz);
             }
             return neighbor;
         }
         else {
             let neighbor = current.getNeighbor(horiz);
-            if (isDiag || f > 0) {
+            if ((isDiag || f > 0) && dy !== 0) {
                 return neighbor?.getNeighbor(vert);
             }
             return neighbor;
