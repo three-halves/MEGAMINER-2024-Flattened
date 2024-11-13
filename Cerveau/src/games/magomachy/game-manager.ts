@@ -126,7 +126,7 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
                     	lifetime: 0,
                     	tile: this.game.tiles[i],
                 	});
-					this.game.tiles[i].spawn_timer = 10;
+					this.game.tiles[i].spawn_timer = 7;
 				}
 			}
         }
