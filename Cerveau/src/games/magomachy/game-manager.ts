@@ -85,7 +85,7 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
                     speed: 2
                 });
                 this.game.players[0].wizard.tile!.wizard = this.game.players[0].wizard;
-                #this.game.wizards.push(this.game.players[0].wizardChoice);
+                
                 
                 this.game.players[1].wizard = this.create.wizard({
                     owner: this.game.players[1],
@@ -94,7 +94,7 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
                     speed: 2
                 });
                 this.game.players[1].wizard.tile!.wizard = this.game.players[1].wizard;
-                #this.game.wizards.push(this.game.players[1].wizardChoice);
+                
             }
         }
 
