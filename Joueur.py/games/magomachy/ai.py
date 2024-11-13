@@ -97,9 +97,8 @@ class AI(BaseAI):
         # This is a secondary check to see if a player has chosen a wizard or not.
         notChosen = True
         
-        print("Your turn! Here's the map:")
-        
         # Most of the client is a loop that will break when the player ends their turn.
+        print("Your turn! It is turn", self.game.current_turn, ". Here's the map:")
         while(True):
             # We have an ASCII map available for checking the game state.
             # However, programming limitations means you have to call it by intentionally calling choose_wizard wrong.
