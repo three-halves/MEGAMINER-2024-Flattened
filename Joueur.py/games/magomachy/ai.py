@@ -91,7 +91,7 @@ class AI(BaseAI):
             bool: Represents if you want to end your turn. True means end your turn, False means to keep your turn going and re-call this function.
         """
         notChosen = True
-        print("Your turn! Here's the map:")
+        print("Your turn! It is turn", self.game.current_turn, ". Here's the map:")
         while(True):
             self.player.choose_wizard("map")
             if not self.player.wizard and notChosen:
