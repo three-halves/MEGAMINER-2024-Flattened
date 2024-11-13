@@ -78,6 +78,12 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                     south: this.addSprite.wiz_ag_s(hide),
                     west: this.addSprite.wiz_ag_w(hide),
                 },
+                cast: {
+                    north: this.addSprite.wiz_ag_cast_n(hide),
+                    east: this.addSprite.wiz_ag_cast_e(hide),
+                    south: this.addSprite.wiz_ag_cast_s(hide),
+                    west: this.addSprite.wiz_ag_cast_w(hide),
+                },
                 tele: {
                     north: this.addSprite.wiz_ag_tele_n(hide),
                     east: this.addSprite.wiz_ag_tele_e(hide),
@@ -98,6 +104,12 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                     south: this.addSprite.wiz_de_s(hide),
                     west: this.addSprite.wiz_de_w(hide),
                 },
+                cast: {
+                    north: this.addSprite.wiz_de_cast_n(hide),
+                    east: this.addSprite.wiz_de_cast_e(hide),
+                    south: this.addSprite.wiz_de_cast_s(hide),
+                    west: this.addSprite.wiz_de_cast_w(hide),
+                },
             },
             sustaining: {
                 norm: 
@@ -106,7 +118,13 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                     east: this.addSprite.wiz_su_e(hide),
                     south: this.addSprite.wiz_su_s(hide),
                     west: this.addSprite.wiz_su_w(hide),
-                }
+                },
+                cast: {
+                    north: this.addSprite.wiz_su_cast_n(hide),
+                    east: this.addSprite.wiz_su_cast_e(hide),
+                    south: this.addSprite.wiz_su_cast_s(hide),
+                    west: this.addSprite.wiz_su_cast_w(hide),
+                },
             },
             strategic: {
                 norm: 
@@ -115,7 +133,13 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                     east: this.addSprite.wiz_st_e(hide),
                     south: this.addSprite.wiz_st_s(hide),
                     west: this.addSprite.wiz_st_w(hide),
-                }
+                },
+                cast: {
+                    north: this.addSprite.wiz_st_cast_n(hide),
+                    east: this.addSprite.wiz_st_cast_e(hide),
+                    south: this.addSprite.wiz_st_cast_s(hide),
+                    west: this.addSprite.wiz_st_cast_w(hide),
+                },
             },
         };
 
@@ -175,6 +199,7 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
             switch (run.functionName) {
                 case "cast":
                     // eslint-disable-next-line no-case-declarations
+                    wizSpriteArg = "cast"; // may be overwritten by other spells
                     const targX = Math.floor(
                         (run.args.tile?.id - 2) / this.game.current.mapWidth,
                     );
