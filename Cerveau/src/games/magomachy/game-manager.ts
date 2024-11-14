@@ -50,12 +50,12 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
 
             // Give Spells
             this.game.currentPlayer.wizard!.hasCast = false;
-	    this.game.currentPlayer.wizard!.hasTeleported = false;
+	    	this.game.currentPlayer.wizard!.hasTeleported = false;
 
-	    // Regen 1 aether
-	    if (this.game.currentPlayer.wizard!.aether < this.game.currentPlayer.wizard!.maxAether) {
-		this.game.currentPlayer.wizard!.aether += 1;
-	    }
+	    	// Regen 1 aether
+	    	if (this.game.currentPlayer.wizard!.aether < this.game.currentPlayer.wizard!.maxAether) {
+				this.game.currentPlayer.wizard!.aether += 1;
+	    	}
         }
         // <<-- /Creer-Merge: before-turn -->>
     }
@@ -74,10 +74,11 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
         
         // Restore speed
         if (this.game.currentPlayer.wizard) {
-            this.game.currentPlayer.wizard.speed = 2;
+        	this.game.currentPlayer.wizard.speed = 2;
         }
         else {
-            if(!this.game.players[0].wizard && !this.game.players[1].wizard && this.game.players[0].wizardChoice && this.game.players[1].wizardChoice) {
+			// Spawn Wizards
+           if(!this.game.players[0].wizard && !this.game.players[1].wizard && this.game.players[0].wizardChoice && this.game.players[1].wizardChoice) {
                 this.game.players[0].wizard = this.create.wizard({
                     owner: this.game.players[0],
                     tile: this.game.wizard1_tile,
@@ -94,7 +95,6 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
                     speed: 2
                 });
                 this.game.players[1].wizard.tile!.wizard = this.game.players[1].wizard;
-                
             }
         }
 
@@ -118,6 +118,7 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
                     this.game.tiles[i].object = undefined;
                 }
             }
+			// And here's where items get respawned
 			else if (this.game.tiles[i].object_spawn && !this.game.tiles[i].wizard) {
 				this.game.tiles[i].spawn_timer! -= 1;
 				if (this.game.tiles[i].spawn_timer! === 0) {
@@ -148,7 +149,7 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
         // <<-- Creer-Merge: primary-win-conditions -->>
         // Add logic here checking for the primary win condition(s)
 
-        // I sure hope currentPlayer hasnt been updated yet
+        // Make sure nobody chickens out of the duel
         if (!this.game.currentPlayer.wizardChoice) {
             this.declareWinner("Your opponent didn't show up to the duel!", this.game.currentPlayer.opponent);
             this.declareLoser("You didn't pick a wizard in time for the duel!", this.game.currentPlayer);
