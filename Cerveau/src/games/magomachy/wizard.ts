@@ -797,19 +797,19 @@ export class Wizard extends GameObject {
                 let distLeft = 3;
                 let prevTile = this.tile;
                 let nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, this.tile!)
-                while (nextTile && nextTile.type === "floor" && prevTile!.wizard !== this.owner!.opponent.wizard && !(nextTile.object?.form === "stone") && distLeft > 0) {
+                while (nextTile && nextTile.type === "floor" && nextTile!.wizard !== this.owner!.opponent.wizard && !(nextTile.object?.form === "stone") && distLeft > 0) {
                     distLeft--;
                     prevTile = nextTile;
                     path.unshift(prevTile);
                     nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, prevTile);
 		            
                 }
-                if (prevTile!.wizard === this.owner!.opponent.wizard) {
+                if (nextTile!.wizard === this.owner!.opponent.wizard) {
 		            path.forEach((pathTile: Tile) => {
-    		    	prevTile!.wizard!.tile = pathTile;
-			        pathTile.wizard = prevTile!.wizard;
-			        prevTile!.wizard = undefined;
-                    prevTile = pathTile;
+    		  		nextTile!.wizard!.tile = pathTile;
+			 		pathTile.wizard = nextTile!.wizard;
+			     	nextTile!.wizard = undefined;
+                    nextTile = pathTile;
 
 			if (pathTile!.object) {
 			    pathTile!.wizard!.useItem(pathTile!.object!, true);
