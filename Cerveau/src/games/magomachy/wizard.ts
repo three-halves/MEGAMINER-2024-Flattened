@@ -410,7 +410,7 @@ export class Wizard extends GameObject {
                 if (player.wizard.specialty != "sustaining") {
                     return `You do not have the knowledge to use Teleport`;
                 }
-                if (distSq > 9) {
+                if (distSq > 4) {
                     return `You can only reach so far with this spell`;
                 }
                 if (tile.wizard) {
