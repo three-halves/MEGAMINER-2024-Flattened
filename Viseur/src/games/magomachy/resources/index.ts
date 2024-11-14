@@ -28,9 +28,9 @@ export const GameResources = createResources("Magomachy", {
     wiz_ag_dash_w: load("sprites-ag/Agressive_dash_left.png"),
     
     wiz_ag_cast_n: load("sprites-ag/Agressive_cast_back.png"),
-    wiz_ag_cast_e: load("sprites-ag/Agressive_cast_right.png"),
+    wiz_ag_cast_e: load("sprites-ag/Agressive_cast_left.png"),
     wiz_ag_cast_s: load("sprites-ag/Agressive_cast_front.png"),
-    wiz_ag_cast_w: load("sprites-ag/Agressive_cast_left.png"),
+    wiz_ag_cast_w: load("sprites-ag/Agressive_cast_right.png"),
     
     // defensive
     wiz_de_n: load("sprites-de/face-north.png"),

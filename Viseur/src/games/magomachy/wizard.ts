@@ -340,14 +340,27 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
             current.health <
                 delta.reversed["gameObjects"][current.id]["health"]
         ) {
-            sprite.anchor.set(0.5);
             sprite.tint = ease(0xff1010, 0xffffff, dt, "cubicInOut");
-            sprite.angle = ease(
-                (Math.random() + 0.5) * 20 - 15,
-                0,
-                dt,
-                "cubicInOut",
-            );
+            if (current.health === 0)
+            {
+                sprite.width = ease(1, 0, dt, "linear");
+                sprite.height = ease(1, 0, dt, "linear");
+                this.container.position.set(
+                    current.tile.x + spriteOffset.x + dt / 2,
+                    current.tile.y + spriteOffset.y + dt / 2,
+                );
+            }
+            else
+            {
+                sprite.anchor.set(0.5);
+                sprite.angle = ease(
+                    (Math.random() + 0.5) * 20 - 15,
+                    0,
+                    dt,
+                    "cubicInOut",
+                );
+            }
+
         }
 
         sprite.anchor.set(0.0);
