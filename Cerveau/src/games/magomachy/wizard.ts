@@ -147,6 +147,8 @@ export class Wizard extends GameObject {
 
         // <<-- Creer-Merge: constructor -->>
         // setup any thing you need here
+
+		// Set wizards stats
 		if (this.specialty as string === "aggressive") {
 			this.health = 10;
 			this.defense = 5;
@@ -173,7 +175,7 @@ export class Wizard extends GameObject {
 		}
 		this.maxAether = this.aether;
 		this.maxHealth = this.health;
-	    	this.hasTeleported = false;
+	    this.hasTeleported = false;
         // <<-- /Creer-Merge: constructor -->>
     }
 
@@ -183,6 +185,18 @@ export class Wizard extends GameObject {
     // NOTE: Client AIs cannot call these functions, those must be defined
     // in the creer file.
 
+
+	/**
+     * Line drawing algorithm for projectiles.
+     * Given a Tile and a line, tries to find next Tile nearest to that line.
+	 *
+     * @param x0 - x coordinate of first point on line.
+     * @param y0 - y coordinate of first point on line.
+	 * @param x1 - x coordinate of second point on line.
+     * @param y1 - y coordinate of second point on line.
+	 * @param current - the Tile to start from.
+     * @returns The Tile that approximately continues the line.
+     */
     public bressenham(x0: number, y0: number, x1: number, y1: number, current: Tile): Tile | undefined {
         // First we describe the slope of the line
         let dx = x1 - x0;
@@ -256,32 +270,37 @@ export class Wizard extends GameObject {
         tile: Tile,
     ): void | string | WizardCastArgs {
         // <<-- Creer-Merge: invalidate-cast -->>
+		// Call generic invalidate first
         const reason = this.invalidate(player);
         if (reason) {
             return reason;
         }
 
+		// Make sure a Tile was passed
         if (!tile) {
             //throw new Error('${this} has no Tile to target!');
             return 'Aim buff spells at your Tile, or attacks on another Tile.';
         }
 
-	if (!tile.x || !tile.y ||
-	    tile.x < 0 || tile.y < 0 || 
-	    tile.x >= this.game.mapWidth || tile.y >= this.game.mapHeight) {
-	    return `WHOA! That Tile's not on the map! Did you forget to send a reference?`;
-	}
+		// In case players try to mess with Tiles
+		if (!tile.x || !tile.y ||
+	    	tile.x < 0 || tile.y < 0 || 
+	    	tile.x >= this.game.mapWidth || tile.y >= this.game.mapHeight) {
+	    	return `WHOA! That Tile's not on the map! Did you forget to send a reference?`;
+		}
 	
-	// So clients don't hack into Tiles	
-	tile = this.game.getTile(Math.round(tile.x), Math.round(tile.y))!;
+		// So clients don't hack into Tiles
+		tile = this.game.getTile(Math.round(tile.x), Math.round(tile.y))!;
 
+		// Casting limits
         if (this.hasCast && spellName !== "Teleport") {
             return 'One non-teleport spell per turn!';
         }
-	if (this.hasTeleported && spellName === "Teleport") {
-		return `One teleport per turn!`;
-	}
+		if (this.hasTeleported && spellName === "Teleport") {
+			return `One teleport per turn!`;
+		}
 
+		// Death check (unfortunately, dying doesn't end the game immediately)
 		if (this.health! <= 0 || this.aether! <= 0) {
 			return `Sorry, you're dead!`;
 		}
@@ -397,9 +416,9 @@ export class Wizard extends GameObject {
                 if (player.wizard.specialty != "sustaining") {
                     return `You do not have the knowledge to use Calming Blast`;
                 }
-		if (this.tile === tile) {
-		    return `You cannot aim this at your own Tile`;
-		}
+				if (this.tile === tile) {
+		    		return `You cannot aim this at your own Tile`;
+				}
                 // Please no i spent so much time on implementing bressenham
                 // if (dx != 0 && dy != 0) {
                 //    return `This only goes in a straight line`;
@@ -416,9 +435,9 @@ export class Wizard extends GameObject {
                 if (tile.wizard) {
                     return `You are not as versed in the art of telefragging as other wizards!`;
                 }
-		if (this.movementLeft < 1) {
-		    return `You must have at least 1 movement left to use this spell!`;
-		}
+				if (this.movementLeft < 1) {
+		    		return `You must have at least 1 movement left to use this spell!`;
+				}
                 if (tile.type === "wall" || (tile.object && tile.object!.form === "stone")) {
                     return `The bounds of this challenge are 2 dimensional, you cannot go above the walls`;
                 }
@@ -473,13 +492,7 @@ export class Wizard extends GameObject {
                 if (player.wizard.specialty != "strategic") {
                     return `You do not have the knowledge to use runes`;
                 }
-                if (player.wizard.teleportTile) {
-                    // hehehehehehe
-                    //if (player.wizard.teleportTile.wizard) {
-                    //    return `Two things cannot exist on the same spot, or VERY bad things can happen`;
-                    //}
-                }
-                else {
+                if (!player.wizard.teleportTile) {
                     if (tile.type == `wall`) {
                         return `The bounds of this challenge are 2 dimensional, you cannot go above the walls`
                     }
@@ -508,37 +521,31 @@ export class Wizard extends GameObject {
                 //}
                 break;
             }
-	    case "Force Pull": {
+	    	case "Force Pull": {
                 if (player.wizard.specialty != "strategic") {
                     return `You do not have the knowledge to use Calming Blast`;
                 }
-		if (this.tile === tile) {
-		    return `You cannot aim this at your own Tile`;
-		}
-                // Please no i spent so much time on implementing bressenham
-                // if (dx != 0 && dy != 0) {
-                //    return `This only goes in a straight line`;
-                //}
+				if (this.tile === tile) {
+		    		return `You cannot aim this at your own Tile`;
+				}
                 break;
             }
-	    // For testing Bressenham
-	    case "Ping Calming Blast": {
-                let prevTile = this.tile;
+	    	// For testing Bressenham
+	    	case "Ping Calming Blast": {
+        		let prevTile = this.tile;
                 let nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, this.tile!)
                 while (nextTile && nextTile.type === "floor" && (!prevTile?.wizard || prevTile?.wizard === this) && !(nextTile.object?.form === "stone")) {
                     prevTile = nextTile;
                     nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, prevTile);
                 }
-		return 'Would hit ${tile}';
+				return 'Would hit ${tile}';
             }
             default: {
                 return 'Check your spelling and spell list because no such spell exists!';
             }
         }
 
-        // TODO: literally all the other cases,
-        // One per spell. Yeah. Have fun.
-        // Things I can think of:
+        // Things that usually stop spellcasting:
         // - Casting spell on themself.
         // - Missing tile.
         // - Not in range.
@@ -547,10 +554,6 @@ export class Wizard extends GameObject {
         // We could have done this by just flipping a few booleans
         // But...eh.
 
-        // Check all the arguments for cast here and try to
-        // return a string explaining why the input is wrong.
-        // If you need to change an argument for the real function, then
-        // changing its value in this scope is enough.
         return undefined; // means nothing could be found that was ivalid.
 
         // <<-- /Creer-Merge: invalidate-cast -->>
@@ -570,10 +573,13 @@ export class Wizard extends GameObject {
         tile: Tile,
     ): Promise<boolean> {
         // <<-- Creer-Merge: cast -->>
-	// So clients don't hack into Tiles	
-	tile = this.game.getTile(Math.round(tile.x), Math.round(tile.y))!;
+		// So clients don't hack into Tiles	
+		tile = this.game.getTile(Math.round(tile.x), Math.round(tile.y))!;
 	    
+		// For visualizer
         this.setDirection(tile);
+
+		// Go case-by-case
         switch(spellName) { 
             case "Punch": {
                 // Throws a crappy wizard punch within 1 range.
@@ -584,7 +590,7 @@ export class Wizard extends GameObject {
             }
             case "Fire Slash": {
                 // Fire blast
-                // Does it go through walls? I assume so
+                // CAN go through walls
                 this.lastSpell = "Fire Slash";
                 this.lastTargetTile = tile;
                 if (tile.wizard !== undefined) this.damage(tile.wizard, 3);//tile.wizard.health -= 3;
@@ -592,13 +598,10 @@ export class Wizard extends GameObject {
                 break;
             }
             case "Thunderous Dash": {
-                // Just add an isDash var to wizards
                 this.lastSpell = "Thunderous Dash";
                 this.lastTargetTile = tile;
                 this.movementLeft += 2;
                 this.speed += 2;
-                //this.effects.push("Dash");
-                //this.effectTimes.push(0);
                 this.aether -= 3;
                 break;
             }
@@ -607,6 +610,8 @@ export class Wizard extends GameObject {
                 this.lastTargetTile = tile;
                 this.aether -= 4;
 
+				// This is the first example of a bressenham spell!
+				// Too bad it only ever can push in a straight line...
                 let prevTile = tile;
                 let nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, tile)
                 while (nextTile && nextTile.type === "floor" && !nextTile.object && !prevTile.wizard) {
@@ -647,8 +652,7 @@ export class Wizard extends GameObject {
                     nextTile.wizard = prevTile.wizard;
                     prevTile.wizard = undefined;
                     // NOTE: If wizard touches item, collect it
-                    // Honestly may be best to have a generic move function
-		    if (nextTile.object) {
+		    		if (nextTile.object) {
                         // Collect item here
                         nextTile.wizard!.useItem(nextTile.object!, true);
                     }
@@ -663,16 +667,6 @@ export class Wizard extends GameObject {
                 break;
             }
             case "Stone Summon": {
-                // Um. I just dont know here.
-                // Maybe keep a list of walled tiles and their associated times?
-                // And then add a variable to tile describing if its blocked or not?
-                // This is more of a game manager thing...
-
-                // ok coming back to this, I think I have a plan.
-                // we'll store a list of walled tiles in the wizard itself.
-                // we can also give tiles a MUTABLE variable saying if they're walled.
-                // then the gm checks this array every turn.
-                // the same idea counts for strategist runes.
                 this.lastSpell = "Stone Summon";
                 this.lastTargetTile = tile;
                 tile.object = this.manager.create.item({
@@ -681,7 +675,7 @@ export class Wizard extends GameObject {
                     tile: tile,
                     max_life: 10,
                 });
-		this.aether -= 4;
+				this.aether -= 4;
                 break;
             }
             case "Calming Blast": {
@@ -710,15 +704,17 @@ export class Wizard extends GameObject {
                 this.tile!.wizard = undefined;
                 this.tile = tile;
                 tile.wizard = this;
-		if (tile.object) {
-		    this.useItem(tile.object,false);
-		}
-		this.aether -= 3;
-		this.hasTeleported = true;
-		this.movementLeft -= 1;
+				if (tile.object) {
+		    		this.useItem(tile.object,false);
+				}
+
+				this.aether -= 3;
+				this.hasTeleported = true;
+				this.movementLeft -= 1;
                 break;
             }
             case "Dispel Magic": {
+				// This used to be so OP lol
                 this.lastSpell = "Dispel Magic";
                 this.lastTargetTile = tile;
                 tile.object = undefined;
@@ -734,7 +730,7 @@ export class Wizard extends GameObject {
                     lifetime: 0,
                     tile: tile,
                 })
-		this.aether -= 2;
+				this.aether -= 2;
                 break;
             }
             case "Heal Rune": {
@@ -745,11 +741,13 @@ export class Wizard extends GameObject {
                     lifetime: 0,
                     tile: tile,
                 })
-		this.aether -= 5;
+				this.aether -= 5;
                 break;
             }
             case "Teleport Rune": {
                 this.lastTargetTile = tile;
+
+				// For when there isn't a teleport tile already
                 if(!this.teleportTile){
                     this.lastSpell = "Teleport Rune Place";
                     tile.object = this.manager.create.item({
@@ -757,9 +755,10 @@ export class Wizard extends GameObject {
                         lifetime: 0,
                         tile: tile,
                     })
-		    this.aether -= 3;
-                    this.teleportTile = tile;
-                }
+		    		this.aether -= 3;
+                	this.teleportTile = tile;
+            	}
+				// For when there is a teleport tile already
                 else {
                     this.lastSpell = "Teleport Rune Use";
                     if (this.teleportTile!.wizard) {
@@ -770,7 +769,6 @@ export class Wizard extends GameObject {
                     this.tile!.wizard = this;
                     this.teleportTile.object = undefined;
                     this.teleportTile = undefined;
-                    // ACTUALLY DELETE THE FREAKING ITEM TOO
                 }
                 break;
             }
@@ -781,19 +779,20 @@ export class Wizard extends GameObject {
                     form: "charge rune",
                     lifetime: 0,
                     tile: tile,
-		    max_life: 10,
+		    		max_life: 10,
                 })
-		this.aether -= 4;
+				this.aether -= 4;
                 break;
             }
-	    case "Force Pull": {
+	    	case "Force Pull": {
                 // Requires Bressenham to find path
                 // After that, keep pushing until wall is hit or out of range
                 this.lastSpell = "Force Pull";
                 this.lastTargetTile = tile;
                 this.aether -= 3;
 
-		let path: Tile[] = [];
+				// First we have to find the path to use
+				let path: Tile[] = [];
                 let distLeft = 3;
                 let prevTile = this.tile;
                 let nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, this.tile!)
@@ -802,20 +801,21 @@ export class Wizard extends GameObject {
                     prevTile = nextTile;
                     path.unshift(prevTile);
                     nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, prevTile);
-		            
                 }
+				
+				// Retrace the path if a wizard is hit
                 if (nextTile!.wizard === this.owner!.opponent.wizard) {
 		            path.forEach((pathTile: Tile) => {
-    		  		nextTile!.wizard!.tile = pathTile;
-			 		pathTile.wizard = nextTile!.wizard;
-			     	nextTile!.wizard = undefined;
-                    nextTile = pathTile;
+    		  			nextTile!.wizard!.tile = pathTile;
+			 			pathTile.wizard = nextTile!.wizard;
+			     		nextTile!.wizard = undefined;
+                    	nextTile = pathTile;
 
-			if (pathTile!.object) {
-			    pathTile!.wizard!.useItem(pathTile!.object!, true);
-			}
-		    });
-		}
+						if (pathTile!.object) {
+			    			pathTile!.wizard!.useItem(pathTile!.object!, true);
+						}
+		    		});
+				}
                 break;
             }
             default: { 
@@ -823,9 +823,11 @@ export class Wizard extends GameObject {
                 break; 
             } 
         }
-	if (spellName !== "Teleport") {
-		this.hasCast = true;
-	}
+
+		// Mark that a spell was cast UNLESS it's teleport
+		if (spellName !== "Teleport") {
+			this.hasCast = true;
+		}
         return true;
 
         // <<-- /Creer-Merge: cast -->>
@@ -848,6 +850,7 @@ export class Wizard extends GameObject {
     ): void | string | WizardMoveArgs {
         // <<-- Creer-Merge: invalidate-move -->>
 
+		// Same generic invalidates as cast
         const reason = this.invalidate(player);
         if (reason) {
             return reason;
@@ -857,14 +860,14 @@ export class Wizard extends GameObject {
             throw new Error('${this} has no Tile!');
         }
 
-	if (!tile.x || !tile.y ||
-	    tile.x < 0 || tile.y < 0 || 
-	    tile.x >= this.game.mapWidth || tile.y >= this.game.mapHeight) {
-	    return `WHOA! That Tile's not on the map! Did you forget to send a reference?`;
-	}
+		if (!tile.x || !tile.y ||
+	    	tile.x < 0 || tile.y < 0 || 
+	    	tile.x >= this.game.mapWidth || tile.y >= this.game.mapHeight) {
+	    		return `WHOA! That Tile's not on the map! Did you forget to send a reference?`;
+		}
 	
-	// So clients don't hack into Tiles	
-	tile = this.game.getTile(Math.round(tile.x), Math.round(tile.y))!;
+		// So clients don't hack into Tiles	
+		tile = this.game.getTile(Math.round(tile.x), Math.round(tile.y))!;
 
         // Calculate distance of target tile
         const dx = this.tile.x - tile.x;
@@ -912,22 +915,32 @@ export class Wizard extends GameObject {
             throw new Error(`${this} has no Tile to move from!']`);
         }
 
-	// So clients don't hack into Tiles	
+		// So clients don't hack into Tiles	
 	    tile = this.game.getTile(Math.round(tile.x), Math.round(tile.y))!;
 
+		// For visualizer
         this.setDirection(tile);
+
+		// For wizard swapping 
+		// (invalidate already blocked move if Thunderous Dash not used)
         let swapWiz = tile.wizard;
         let swapTile = this.tile;
 	    
+		// Move to the new tile
         this.tile.wizard = undefined;
         this.tile = tile;
         tile.wizard = this;
-	if (swapWiz) {
-	    swapWiz!.tile = swapTile;
-	    swapTile!.wizard = swapWiz;
+
+		// Swap wizards if needed
+		if (swapWiz) {
+	    	swapWiz!.tile = swapTile;
+	    	swapTile!.wizard = swapWiz;
     	}
+		
+		// Subtract movement
         this.movementLeft -= 1;
 
+		// use an item
         if(this.tile?.object) {
             this.useItem(this.tile!.object);
         }
@@ -1000,7 +1013,7 @@ export class Wizard extends GameObject {
         item: Item,
 	force=false,
     ): boolean {
-	let destroy = true;
+		let destroy = true;
         switch(item.form!) {
             case "health flask": {
                 this.health += Math.round(this.maxHealth! / 2);
@@ -1020,22 +1033,22 @@ export class Wizard extends GameObject {
             }
             case "teleport rune": {
                 // Do nothing. This is handled in cast.
-		destroy = false;
+				destroy = false;
                 break;
             }
             case "charge rune": {
                 //this.health -= item.lifetime;
-		destroy = false;
+				destroy = false;
                 break;
             }
             case "stone": {
                 // EXCEPTIONALLY rare case since walls block moves
-		if (!force) {
-		    destroy = false;
-		}
-		else {
-		    this.health -= 2;
-		}
+				if (!force) {
+		    		destroy = false;
+				}
+				else {
+		    		this.health -= 2;
+				}
                 break;
             }
             default: {
@@ -1045,17 +1058,18 @@ export class Wizard extends GameObject {
                 break;
             }
         }
-        // remove overhealing
+        // Remove overhealing
         if (this.health > this.maxHealth) {
             this.health = this.maxHealth;
         }
         if (this.aether > this.maxAether) {
             this.aether = this.maxAether;
         }
-        // DELETE THE ITEM
-	if (destroy) {
+		
+        // Delete the item if necessary
+		if (destroy) {
             item.tile.object = undefined;
-	}
+		}
         return true;
     }
 
