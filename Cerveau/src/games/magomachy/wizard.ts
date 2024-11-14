@@ -800,17 +800,19 @@ export class Wizard extends GameObject {
                 while (nextTile && nextTile.type === "floor" && prevTile!.wizard !== this.owner!.opponent.wizard && !(nextTile.object?.form === "stone") && distLeft > 0) {
                     distLeft--;
                     prevTile = nextTile;
+                    path.unshift(prevTile);
                     nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, prevTile);
-		    path.unshift(prevTile);
+		            
                 }
                 if (prevTile!.wizard === this.owner!.opponent.wizard) {
-		    path.forEach((pathTile: Tile) => {
+		            path.forEach((pathTile: Tile) => {
     		    	prevTile!.wizard!.tile = pathTile;
-			pathTile.wizard = prevTile!.wizard;
-			prevTile!.wizard = undefined;
+			        pathTile.wizard = prevTile!.wizard;
+			        prevTile!.wizard = undefined;
+                    prevTile = pathTile;
 
-			if (nextTile!.object) {
-			    nextTile!.wizard!.useItem(nextTile!.object!, true);
+			if (pathTile!.object) {
+			    pathTile!.wizard!.useItem(pathTile!.object!, true);
 			}
 		    });
 		}

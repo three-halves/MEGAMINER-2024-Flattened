@@ -155,7 +155,7 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
             return true;
         }
 
-        if (this.game.wizards[0] !== undefined && this.game.wizards[1] !== undefined)
+        if (this.game.players[0].wizard !== undefined && this.game.players[1].wizard !== undefined)
         {
             const killedOff = this.game.players.filter(
                 (p) => p.wizard.health <= 0 || p.wizard.aether <= 0);
