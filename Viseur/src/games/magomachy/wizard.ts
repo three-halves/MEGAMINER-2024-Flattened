@@ -5,7 +5,7 @@ import { Viseur } from "src/viseur";
 import { makeRenderable } from "src/viseur/game";
 import { GameObject } from "./game-object";
 import { MagomachyDelta, TileState, WizardState } from "./state-interfaces";
-import { linear } from "eases";
+import { Point } from "pixi.js";
 
 // <<-- Creer-Merge: imports -->>
 // any additional imports you want can be added here safely between Creer runs
@@ -14,6 +14,7 @@ import { linear } from "eases";
 // <<-- Creer-Merge: should-render -->>
 // Set this variable to `true`, if this class should render.
 const SHOULD_RENDER = true;
+
 // <<-- /Creer-Merge: should-render -->>
 
 /**
@@ -47,6 +48,10 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         [type: string]: { [direction: string]: any };
     };
 
+    public wizSpriteScale: {
+        [type: string]: Point
+    };
+
     public spellSprites: {
         [spell: string]: PIXI.Sprite;
     };
@@ -64,9 +69,12 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
     constructor(state: WizardState, viseur: Viseur) {
         super(state, viseur);
 
+        PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
+        PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+
         // <<-- Creer-Merge: constructor -->>
         // You can initialize your new Wizard here.
-        this.container.setParent(this.game.layers.game);
+        this.container.setParent(this.game.layers.wiz_a);
 
         this.type = state.specialty;
         this.typeSuffix = state.specialty.substring(0, 2);
@@ -146,6 +154,13 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
             },
         };
 
+        this.wizSpriteScale = {
+            aggressive: {x: 1, y: 1.5},
+            defensive: {x: 1, y: 1},
+            sustaining: {x: 1, y: 1.5},
+            strategic: {x: 1, y: 1.5},
+        }
+
         this.spellSprites = {
             Punch: this.addSprite.spell_punch(hide),
             "Fire Slash": this.addSprite.spell_flame({
@@ -186,6 +201,14 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         super.render(dt, current, next, delta, nextDelta);
 
         // <<-- Creer-Merge: render -->>
+        // z ordering
+        if (this.game.next?.gameObjects[Number(this.id) - 1].tile.y > this.game.next?.gameObjects[Number(this.id)].tile.y) {
+            this.container.setParent(this.game.layers.wiz_a);
+        }
+        else {
+            this.container.setParent(this.game.layers.wiz_b);
+        }
+
         // try to render spell
         for (const s in this.spellSprites) {
             this.spellSprites[s].visible = false;
@@ -194,7 +217,7 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const run = nextDelta.data?.run;
         let wizSpriteArg: string? = "norm";
-        let spriteOffset = {x: 0, y: 0};
+        let spriteOffset = {x: (1 - this.wizSpriteScale[this.type].x), y: (1 - this.wizSpriteScale[this.type].y)};
 
         for (let exSprite in this.extraSprites) {
             this.extraSprites[exSprite].visible = false;
@@ -235,8 +258,8 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                             );
                             spellSprite.anchor.set(0.0);
                             spellSprite.position.set(
-                                ease(rotOffset.x, targX - next.tile.x + rotOffset.x, dt),
-                                ease(rotOffset.y, targY - next.tile.y + rotOffset.y, dt),
+                                ease(rotOffset.x - spriteOffset.x, targX - next.tile.x + rotOffset.x - spriteOffset.x, dt),
+                                ease(rotOffset.y - spriteOffset.y, targY - next.tile.y + rotOffset.y - spriteOffset.y, dt),
                             );
                             break;
                         case "Fire Slash":
@@ -247,8 +270,8 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                             );
                             spellSprite.anchor.set(0.0);
                             spellSprite.position.set(
-                                this.dirAsPosDelta(next.direction).x + rotOffset.x,
-                                this.dirAsPosDelta(next.direction).y + rotOffset.y,
+                                this.dirAsPosDelta(next.direction).x + rotOffset.x - spriteOffset.x,
+                                this.dirAsPosDelta(next.direction).y + rotOffset.y - spriteOffset.y,
                             );
                             break;
                         case "Furious Telekinesis":
@@ -273,8 +296,8 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                                     pivot: {x: 0.5, y: 0.5},
                                     position: 
                                     {
-                                        x: (i / dist) * 0 + ((dist - i) / dist) * (targX - next.tile.x) + rotOffset.x * 0.85,
-                                        y: (i / dist) * 0 + ((dist - i) / dist) * (targY - next.tile.y) + rotOffset.y * 0.85,
+                                        x: (i / dist) * 0 + ((dist - i) / dist) * (targX - next.tile.x) + rotOffset.x * 0.85 - spriteOffset.x,
+                                        y: (i / dist) * 0 + ((dist - i) / dist) * (targY - next.tile.y) + rotOffset.y * 0.85 - spriteOffset.y,
                                     },
                                     relativeScale: 0.75,
                                     rotation: theta,
@@ -299,7 +322,7 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                 }
             }
         }
-        let sprite;
+        let sprite: PIXI.Sprite;
         if (wizSpriteArg === null) sprite = this.wizSprites[this.type][dir];
         else sprite = this.wizSprites[this.type][wizSpriteArg][dir];
 
@@ -308,6 +331,7 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
             ease(current.tile.x + spriteOffset.x, next.tile.x + spriteOffset.x, dt),
             ease(current.tile.y + spriteOffset.y, next.tile.y + spriteOffset.y, dt),
         );
+        sprite.height = this.wizSpriteScale[this.type].y
 
         // render hurn anim
         if (

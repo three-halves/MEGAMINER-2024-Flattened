@@ -73,6 +73,7 @@ export const GameResources = createResources("Magomachy", {
     rune_explode: load("sprites-items/lightning.png"),
     rune_charge: load("sprites-items/poison.png"),
     // rune_stone: load("wall.png"),
+    statue: load("sprites-items/grasstouched.png"),
 
     spell_punch: load("sprites-spells/punch.png"),
     spell_flame: load("sprites-spells/firefist.png"),

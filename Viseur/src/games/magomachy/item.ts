@@ -72,7 +72,7 @@ export class Item extends makeRenderable(GameObject, SHOULD_RENDER) {
                 this.sprite = this.addSprite.rune_charge();
                 break;
             case "stone":
-                this.sprite = this.addSprite.wall();
+                this.sprite = this.addSprite.statue();
                 break;
         }
         // <<-- /Creer-Merge: constructor -->>
