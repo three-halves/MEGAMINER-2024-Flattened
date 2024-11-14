@@ -39,6 +39,9 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
     // shorted version of wizard's specialty
     public typeSuffix: string;
 
+    // this is not clean code :(
+    public extraSprites: PIXI.Sprite[];
+
     // a dict of dicts representing all wizard sprites. Outermost dict
     public wizSprites: {
         [type: string]: { [direction: string]: any };
@@ -150,7 +153,10 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                 width: 3,
             }),
             "Rock Lob": this.addSprite.spell_rock(hide),
+            "Calming Blast": this.addSprite.spell_water(hide),
         };
+
+        this.extraSprites = []
 
         // <<-- /Creer-Merge: constructor -->>
     }
@@ -189,6 +195,10 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         const run = nextDelta.data?.run;
         let wizSpriteArg: string? = "norm";
         let spriteOffset = {x: 0, y: 0};
+
+        for (let exSprite in this.extraSprites) {
+            this.extraSprites[exSprite].visible = false;
+        }
 
         if (
             run !== undefined &&
@@ -255,6 +265,22 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                                 ease(0, targY - next.tile.y - yOffset, dt, "linear"),
                             );
                             break;
+                        case "Calming Blast":
+                            const theta = Math.atan2(targY - next.tile.y, targX - next.tile.x);
+                            const dist = Math.ceil(1.25 * Math.sqrt(Math.pow((targY - next.tile.y), 2) + Math.pow((targX - next.tile.x), 2)));
+                            for (let i = 0; i < dist; i++) {
+                                this.extraSprites[i] = this.addSprite.spell_water({
+                                    pivot: {x: 0.5, y: 0.5},
+                                    position: 
+                                    {
+                                        x: (i / dist) * 0 + ((dist - i) / dist) * (targX - next.tile.x) + rotOffset.x * 0.85,
+                                        y: (i / dist) * 0 + ((dist - i) / dist) * (targY - next.tile.y) + rotOffset.y * 0.85,
+                                    },
+                                    relativeScale: 0.75,
+                                    rotation: theta,
+                                })
+                            }
+                        
                     }
             }
         }
