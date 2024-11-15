@@ -114,10 +114,11 @@ export class MagomachyGame extends BaseClasses.Game {
         // <<-- Creer-Merge: constructor -->>
         // setup any thing you need here
 
-	this.wizards = ["aggressive", "defensive", "sustaining", "strategic"];
+		// Initialize the wizard list here:
+		this.wizards = ["aggressive", "defensive", "sustaining", "strategic"];
 
-	// This is where you set the map you want.
-	// DO NOT DELETE THE M
+		// This is where you set the map you want.
+		// DO NOT DELETE THE M
         const visualMap: string = `M
                         ##########
                         #///h///2#
@@ -130,20 +131,24 @@ export class MagomachyGame extends BaseClasses.Game {
                         #1///h///#
                         ##########`;
 
-        const strMap = visualMap.replace(/ /g, "").replace(/[\r\n\t]+/gm, "").replace("M","");
+  		// Convert the visual string to instructions for map generation      
+		const strMap = visualMap.replace(/ /g, "").replace(/[\r\n\t]+/gm, "").replace("M","");
         
+		// Generate the map here
         for (let i = 0; i < this.mapWidth * this.mapHeight; i++) {
             const x = i % this.mapWidth;
             const y = Math.floor(i / this.mapWidth);
         
-            // TODO Manually create arrays of tiles/strings for different maps
+            // TEMPORARILY let tiles be modified
             const tile = (this.tiles[i] as MutableTile);
             const mark = strMap.charAt(i);
-        
+
+			// Set the tile type
             tile.type = (mark === "#")
                 ? "wall"
                 : "floor";
-        
+        	
+			// Spawn items
             if (mark === "a") {
                 tile.object = this.manager.create.item({
                     form: "aether flask",
@@ -162,6 +167,8 @@ export class MagomachyGame extends BaseClasses.Game {
 				tile.object_spawn = "health flask";
 				tile.spawn_timer = 10;
             }
+
+			// Mark where to spawn wizards
             else if (mark === "1") {
                 // MARK WIZARD 1 LOCATION
                 this.wizard1_tile = tile;
