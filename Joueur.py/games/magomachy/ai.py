@@ -172,7 +172,7 @@ class AI(BaseAI):
             elif components[0] == 'cast':
                 #if self.player.wizard.has_cast:
                     #print("You've already cast a spell this turn...")
-                elif len(components) < 4 or len(components) > 5:
+                if len(components) < 4 or len(components) > 5:
                     print("Wrong number of arguments")
                 else:
                     spell = components[1]
