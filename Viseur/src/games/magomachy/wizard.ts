@@ -156,7 +156,7 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
 
         this.wizSpriteScale = {
             aggressive: {x: 1, y: 1.5},
-            defensive: {x: 1, y: 1},
+            defensive: {x: 1, y: 1.125},
             sustaining: {x: 1, y: 1.5},
             strategic: {x: 1, y: 1.5},
         }
