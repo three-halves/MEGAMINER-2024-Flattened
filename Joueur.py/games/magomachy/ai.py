@@ -182,7 +182,7 @@ class AI(BaseAI):
                         spell = components[1] + " " + components[2]
                         x = components[3]
                         y = components[4]
-                    if not x.isdigit or not y.isdigit:
+                    if not x.isdigit() or not y.isdigit():
                         print("Choose actual coordinates...")
                     else:
                         tile = self.game.get_tile_at(int(x),int(y))
