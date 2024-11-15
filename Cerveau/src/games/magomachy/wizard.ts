@@ -337,9 +337,9 @@ export class Wizard extends GameObject {
                 if (distSq > 4) {
                     return '${tile} is too far away to get charbroiled!';
                 }
-		if (dx != 0 && dy != 0) {
-		    return `This spell only goes directly vertical or horizontal!`;
-		}
+				if (dx != 0 && dy != 0) {
+		    		return `This spell only goes directly vertical or horizontal!`;
+				}
                 // this is a really clever invalidate but its meant for Rock Lob
                 //if (tile.hasNeighbor(player.wizard.tile)) {
                 //    return ``
@@ -377,7 +377,7 @@ export class Wizard extends GameObject {
                 if (!tile.wizard) {
                     return `Curses! The enemy wizard isn\'t at ${tile}!`;
                 }
-                if (distSq > 4 || distSq <= 1) {
+                if (distSq > 9 || distSq <= 1) {
                     return `You are wise enough to know that the spell won't reach there`;
                 }
                 break;
@@ -662,7 +662,7 @@ export class Wizard extends GameObject {
                     nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, prevTile);
                 }
                 if (distLeft > 0) {
-                    this.damage(prevTile.wizard!,2);//prevTile.wizard!.health -= 2;
+                    this.damage(prevTile.wizard!,3);//prevTile.wizard!.health -= 2;
                 }
                 break;
             }
