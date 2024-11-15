@@ -175,7 +175,7 @@ export class Wizard extends GameObject {
 		}
 		this.maxAether = this.aether;
 		this.maxHealth = this.health;
-	    this.hasTeleported = false;
+		this.hasTeleported = false;
         // <<-- /Creer-Merge: constructor -->>
     }
 
