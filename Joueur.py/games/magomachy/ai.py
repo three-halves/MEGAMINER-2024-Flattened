@@ -117,8 +117,8 @@ class AI(BaseAI):
                     print("Thunderous Dash: 3 aether, boosts speed by 2 for 1 turn, lets you swap places with enemy if you pass them")
                     print("Furious Telekinesis: 4 aether, 1 range, pushes item away, forces other wizard to use it if it hits them")
                 elif components[1] == 'defensive':
-                    print("Rock Lob: 2 aether, 2 damage, exactly 2 tile range (including diagonals)")
-                    print("Force Push: 3 aether, pushes adjacent opponent up to 4 spaces, using items along the way. 2 damage if they hit a wall")
+                    print("Rock Lob: 2 aether, 2 damage, exactly 2 or 3 tile range")
+                    print("Force Push: 3 aether, pushes adjacent opponent up to 4 spaces, using items along the way. 3 damage if they hit a wall")
                     print("Stone Summon: 4 aether, 1 range, summon impassable stone for 10 total turns")
                 elif components[1] == 'sustaining':
                     print("Calming Blast: 3 aether, fires projectile, on hit steal 1 HP and decrease speed for 1 turn")
