@@ -33,6 +33,7 @@ export class Item extends makeRenderable(GameObject, SHOULD_RENDER) {
     // You can add additional member variables here
 
     public sprite: PIXI.Sprite;
+    public particleSprite: PIXI.Sprite | null;
     // <<-- /Creer-Merge: variables -->>
 
     /**
@@ -50,7 +51,10 @@ export class Item extends makeRenderable(GameObject, SHOULD_RENDER) {
         // <<-- Creer-Merge: constructor -->>
         this.container.position.set(state.tile.x, state.tile.y);
 
+
+        this.particleSprite = null;
         // You can initialize your new Item here.
+        const hide = { visible: false };
         this.container.setParent(this.game.layers.items);
         switch (state.form) {
             case "health flask":
@@ -61,15 +65,19 @@ export class Item extends makeRenderable(GameObject, SHOULD_RENDER) {
                 break;
             case "explosion rune":
                 this.sprite = this.addSprite.rune_explode();
+                this.particleSprite = this.addSprite.particle_explode(hide);
                 break;
             case "heal rune":
                 this.sprite = this.addSprite.rune_health();
+                this.particleSprite = this.addSprite.particle_health(hide);
                 break;
             case "teleport rune":
                 this.sprite = this.addSprite.rune_tele();
+                this.particleSprite = this.addSprite.particle_tele(hide);
                 break;
             case "charge rune":
                 this.sprite = this.addSprite.rune_charge();
+                this.particleSprite = this.addSprite.particle_charge(hide);
                 break;
             case "stone":
                 this.sprite = this.addSprite.statue();
@@ -109,6 +117,13 @@ export class Item extends makeRenderable(GameObject, SHOULD_RENDER) {
             ease(current.tile.y, next.tile.y, dt, "quadOut"),
         );
 
+        if (current.tile.object !== null && next.tile.object === null)
+        {
+            if (this.particleSprite !== null) {
+                this.container.setParent(this.game.layers.item_used);
+                this.particleSprite.visible = true;
+            }
+        }
         this.container.visible = (current.tile.object !== null);
 
         // <<-- /Creer-Merge: render -->>

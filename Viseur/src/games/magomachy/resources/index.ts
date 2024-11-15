@@ -80,5 +80,10 @@ export const GameResources = createResources("Magomachy", {
     spell_rock: load("sprites-spells/rock.png"),
     spell_water: load("sprites-spells/waterblastseg.png"),
 
+    particle_health: load("Rune_Particles/Heal_Rune_Particle.png"),
+    particle_charge: load("Rune_Particles/Explosion_Rune_Particle.png"),
+    particle_explode: load("Rune_Particles/Lightning_Rune_Particle.png"),
+    particle_tele: load("Rune_Particles/Teleport_Rune_Particle.png"),
+
     // <<-- /Creer-Merge: resources -->>
 });
