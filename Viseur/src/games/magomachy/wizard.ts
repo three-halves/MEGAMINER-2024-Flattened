@@ -218,6 +218,7 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         const run = nextDelta.data?.run;
         let wizSpriteArg: string? = "norm";
         let spriteOffset = {x: (1 - this.wizSpriteScale[this.type].x), y: (1 - this.wizSpriteScale[this.type].y)};
+        let easeArg: any = undefined;
 
         for (let exSprite in this.extraSprites) {
             this.extraSprites[exSprite].visible = false;
@@ -303,6 +304,13 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
                                     rotation: theta,
                                 })
                             }
+                            break;
+                        case "Teleport Rune":
+                            easeArg = (t: number) => (t > 0.9 ? 1 : 0); 
+                            break;
+                        case "Teleport":
+                            easeArg = (t: number) => (t > 0.9 ? 1 : 0);
+                            break;
                         
                     }
             }
@@ -328,8 +336,8 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
 
         sprite.visible = true;
         this.container.position.set(
-            ease(current.tile.x + spriteOffset.x, next.tile.x + spriteOffset.x, dt),
-            ease(current.tile.y + spriteOffset.y, next.tile.y + spriteOffset.y, dt),
+            ease(current.tile.x + spriteOffset.x, next.tile.x + spriteOffset.x, dt, easeArg),
+            ease(current.tile.y + spriteOffset.y, next.tile.y + spriteOffset.y, dt, easeArg),
         );
         sprite.height = this.wizSpriteScale[this.type].y
 
