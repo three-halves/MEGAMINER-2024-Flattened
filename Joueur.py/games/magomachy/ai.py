@@ -113,22 +113,23 @@ class AI(BaseAI):
             elif components[0] == 'spells':
                 print("Punch: 0 aether, 1 damage, 1 range")
                 if components[1] == 'aggressive':
-                    print("Fire Slash: 2 aether, 3 damage, 3 range")
-                    print("Thunderous Dash: 3 aether, boosts speed by 3 for 1 turn")
-                    print("Furious Telekinesis: 4 aether, 1 range, pushes item away")
+                    print("Fire Slash: 2 aether, 3 damage, 2 range")
+                    print("Thunderous Dash: 3 aether, boosts speed by 2 for 1 turn, lets you swap places with enemy if you pass them")
+                    print("Furious Telekinesis: 4 aether, 1 range, pushes item away, forces other wizard to use it if it hits them")
                 elif components[1] == 'defensive':
-                    print("Rock Lob: 2 aether, 2 damage, exactly 2 range")
-                    print("Force Push: 3 aether, pushes adjacent opponent up to 3 spaces, 2 damage if they hit something")
+                    print("Rock Lob: 2 aether, 2 damage, exactly 2 or 3 tile range")
+                    print("Force Push: 3 aether, pushes adjacent opponent up to 4 spaces, using items along the way. 3 damage if they hit a wall")
                     print("Stone Summon: 4 aether, 1 range, summon impassable stone for 10 total turns")
                 elif components[1] == 'sustaining':
-                    print("Calming Blast: 3 aether, 1 damage, fires projectile, decrease speed for 1 turn")
-                    print("Teleport: 3 aether, 3 range, move to target tile")
+                    print("Calming Blast: 3 aether, fires projectile, on hit steal 1 HP and decrease speed for 1 turn")
+                    print("Teleport: 3 aether, 2 range, move to target tile. Also costs 1 movement.")
                     print("Dispel Magic: 3 aether, 1 range, deletes target item/rune")
                 elif components[1] == 'strategic':
                     print("Explosion Rune: 2 aether, 4 damage, 1 range, blows up for 4 damage when stepped on")
                     print("Heal Rune: 5 aether, 1 range, heals for 5 HP when stepped on (up to max)")
-                    print("Teleport Rune: 3 aether, 1 range, places teleport rune if none exists, or teleports you to it otherwise")
+                    print("Teleport Rune: 3 aether (0 if rune already placed), 1 range, places teleport rune if none exists, or teleports you to it otherwise")
                     print("Charge Rune: 4 aether, infinite range, blows up for 5 damage in 3 tile radius after 5 turns")
+                    print("Force Pull: 3 aether, 4 range, fires projectile that does no damage, but drags opponent toward you if it hits them, using runes along the way")
                 else:
                     print("That's not a wizard! Choose aggressive, defensive, sustaining, or strategic.")
             elif components[0] == 'end':

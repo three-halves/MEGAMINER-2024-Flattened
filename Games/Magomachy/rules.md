@@ -133,7 +133,7 @@ This wizard patiently counters their opponent until an opportunity to retaliate 
 
 | Name | Type | Aether Cost | Damage | Range | Description |
 |---|---|---|---|---|---|
-| Rock Lob | Targeted (Wizard) | 2 | 2 | 2* | Throws a rock at an opponent *exactly* two tiles away. |
+| Rock Lob | Targeted (Wizard) | 2 | 2 | 2* | Throws a rock at an opponent *exactly* two or three tiles away. |
 | Force Push | Targeted (Wizard) | 3 | 2* | 1 | Pushes an enemy Wizard up to 4 spaces away. If they touch an item they can use, they use it. If they hit a wall before moving 3 spaces, they take 2 damage and stop moving. |
 | Stone Summon | Rune | 4 | - | 1 | Summons an impassable statue for 10 total turns. |
 

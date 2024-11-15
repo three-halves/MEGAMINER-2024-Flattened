@@ -133,6 +133,10 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
         // If you need to change an argument for the real function, then
         // changing its value in this scope is enough.
 
+
+		// This is how we print a map for the human client.
+		// It's a terrible way of doing it but Creer has been acting up so
+		// not much of a choice...
         if (this.wizardChoice || wizardClass === "map") {
             //return 'You are already a ${wizardChoice}';
             // Nope, for now this is how you print a tilemap:
@@ -227,6 +231,7 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
             return "\n" + tilemap.join("");
         }
         
+		// Make sure valid wizard type is chosen
         if (wizardClass !== "aggressive"
             && wizardClass !== "defensive"
             && wizardClass !== "sustaining"
@@ -234,6 +239,7 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
             return '${wizardClass} is not a valid wizard choice!';
         }
 
+		// In case someone tries to pick a wizard early
         if (this != this.game.currentPlayer) {
             return `It is not your turn!`;
         }
@@ -258,7 +264,8 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
 
         // Add logic here for chooseWizard.
 
-        // TODO: replace this with actual logic
+        // This is literally all it does, check game manager for more details
+		// on how we spawn wizards.
         this.wizardChoice = wizardClass as WizardSpecialty;
         return true;
 
