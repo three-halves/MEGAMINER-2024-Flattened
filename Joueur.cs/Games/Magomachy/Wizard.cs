@@ -146,9 +146,9 @@ namespace Joueur.cs.Games.Magomachy
         /// </summary>
         /// <param name="tile">The Tile to aim the projectile toward.</param>
         /// <returns>True if Tile can be hit, false otherwise.</returns>
-        public bool CheckBressenham(Magomachy.Tile tile)
+        public IList<Magomachy.Tile> CheckBressenham(Magomachy.Tile tile)
         {
-            return this.RunOnServer<bool>("checkBressenham", new Dictionary<string, object> {
+            return this.RunOnServer<IList<Magomachy.Tile>>("checkBressenham", new Dictionary<string, object> {
                 {"tile", tile}
             });
         }

@@ -150,10 +150,10 @@ public class Wizard extends GameObject {
      * @param   tile  The Tile to aim the projectile toward.
      * @return True if Tile can be hit, false otherwise.
      */
-    public boolean checkBressenham(Tile tile) {
+    public List<Tile> checkBressenham(Tile tile) {
         JSONObject args = new JSONObject();
         args.put("tile", Client.getInstance().gameManager.serializeSafe(tile));
-        return (boolean)this.runOnServer("checkBressenham", args);
+        return (List<Tile>)this.runOnServer("checkBressenham", args);
     }
 
     /**

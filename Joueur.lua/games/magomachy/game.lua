@@ -54,7 +54,7 @@ function Game:init(...)
 
     self.name = "Magomachy"
 
-    self._gameVersion = "3a46f9aec2408eb04871642e3f1f986ce612791807a5dc2fcf3289ce462669ae"
+    self._gameVersion = "f1142b67ad37b7598b8ab4edf7cc83a3fe5917325cb18fd1c4ff08417f982fb4"
     self._gameObjectClasses = {
         GameObject = require("games.magomachy.gameObject"),
         Item = require("games.magomachy.item"),

@@ -128,7 +128,7 @@ export class Wizard extends GameObject {
      * @param tile The Tile to aim the projectile toward.
      * @returns True if Tile can be hit, false otherwise.
      */
-    public async checkBressenham(tile: Tile): Promise<boolean> {
+    public async checkBressenham(tile: Tile): Promise<Tile[]> {
         return this.runOnServer("checkBressenham", {
             tile,
         });

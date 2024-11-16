@@ -88,7 +88,7 @@ type Wizard interface {
 
 	// CheckBressenham check if a tile can be reached with a
 	// projectile spell.
-	CheckBressenham(Tile) bool
+	CheckBressenham(Tile) []Tile
 
 	// Move moves this Wizard from its current Tile to another empty
 	// Tile.

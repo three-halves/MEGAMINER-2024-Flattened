@@ -889,7 +889,7 @@ export class Wizard extends GameObject {
     protected async checkBressenham(
         player: Player,
         tile: Tile,
-    ): Promise<boolean> {
+    ): Promise<Tile[]> {
         // <<-- Creer-Merge: checkBressenham -->>
 
         // Add logic here for checkBressenham.

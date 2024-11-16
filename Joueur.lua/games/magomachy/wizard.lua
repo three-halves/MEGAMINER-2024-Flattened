@@ -86,9 +86,9 @@ end
 
 --- Check if a tile can be reached with a projectile spell.
 -- @tparam Tile tile The Tile to aim the projectile toward.
--- @treturn bool True if Tile can be hit, false otherwise.
+-- @treturn {Tile, ...} True if Tile can be hit, false otherwise.
 function Wizard:checkBressenham(tile)
-    return not not (self:_runOnServer("checkBressenham", {
+    return (self:_runOnServer("checkBressenham", {
         tile = tile,
     }))
 end

@@ -54,7 +54,7 @@ bool Wizard_::cast(const std::string& spell_name, const Tile& tile)
     return to_return.as<bool>();
 }
 
-bool Wizard_::check_bressenham(const Tile& tile)
+std::vector<Tile> Wizard_::check_bressenham(const Tile& tile)
 {
     std::string order = R"({"event": "run", "data": {"functionName": "checkBressenham", "caller": {"id": ")";
     order += this->id + R"("}, "args": {)";
@@ -70,16 +70,23 @@ bool Wizard_::check_bressenham(const Tile& tile)
     {
         info = Magomachy::instance()->handle_response();
     } while(info->type() == typeid(bool));
+    //reference - just pull the id
     auto doc = info->as<rapidjson::Document*>();
     auto loc = doc->FindMember("data");
     if(loc == doc->MemberEnd())
     {
-       return {};
+        return nullptr;
     }
     auto& val = loc->value;
-    Any to_return;
-    morph_any(to_return, val);
-    return to_return.as<bool>();
+    if(val.IsNull())
+    {
+        return nullptr;
+    }
+    else
+    {
+        auto target = attr_wrapper::get_attribute<std::string>(val, "id");
+        return std::dynamic_pointer_cast<std::vector<Tile>_>(Magomachy::instance()->get_objects()[target]);
+    }
 }
 
 bool Wizard_::move(const Tile& tile)

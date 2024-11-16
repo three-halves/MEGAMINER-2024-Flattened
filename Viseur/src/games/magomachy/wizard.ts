@@ -477,7 +477,7 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
      */
     public checkBressenham(
         tile: TileState,
-        callback: (returned: boolean) => void,
+        callback: (returned: TileState[]) => void,
     ): void {
         this.runOnServer("checkBressenham", { tile }, callback);
     }

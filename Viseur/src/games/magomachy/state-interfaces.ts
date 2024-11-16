@@ -574,7 +574,7 @@ export type WizardCheckBressenhamRanDelta = RanDelta & {
          * True if Tile can be hit, false otherwise.
          *
          */
-        returned: boolean;
+        returned: TileState[];
     };
 };
 

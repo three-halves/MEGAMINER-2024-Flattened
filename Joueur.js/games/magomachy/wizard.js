@@ -328,7 +328,7 @@ class Wizard extends GameObject {
    * Check if a tile can be reached with a projectile spell.
    *
    * @param {Magomachy.Tile} tile - The Tile to aim the projectile toward.
-   * @returns {boolean} - True if Tile can be hit, false otherwise.
+   * @returns {Array.<Magomachy.Tile>} - True if Tile can be hit, false otherwise.
    */
   checkBressenham(tile) {
     return client.runOnServer(this, 'checkBressenham', {

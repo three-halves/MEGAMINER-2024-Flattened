@@ -165,14 +165,14 @@ class Wizard(GameObject):
             'tile': tile
         })
 
-    def check_bressenham(self, tile: 'games.magomachy.tile.Tile') -> bool:
+    def check_bressenham(self, tile: 'games.magomachy.tile.Tile') -> List['games.magomachy.tile.Tile']:
         """Check if a tile can be reached with a projectile spell.
 
         Args:
             tile (games.magomachy.tile.Tile): The Tile to aim the projectile toward.
 
         Returns:
-            bool: True if Tile can be hit, False otherwise.
+            list[games.magomachy.tile.Tile]: True if Tile can be hit, False otherwise.
         """
         return self._run_on_server('checkBressenham', {
             'tile': tile

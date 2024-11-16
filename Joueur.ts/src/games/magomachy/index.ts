@@ -24,5 +24,5 @@ export const namespace: IGameNamespace = {
         Tile,
         Wizard,
     },
-    gameVersion: "3a46f9aec2408eb04871642e3f1f986ce612791807a5dc2fcf3289ce462669ae",
+    gameVersion: "f1142b67ad37b7598b8ab4edf7cc83a3fe5917325cb18fd1c4ff08417f982fb4",
 };

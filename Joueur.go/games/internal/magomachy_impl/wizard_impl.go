@@ -149,10 +149,10 @@ func (wizardImpl *WizardImpl) Cast(spellName string, tile magomachy.Tile) bool {
 
 // CheckBressenham runs logic that check if a tile can be reached with a
 // projectile spell.
-func (wizardImpl *WizardImpl) CheckBressenham(tile magomachy.Tile) bool {
+func (wizardImpl *WizardImpl) CheckBressenham(tile magomachy.Tile) []magomachy.Tile {
 	return wizardImpl.RunOnServer("checkBressenham", map[string]interface{}{
 		"tile": tile,
-	}).(bool)
+	}).([]magomachy.Tile)
 }
 
 // Move runs logic that moves this Wizard from its current Tile to another

@@ -144,7 +144,7 @@ public:
     /// check if a tile can be reached with a projectile spell.
     /// </summary>
     /// <param name="tile"> The Tile to aim the projectile toward. </param>
-    bool check_bressenham(const Tile& tile);
+    std::vector<Tile> check_bressenham(const Tile& tile);
 
     /// <summary>
     /// moves this _wizard from its current _tile to another empty _tile.

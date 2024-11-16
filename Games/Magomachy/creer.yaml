@@ -137,9 +137,9 @@ Wizard:
         type: Tile!
         description: The Tile to aim the projectile toward.
       returns:
-        type: boolean
+        type: Tile[]
         description: True if Tile can be hit, false otherwise.
-        invalidValue: false
+        invalidValue: []
     cast:
       description: Casts a spell on a Tile in range.
       arguments:
