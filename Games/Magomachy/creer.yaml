@@ -123,9 +123,9 @@ Wizard:
     maxHealth:
       type: int!
       description: Max health of wizard.
-    maxHealth:
+    maxAether:
       type: int!
-      description: Max health of wizard.
+      description: Max aether of wizard.
     hasTeleported:
       type: boolean!
       description: Whether or not this Wizard has cast a teleport spell this turn.
