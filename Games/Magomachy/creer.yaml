@@ -10,6 +10,12 @@ Game:
     wizards:
       description: List of wizard choices.
       type: string[]
+    wizard1_tile:
+      description: Where player 1's wizard should be placed.
+      type: Tile!
+    wizard2_tile:
+      description: Where player 2's wizard should be placed.
+      type: Tile!
     
 Player:
   attributes:
@@ -53,6 +59,15 @@ Item:
     lifetime:
       description: How many turns this item has existed for.
       type: int!
+    max_life:
+      description: How long the item is allowed to last for.
+      type: int?
+    object_spawn:
+      description: What item spawns on this tile.
+      type: string?
+    spawn_timer:
+      description: Turns until item should spawn.
+      type: number?
     
 Wizard:
   description: The wizard default.
@@ -102,7 +117,29 @@ Wizard:
     lastTargetTile:
       type: Tile?
       description: The tile this wizard just cast to. Undefined if no tile was targeted.
+    teleportTile:
+      type: Tile?
+      description: Where the wizard has a teleport rune out, undefined otherwise.
+    maxHealth:
+      type: int!
+      description: Max health of wizard.
+    maxHealth:
+      type: int!
+      description: Max health of wizard.
+    hasTeleported:
+      type: boolean!
+      description: Whether or not this Wizard has cast a teleport spell this turn.
   functions:
+    checkBressenham:
+      description: Check if a tile can be reached with a projectile spell.
+      arguments:
+      - name: tile
+        type: Tile
+        description: The Tile to aim the projectile toward.
+      returns:
+        type: boolean
+        description: True if Tile can be hit, false otherwise.
+        invalidValue: false
     cast:
       description: Casts a spell on a Tile in range.
       arguments:
