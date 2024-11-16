@@ -289,6 +289,11 @@ export interface WizardProperties {
     lastTargetTile?: Tile;
 
     /**
+     * Max aether of wizard.
+     */
+    maxAether?: number;
+
+    /**
      * Max health of wizard.
      */
     maxHealth?: number;
@@ -363,6 +368,26 @@ export interface WizardMoveArgs {
      * The Tile this Wizard should move to.
      */
     tile?: Tile;
+}
+
+/**
+ * Argument overrides for Wizard's simpleBressenham function. If you return an
+ * object of this interface from the invalidate functions, the value(s) you set
+ * will be used in the actual function.
+ */
+export interface WizardSimpleBressenhamArgs {
+    /**
+     * Starting point of line.
+     */
+    tileZero?: Tile;
+    /**
+     * Ending point of line.
+     */
+    tileOne?: Tile;
+    /**
+     * The last Tile used to approximate line.
+     */
+    current?: Tile;
 }
 
 /**
@@ -796,6 +821,9 @@ export const Namespace = makeNamespace({
                     gameObjectClass: Tile,
                     nullable: true,
                 },
+                maxAether: {
+                    typeName: "int",
+                },
                 maxHealth: {
                     typeName: "int",
                 },
@@ -883,9 +911,37 @@ export const Namespace = makeNamespace({
                         typeName: "boolean",
                     },
                 },
+                simpleBressenham: {
+                    args: [
+                        {
+                            argName: "tileZero",
+                            typeName: "gameObject",
+                            gameObjectClass: Tile,
+                            nullable: false,
+                        },
+                        {
+                            argName: "tileOne",
+                            typeName: "gameObject",
+                            gameObjectClass: Tile,
+                            nullable: false,
+                        },
+                        {
+                            argName: "current",
+                            typeName: "gameObject",
+                            gameObjectClass: Tile,
+                            nullable: false,
+                        },
+                    ],
+                    invalidValue: undefined,
+                    returns: {
+                        typeName: "gameObject",
+                        gameObjectClass: Tile,
+                        nullable: true,
+                    },
+                },
             },
         },
     },
     gameVersion:
-        "f1142b67ad37b7598b8ab4edf7cc83a3fe5917325cb18fd1c4ff08417f982fb4",
+        "082be8098ae4f045a50f918bb8df0c0a1dc33ad375bab706ab35831544314b98",
 });

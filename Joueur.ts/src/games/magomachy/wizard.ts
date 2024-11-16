@@ -75,6 +75,11 @@ export class Wizard extends GameObject {
     public readonly lastTargetTile!: Tile | undefined;
 
     /**
+     * Max aether of wizard.
+     */
+    public readonly maxAether!: number;
+
+    /**
      * Max health of wizard.
      */
     public readonly maxHealth!: number;
@@ -142,6 +147,25 @@ export class Wizard extends GameObject {
     public async move(tile: Tile): Promise<boolean> {
         return this.runOnServer("move", {
             tile,
+        });
+    }
+
+    /**
+     * Check the next tile along a line defined by two other tiles.
+     * @param tileZero Starting point of line.
+     * @param tileOne Ending point of line.
+     * @param current The last Tile used to approximate line.
+     * @returns Next tile that approximates line.
+     */
+    public async simpleBressenham(
+        tileZero: Tile,
+        tileOne: Tile,
+        current: Tile,
+    ): Promise<Tile | undefined> {
+        return this.runOnServer("simpleBressenham", {
+            tileZero,
+            tileOne,
+            current,
         });
     }
 

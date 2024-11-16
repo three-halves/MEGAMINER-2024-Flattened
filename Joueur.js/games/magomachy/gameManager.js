@@ -11,7 +11,7 @@ const GameManager = require(`${__basedir}/joueur/gameManager`);
 
 class MagomachyGameManager extends GameManager {}
 
-MagomachyGameManager.gameVersion = 'f1142b67ad37b7598b8ab4edf7cc83a3fe5917325cb18fd1c4ff08417f982fb4';
+MagomachyGameManager.gameVersion = '082be8098ae4f045a50f918bb8df0c0a1dc33ad375bab706ab35831544314b98';
 
 MagomachyGameManager.prototype._gameObjectClasses = {
   GameObject: require('./gameObject'),

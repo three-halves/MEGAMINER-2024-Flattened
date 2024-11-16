@@ -34,6 +34,7 @@ class Wizard(GameObject):
         self._health = 0
         self._last_spell = ""
         self._last_target_tile = None
+        self._max_aether = 0
         self._max_health = 0
         self._movement_left = 0
         self._owner = None
@@ -107,6 +108,12 @@ class Wizard(GameObject):
         """games.magomachy.tile.Tile or None: The tile this wizard just cast to. Undefined if no tile was targeted.
         """
         return self._last_target_tile
+
+    @property
+    def max_aether(self) -> int:
+        """int: Max aether of wizard.
+        """
+        return self._max_aether
 
     @property
     def max_health(self) -> int:
@@ -189,6 +196,23 @@ class Wizard(GameObject):
         """
         return self._run_on_server('move', {
             'tile': tile
+        })
+
+    def simple_bressenham(self, tile_zero: 'games.magomachy.tile.Tile', tile_one: 'games.magomachy.tile.Tile', current: 'games.magomachy.tile.Tile') -> Optional['games.magomachy.tile.Tile']:
+        """Check the next tile along a line defined by two other tiles.
+
+        Args:
+            tile_zero (games.magomachy.tile.Tile): Starting point of line.
+            tile_one (games.magomachy.tile.Tile): Ending point of line.
+            current (games.magomachy.tile.Tile): The last Tile used to approximate line.
+
+        Returns:
+            games.magomachy.tile.Tile or None: Next tile that approximates line.
+        """
+        return self._run_on_server('simpleBressenham', {
+            'tileZero': tile_zero,
+            'tileOne': tile_one,
+            'current': current
         })
 
 

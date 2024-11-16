@@ -40,6 +40,7 @@ class Wizard extends GameObject {
     this.health = 0;
     this.lastSpell = '';
     this.lastTargetTile = null;
+    this.maxAether = 0;
     this.maxHealth = 0;
     this.movementLeft = 0;
     this.owner = null;
@@ -211,6 +212,20 @@ class Wizard extends GameObject {
 
 
   /**
+   * Max aether of wizard.
+   *
+   * @type {number}
+   */
+  get maxAether() {
+    return client.gameManager.getMemberValue(this, 'maxAether');
+  }
+
+  set maxAether(value) {
+    client.gameManager.setMemberValue(this, 'maxAether', value);
+  }
+
+
+  /**
    * Max health of wizard.
    *
    * @type {number}
@@ -346,6 +361,23 @@ class Wizard extends GameObject {
   move(tile) {
     return client.runOnServer(this, 'move', {
       tile: tile,
+    });
+  }
+
+
+  /**
+   * Check the next tile along a line defined by two other tiles.
+   *
+   * @param {Magomachy.Tile} tileZero - Starting point of line.
+   * @param {Magomachy.Tile} tileOne - Ending point of line.
+   * @param {Magomachy.Tile} current - The last Tile used to approximate line.
+   * @returns {Magomachy.Tile} - Next tile that approximates line.
+   */
+  simpleBressenham(tileZero, tileOne, current) {
+    return client.runOnServer(this, 'simpleBressenham', {
+      tileZero: tileZero,
+      tileOne: tileOne,
+      current: current,
     });
   }
 

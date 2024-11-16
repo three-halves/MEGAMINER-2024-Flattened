@@ -117,6 +117,45 @@ bool Wizard_::move(const Tile& tile)
     return to_return.as<bool>();
 }
 
+Tile Wizard_::simple_bressenham(const Tile& tile_zero, const Tile& tile_one, const Tile& current)
+{
+    std::string order = R"({"event": "run", "data": {"functionName": "simpleBressenham", "caller": {"id": ")";
+    order += this->id + R"("}, "args": {)";
+
+    order += std::string("\"tileZero\":") + (tileZero ? (std::string("{\"id\":\"") + tileZero->id + "\"}") : std::string("null"));
+
+    order += std::string(",\"tileOne\":") + (tileOne ? (std::string("{\"id\":\"") + tileOne->id + "\"}") : std::string("null"));
+
+    order += std::string(",\"current\":") + (current ? (std::string("{\"id\":\"") + current->id + "\"}") : std::string("null"));
+
+    order += "}}}";
+    Magomachy::instance()->send(order);
+    //Go until not a delta
+    std::unique_ptr<Any> info;
+    //until a not bool is seen (i.e., the delta has been processed)
+    do
+    {
+        info = Magomachy::instance()->handle_response();
+    } while(info->type() == typeid(bool));
+    //reference - just pull the id
+    auto doc = info->as<rapidjson::Document*>();
+    auto loc = doc->FindMember("data");
+    if(loc == doc->MemberEnd())
+    {
+        return nullptr;
+    }
+    auto& val = loc->value;
+    if(val.IsNull())
+    {
+        return nullptr;
+    }
+    else
+    {
+        auto target = attr_wrapper::get_attribute<std::string>(val, "id");
+        return std::dynamic_pointer_cast<Tile_>(Magomachy::instance()->get_objects()[target]);
+    }
+}
+
 
 Wizard_::Wizard_(std::initializer_list<std::pair<std::string, Any&&>> init) :
     Game_object_{
@@ -131,6 +170,7 @@ Wizard_::Wizard_(std::initializer_list<std::pair<std::string, Any&&>> init) :
         {"health", Any{std::decay<decltype(health)>::type{}}},
         {"lastSpell", Any{std::decay<decltype(last_spell)>::type{}}},
         {"lastTargetTile", Any{std::decay<decltype(last_target_tile)>::type{}}},
+        {"maxAether", Any{std::decay<decltype(max_aether)>::type{}}},
         {"maxHealth", Any{std::decay<decltype(max_health)>::type{}}},
         {"movementLeft", Any{std::decay<decltype(movement_left)>::type{}}},
         {"owner", Any{std::decay<decltype(owner)>::type{}}},
@@ -150,6 +190,7 @@ Wizard_::Wizard_(std::initializer_list<std::pair<std::string, Any&&>> init) :
     health(variables_["health"].as<std::decay<decltype(health)>::type>()),
     last_spell(variables_["lastSpell"].as<std::decay<decltype(last_spell)>::type>()),
     last_target_tile(variables_["lastTargetTile"].as<std::decay<decltype(last_target_tile)>::type>()),
+    max_aether(variables_["maxAether"].as<std::decay<decltype(max_aether)>::type>()),
     max_health(variables_["maxHealth"].as<std::decay<decltype(max_health)>::type>()),
     movement_left(variables_["movementLeft"].as<std::decay<decltype(movement_left)>::type>()),
     owner(variables_["owner"].as<std::decay<decltype(owner)>::type>()),

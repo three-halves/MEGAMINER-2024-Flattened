@@ -25,7 +25,7 @@ namespace Joueur.cs.Games.Magomachy
         /// <summary>
         /// The game version hash, used to compare if we are playing the same version on the server.
         /// </summary>
-        new protected static string GameVersion = "f1142b67ad37b7598b8ab4edf7cc83a3fe5917325cb18fd1c4ff08417f982fb4";
+        new protected static string GameVersion = "082be8098ae4f045a50f918bb8df0c0a1dc33ad375bab706ab35831544314b98";
 
         #region Properties
         /// <summary>

@@ -143,19 +143,19 @@ Wizard:
     simpleBressenham:
       description: Check the next tile along a line defined by two other tiles.
       arguments:
-      - name: tile0
+      - name: tileZero
         type: Tile!
         description: Starting point of line.
-      - name: tile1
+      - name: tileOne
         type: Tile!
         description: Ending point of line.
       - name: current
         type: Tile!
         description: The last Tile used to approximate line.
       returns:
-        type: Tile
-        description: Next tile that approximates line
-        invalidValue: None
+        type: Tile?
+        description: Next tile that approximates line.
+        invalidValue: null
     cast:
       description: Casts a spell on a Tile in range.
       arguments:

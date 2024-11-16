@@ -94,6 +94,11 @@ public:
     const Tile& last_target_tile;
 
     /// <summary>
+    /// Max aether of wizard.
+    /// </summary>
+    const int& max_aether;
+
+    /// <summary>
     /// Max health of wizard.
     /// </summary>
     const int& max_health;
@@ -151,6 +156,14 @@ public:
     /// </summary>
     /// <param name="tile"> The Tile this Wizard should move to. </param>
     bool move(const Tile& tile);
+
+    /// <summary>
+    /// check the next tile along a line defined by two other tiles.
+    /// </summary>
+    /// <param name="tile_zero"> Starting point of line. </param>
+    /// <param name="tile_one"> Ending point of line. </param>
+    /// <param name="current"> The last Tile used to approximate line. </param>
+    Tile simple_bressenham(const Tile& tile_zero, const Tile& tile_one, const Tile& current);
 
 
    // <<-- Creer-Merge: methods -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.

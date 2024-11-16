@@ -81,6 +81,11 @@ public class Wizard extends GameObject {
     public Tile lastTargetTile;
 
     /**
+     * Max aether of wizard.
+     */
+    public int maxAether;
+
+    /**
      * Max health of wizard.
      */
     public int maxHealth;
@@ -166,6 +171,22 @@ public class Wizard extends GameObject {
         JSONObject args = new JSONObject();
         args.put("tile", Client.getInstance().gameManager.serializeSafe(tile));
         return (boolean)this.runOnServer("move", args);
+    }
+
+    /**
+     * Check the next tile along a line defined by two other tiles.
+     *
+     * @param   tileZero  Starting point of line.
+     * @param   tileOne  Ending point of line.
+     * @param   current  The last Tile used to approximate line.
+     * @return Next tile that approximates line.
+     */
+    public Tile simpleBressenham(Tile tileZero, Tile tileOne, Tile current) {
+        JSONObject args = new JSONObject();
+        args.put("tileZero", Client.getInstance().gameManager.serializeSafe(tileZero));
+        args.put("tileOne", Client.getInstance().gameManager.serializeSafe(tileOne));
+        args.put("current", Client.getInstance().gameManager.serializeSafe(current));
+        return (Tile)this.runOnServer("simpleBressenham", args);
     }
 
 

@@ -49,6 +49,9 @@ type Wizard interface {
 	// Value can be returned as a nil pointer.
 	LastTargetTile() Tile
 
+	// MaxAether is max aether of wizard.
+	MaxAether() int64
+
 	// MaxHealth is max health of wizard.
 	MaxHealth() int64
 
@@ -93,4 +96,8 @@ type Wizard interface {
 	// Move moves this Wizard from its current Tile to another empty
 	// Tile.
 	Move(Tile) bool
+
+	// SimpleBressenham check the next tile along a line defined by
+	// two other tiles.
+	SimpleBressenham(Tile, Tile, Tile) Tile
 }

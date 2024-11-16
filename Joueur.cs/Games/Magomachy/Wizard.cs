@@ -76,6 +76,11 @@ namespace Joueur.cs.Games.Magomachy
         public Magomachy.Tile LastTargetTile { get; protected set; }
 
         /// <summary>
+        /// Max aether of wizard.
+        /// </summary>
+        public int MaxAether { get; protected set; }
+
+        /// <summary>
         /// Max health of wizard.
         /// </summary>
         public int MaxHealth { get; protected set; }
@@ -162,6 +167,22 @@ namespace Joueur.cs.Games.Magomachy
         {
             return this.RunOnServer<bool>("move", new Dictionary<string, object> {
                 {"tile", tile}
+            });
+        }
+
+        /// <summary>
+        /// Check the next tile along a line defined by two other tiles.
+        /// </summary>
+        /// <param name="tileZero">Starting point of line.</param>
+        /// <param name="tileOne">Ending point of line.</param>
+        /// <param name="current">The last Tile used to approximate line.</param>
+        /// <returns>Next tile that approximates line.</returns>
+        public Magomachy.Tile SimpleBressenham(Magomachy.Tile tileZero, Magomachy.Tile tileOne, Magomachy.Tile current)
+        {
+            return this.RunOnServer<Magomachy.Tile>("simpleBressenham", new Dictionary<string, object> {
+                {"tileZero", tileZero},
+                {"tileOne", tileOne},
+                {"current", current}
             });
         }
 

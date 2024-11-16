@@ -370,6 +370,12 @@ export interface WizardState extends GameObjectState {
     lastTargetTile: TileState;
 
     /**
+     * Max aether of wizard.
+     *
+     */
+    maxAether: number;
+
+    /**
      * Max health of wizard.
      *
      */
@@ -618,6 +624,56 @@ export type WizardMoveRanDelta = RanDelta & {
 };
 
 /**
+ * The delta about what happened when a 'Wizard' ran their 'simpleBressenham'
+ * function.
+ *
+ */
+export type WizardSimpleBressenhamRanDelta = RanDelta & {
+    /** Data about why the run/ran occurred. */
+    data: {
+        /** The player that requested this game logic be ran. */
+        player: GameObjectInstance<PlayerState>;
+
+        /** The data about what was requested be run. */
+        run: {
+            /** The reference to the game object requesting a function to be run. */
+            caller: GameObjectInstance<WizardState>;
+
+            /** The name of the function of the caller to run. */
+            functionName: "simpleBressenham";
+
+            /**
+             * The arguments to Wizard.simpleBressenham,
+             * as a map of the argument name to its value.
+             */
+            args: {
+                /**
+                 * Starting point of line.
+                 *
+                 */
+                tileZero: GameObjectInstance<TileState>;
+                /**
+                 * Ending point of line.
+                 *
+                 */
+                tileOne: GameObjectInstance<TileState>;
+                /**
+                 * The last Tile used to approximate line.
+                 *
+                 */
+                current: GameObjectInstance<TileState>;
+            };
+        };
+
+        /**
+         * Next tile that approximates line.
+         *
+         */
+        returned: GameObjectInstance<TileState>;
+    };
+};
+
+/**
  * The delta about what happened when a 'AI' ran their 'Action' function.
  *
  */
@@ -727,6 +783,7 @@ export type MagomachySpecificDelta =
     | WizardCastRanDelta
     | WizardCheckBressenhamRanDelta
     | WizardMoveRanDelta
+    | WizardSimpleBressenhamRanDelta
     | AIActionFinishedDelta
     | AIMoveFinishedDelta
     | AIRunTurnFinishedDelta;

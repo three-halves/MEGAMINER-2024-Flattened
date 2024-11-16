@@ -4,6 +4,7 @@ import {
     WizardCheckBressenhamArgs,
     WizardConstructorArgs,
     WizardMoveArgs,
+    WizardSimpleBressenhamArgs,
 } from "./";
 import { GameObject } from "./game-object";
 import { Player } from "./player";
@@ -81,6 +82,11 @@ export class Wizard extends GameObject {
      * The tile this wizard just cast to. Undefined if no tile was targeted.
      */
     public lastTargetTile?: Tile;
+
+    /**
+     * Max aether of wizard.
+     */
+    public maxAether!: number;
 
     /**
      * Max health of wizard.
@@ -1040,6 +1046,61 @@ export class Wizard extends GameObject {
 
         return true;
         // <<-- /Creer-Merge: move -->>
+    }
+
+    /**
+     * Invalidation function for simpleBressenham. Try to find a reason why the
+     * passed in parameters are invalid, and return a human readable string
+     * telling them why it is invalid.
+     *
+     * @param player - The player that called this.
+     * @param tileZero - Starting point of line.
+     * @param tileOne - Ending point of line.
+     * @param current - The last Tile used to approximate line.
+     * @returns If the arguments are invalid, return a string explaining to
+     * human players why it is invalid. If it is valid return nothing, or an
+     * object with new arguments to use in the actual function.
+     */
+    protected invalidateSimpleBressenham(
+        player: Player,
+        tileZero: Tile,
+        tileOne: Tile,
+        current: Tile,
+    ): void | string | WizardSimpleBressenhamArgs {
+        // <<-- Creer-Merge: invalidate-simpleBressenham -->>
+
+        // Check all the arguments for simpleBressenham here and try to
+        // return a string explaining why the input is wrong.
+        // If you need to change an argument for the real function, then
+        // changing its value in this scope is enough.
+        return undefined; // means nothing could be found that was ivalid.
+
+        // <<-- /Creer-Merge: invalidate-simpleBressenham -->>
+    }
+
+    /**
+     * Check the next tile along a line defined by two other tiles.
+     *
+     * @param player - The player that called this.
+     * @param tileZero - Starting point of line.
+     * @param tileOne - Ending point of line.
+     * @param current - The last Tile used to approximate line.
+     * @returns Next tile that approximates line.
+     */
+    protected async simpleBressenham(
+        player: Player,
+        tileZero: Tile,
+        tileOne: Tile,
+        current: Tile,
+    ): Promise<Tile | undefined> {
+        // <<-- Creer-Merge: simpleBressenham -->>
+
+        // Add logic here for simpleBressenham.
+
+        // TODO: replace this with actual logic
+        return undefined;
+
+        // <<-- /Creer-Merge: simpleBressenham -->>
     }
 
     // <<-- Creer-Merge: protected-private-functions -->>

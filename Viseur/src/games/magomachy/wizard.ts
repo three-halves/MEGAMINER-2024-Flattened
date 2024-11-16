@@ -494,6 +494,25 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         this.runOnServer("move", { tile }, callback);
     }
 
+    /**
+     * Check the next tile along a line defined by two other tiles.
+     *
+     * @param tileZero - Starting point of line.
+     * @param tileOne - Ending point of line.
+     * @param current - The last Tile used to approximate line.
+     * @param callback - The callback that eventually returns the return value
+     * from the server. - The returned value is Next tile that approximates
+     * line.
+     */
+    public simpleBressenham(
+        tileZero: TileState,
+        tileOne: TileState,
+        current: TileState,
+        callback: (returned: TileState) => void,
+    ): void {
+        this.runOnServer("simpleBressenham", { tileZero, tileOne, current }, callback);
+    }
+
     // </Joueur functions>
 
     // <<-- Creer-Merge: protected-private-functions -->>

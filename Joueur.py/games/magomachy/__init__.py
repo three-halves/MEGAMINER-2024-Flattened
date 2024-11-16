@@ -7,7 +7,7 @@ from games.magomachy.player import Player
 from games.magomachy.tile import Tile
 from games.magomachy.wizard import Wizard
 
-game_version = 'f1142b67ad37b7598b8ab4edf7cc83a3fe5917325cb18fd1c4ff08417f982fb4'
+game_version = '082be8098ae4f045a50f918bb8df0c0a1dc33ad375bab706ab35831544314b98'
 
 # <<-- Creer-Merge: init -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
 # if you need to initialize this module with custom logic do so here

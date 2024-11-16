@@ -22,6 +22,7 @@ type WizardImpl struct {
 	healthImpl         int64
 	lastSpellImpl      string
 	lastTargetTileImpl magomachy.Tile
+	maxAetherImpl      int64
 	maxHealthImpl      int64
 	movementLeftImpl   int64
 	ownerImpl          magomachy.Player
@@ -94,6 +95,11 @@ func (wizardImpl *WizardImpl) LastTargetTile() magomachy.Tile {
 	return wizardImpl.lastTargetTileImpl
 }
 
+// MaxAether returns max aether of wizard.
+func (wizardImpl *WizardImpl) MaxAether() int64 {
+	return wizardImpl.maxAetherImpl
+}
+
 // MaxHealth returns max health of wizard.
 func (wizardImpl *WizardImpl) MaxHealth() int64 {
 	return wizardImpl.maxHealthImpl
@@ -163,6 +169,19 @@ func (wizardImpl *WizardImpl) Move(tile magomachy.Tile) bool {
 	}).(bool)
 }
 
+// SimpleBressenham runs logic that check the next tile along a line
+// defined by two other tiles.
+func (wizardImpl *WizardImpl) SimpleBressenham(tileZero magomachy.Tile, tileOne magomachy.Tile, current magomachy.Tile) magomachy.Tile {
+	if obj, ok := wizardImpl.RunOnServer("simpleBressenham", map[string]interface{}{
+		"tileZero": tileZero,
+		"tileOne":  tileOne,
+		"current":  current,
+	}).(magomachy.Tile); ok {
+		return obj
+	}
+	return nil
+}
+
 // InitImplDefaults initializes safe defaults for all fields in Wizard.
 func (wizardImpl *WizardImpl) InitImplDefaults() {
 	wizardImpl.GameObjectImpl.InitImplDefaults()
@@ -178,6 +197,7 @@ func (wizardImpl *WizardImpl) InitImplDefaults() {
 	wizardImpl.healthImpl = 0
 	wizardImpl.lastSpellImpl = ""
 	wizardImpl.lastTargetTileImpl = nil
+	wizardImpl.maxAetherImpl = 0
 	wizardImpl.maxHealthImpl = 0
 	wizardImpl.movementLeftImpl = 0
 	wizardImpl.ownerImpl = nil
@@ -243,6 +263,9 @@ func (wizardImpl *WizardImpl) DeltaMerge(
 		return true, nil
 	case "lastTargetTile":
 		wizardImpl.lastTargetTileImpl = magomachyDeltaMerge.Tile(delta)
+		return true, nil
+	case "maxAether":
+		wizardImpl.maxAetherImpl = magomachyDeltaMerge.Int(delta)
 		return true, nil
 	case "maxHealth":
 		wizardImpl.maxHealthImpl = magomachyDeltaMerge.Int(delta)

@@ -19,7 +19,7 @@ func (*MagomachyNamespace) Name() string {
 
 // Version returns the current version hash as last generated for the Magomachy game.
 func (*MagomachyNamespace) Version() string {
-	return "f1142b67ad37b7598b8ab4edf7cc83a3fe5917325cb18fd1c4ff08417f982fb4"
+	return "082be8098ae4f045a50f918bb8df0c0a1dc33ad375bab706ab35831544314b98"
 }
 
 // PlayerName returns the desired name of the AI in the Magomachy game.

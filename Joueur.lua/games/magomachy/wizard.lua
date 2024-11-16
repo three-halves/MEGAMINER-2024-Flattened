@@ -43,6 +43,8 @@ function Wizard:init(...)
     self.lastSpell = ""
     --- The tile this wizard just cast to. Undefined if no tile was targeted.
     self.lastTargetTile = nil
+    --- Max aether of wizard.
+    self.maxAether = 0
     --- Max health of wizard.
     self.maxHealth = 0
     --- How much movement the wizard has left.
@@ -99,6 +101,19 @@ end
 function Wizard:move(tile)
     return not not (self:_runOnServer("move", {
         tile = tile,
+    }))
+end
+
+--- Check the next tile along a line defined by two other tiles.
+-- @tparam Tile tileZero Starting point of line.
+-- @tparam Tile tileOne Ending point of line.
+-- @tparam Tile current The last Tile used to approximate line.
+-- @treturn Tile Next tile that approximates line.
+function Wizard:simpleBressenham(tileZero, tileOne, current)
+    return (self:_runOnServer("simpleBressenham", {
+        tileZero = tileZero,
+        tileOne = tileOne,
+        current = current,
     }))
 end
 
