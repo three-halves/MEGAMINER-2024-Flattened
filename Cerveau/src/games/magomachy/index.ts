@@ -98,6 +98,21 @@ export interface ItemProperties {
     lifetime?: number;
 
     /**
+     * How long the item is allowed to last for.
+     */
+    maxLife?: number;
+
+    /**
+     * What item spawns on this tile.
+     */
+    objectSpawn?: string;
+
+    /**
+     * Turns until item should spawn.
+     */
+    spawnTimer?: number;
+
+    /**
      * The Tile this Item is on.
      */
     tile?: Tile;
@@ -254,6 +269,11 @@ export interface WizardProperties {
     hasCast?: boolean;
 
     /**
+     * Whether or not this Wizard has cast a teleport spell this turn.
+     */
+    hasTeleported?: boolean;
+
+    /**
      * The amount of health this player has.
      */
     health?: number;
@@ -267,6 +287,11 @@ export interface WizardProperties {
      * The tile this wizard just cast to. Undefined if no tile was targeted.
      */
     lastTargetTile?: Tile;
+
+    /**
+     * Max health of wizard.
+     */
+    maxHealth?: number;
 
     /**
      * How much movement the wizard has left.
@@ -290,6 +315,11 @@ export interface WizardProperties {
     speed?: number;
 
     /**
+     * Where the wizard has a teleport rune out, undefined otherwise.
+     */
+    teleportTile?: Tile;
+
+    /**
      * The Tile that this Wizard is on.
      */
     tile?: Tile;
@@ -307,6 +337,18 @@ export interface WizardCastArgs {
     spellName?: string;
     /**
      * The Tile to aim the spell toward.
+     */
+    tile?: Tile;
+}
+
+/**
+ * Argument overrides for Wizard's checkBressenham function. If you return an
+ * object of this interface from the invalidate functions, the value(s) you set
+ * will be used in the actual function.
+ */
+export interface WizardCheckBressenhamArgs {
+    /**
+     * The Tile to aim the projectile toward.
      */
     tile?: Tile;
 }
@@ -539,6 +581,16 @@ export const Namespace = makeNamespace({
                 timeAddedPerTurn: {
                     typeName: "float",
                 },
+                wizardTileOne: {
+                    typeName: "gameObject",
+                    gameObjectClass: Tile,
+                    nullable: false,
+                },
+                wizardTileTwo: {
+                    typeName: "gameObject",
+                    gameObjectClass: Tile,
+                    nullable: false,
+                },
                 wizards: {
                     typeName: "list",
                     valueType: {
@@ -584,6 +636,15 @@ export const Namespace = makeNamespace({
                     typeName: "string",
                 },
                 lifetime: {
+                    typeName: "int",
+                },
+                maxLife: {
+                    typeName: "int",
+                },
+                objectSpawn: {
+                    typeName: "string",
+                },
+                spawnTimer: {
                     typeName: "int",
                 },
                 tile: {
@@ -721,6 +782,9 @@ export const Namespace = makeNamespace({
                 hasCast: {
                     typeName: "boolean",
                 },
+                hasTeleported: {
+                    typeName: "boolean",
+                },
                 health: {
                     typeName: "int",
                 },
@@ -731,6 +795,9 @@ export const Namespace = makeNamespace({
                     typeName: "gameObject",
                     gameObjectClass: Tile,
                     nullable: true,
+                },
+                maxHealth: {
+                    typeName: "int",
                 },
                 movementLeft: {
                     typeName: "int",
@@ -753,6 +820,11 @@ export const Namespace = makeNamespace({
                 speed: {
                     typeName: "int",
                 },
+                teleportTile: {
+                    typeName: "gameObject",
+                    gameObjectClass: Tile,
+                    nullable: true,
+                },
                 tile: {
                     typeName: "gameObject",
                     gameObjectClass: Tile,
@@ -766,6 +838,20 @@ export const Namespace = makeNamespace({
                             argName: "spellName",
                             typeName: "string",
                         },
+                        {
+                            argName: "tile",
+                            typeName: "gameObject",
+                            gameObjectClass: Tile,
+                            nullable: false,
+                        },
+                    ],
+                    invalidValue: false,
+                    returns: {
+                        typeName: "boolean",
+                    },
+                },
+                checkBressenham: {
+                    args: [
                         {
                             argName: "tile",
                             typeName: "gameObject",
@@ -796,5 +882,5 @@ export const Namespace = makeNamespace({
         },
     },
     gameVersion:
-        "65acc66b7843108091108f5cbd212836c6c154d3b2bc4c5e186d4a36d35e5257",
+        "3a46f9aec2408eb04871642e3f1f986ce612791807a5dc2fcf3289ce462669ae",
 });

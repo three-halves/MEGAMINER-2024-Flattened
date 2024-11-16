@@ -49,6 +49,12 @@ type Game interface {
 	// after each player performs a turn.
 	TimeAddedPerTurn() float64
 
+	// WizardTileOne is where player 1's wizard should be placed.
+	WizardTileOne() Tile
+
+	// WizardTileTwo is where player 2's wizard should be placed.
+	WizardTileTwo() Tile
+
 	// Wizards is array of wizard choices.
 	Wizards() []string
 

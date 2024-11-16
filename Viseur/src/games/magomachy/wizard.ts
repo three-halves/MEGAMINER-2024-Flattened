@@ -1,11 +1,10 @@
 // This is a class to represent the Wizard object in the game.
 // If you want to render it in the game do so here.
-import { ease, Immutable, PixiSpriteOptions } from "src/utils";
+import { Immutable } from "src/utils";
 import { Viseur } from "src/viseur";
 import { makeRenderable } from "src/viseur/game";
 import { GameObject } from "./game-object";
 import { MagomachyDelta, TileState, WizardState } from "./state-interfaces";
-import { Point } from "pixi.js";
 
 // <<-- Creer-Merge: imports -->>
 // any additional imports you want can be added here safely between Creer runs
@@ -68,9 +67,6 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
      */
     constructor(state: WizardState, viseur: Viseur) {
         super(state, viseur);
-
-        PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
-        PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
         // <<-- Creer-Merge: constructor -->>
         // You can initialize your new Wizard here.
@@ -195,7 +191,7 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         dt: number,
         current: Immutable<WizardState>,
         next: Immutable<WizardState>,
-        delta: Immutable<MagomachyDelta>
+        delta: Immutable<MagomachyDelta>,
         nextDelta: Immutable<MagomachyDelta>,
     ): void {
         super.render(dt, current, next, delta, nextDelta);
@@ -469,6 +465,21 @@ export class Wizard extends makeRenderable(GameObject, SHOULD_RENDER) {
         callback: (returned: boolean) => void,
     ): void {
         this.runOnServer("cast", { spellName, tile }, callback);
+    }
+
+    /**
+     * Check if a tile can be reached with a projectile spell.
+     *
+     * @param tile - The Tile to aim the projectile toward.
+     * @param callback - The callback that eventually returns the return value
+     * from the server. - The returned value is True if Tile can be hit, false
+     * otherwise.
+     */
+    public checkBressenham(
+        tile: TileState,
+        callback: (returned: boolean) => void,
+    ): void {
+        this.runOnServer("checkBressenham", { tile }, callback);
     }
 
     /**

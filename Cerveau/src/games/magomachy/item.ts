@@ -22,9 +22,24 @@ export class Item extends GameObject {
     public lifetime!: number;
 
     /**
+     * How long the item is allowed to last for.
+     */
+    public maxLife!: number;
+
+    /**
+     * What item spawns on this tile.
+     */
+    public objectSpawn!: string;
+
+    /**
+     * Turns until item should spawn.
+     */
+    public spawnTimer!: number;
+
+    /**
      * The Tile this Item is on.
      */
-    public tile!: Tile;
+    public tile: Tile;
 
     // <<-- Creer-Merge: attributes -->>
 

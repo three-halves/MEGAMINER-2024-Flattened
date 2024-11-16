@@ -6,7 +6,8 @@ import {
 } from "./";
 import { AI } from "./ai";
 import { GameObject } from "./game-object";
-import { Wizard, WizardSpecialty} from "./wizard";
+import { Player } from "./player";
+import { Wizard } from "./wizard";
 
 // <<-- Creer-Merge: imports -->>
 // any additional imports you want can be placed here safely between creer runs

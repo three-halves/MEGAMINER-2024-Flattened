@@ -92,6 +92,16 @@ public:
     const double& time_added_per_turn;
 
     /// <summary>
+    /// Where player 1's wizard should be placed.
+    /// </summary>
+    const Tile& wizard_tile_one;
+
+    /// <summary>
+    /// Where player 2's wizard should be placed.
+    /// </summary>
+    const Tile& wizard_tile_two;
+
+    /// <summary>
     /// List of wizard choices.
     /// </summary>
     const std::vector<std::string>& wizards;

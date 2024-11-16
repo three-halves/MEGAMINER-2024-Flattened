@@ -10,10 +10,10 @@ Game:
     wizards:
       description: List of wizard choices.
       type: string[]
-    wizard1_tile:
+    wizardTileOne:
       description: Where player 1's wizard should be placed.
       type: Tile!
-    wizard2_tile:
+    wizardTileTwo:
       description: Where player 2's wizard should be placed.
       type: Tile!
     
@@ -59,15 +59,15 @@ Item:
     lifetime:
       description: How many turns this item has existed for.
       type: int!
-    max_life:
+    maxLife:
       description: How long the item is allowed to last for.
       type: int?
-    object_spawn:
+    objectSpawn:
       description: What item spawns on this tile.
       type: string?
-    spawn_timer:
+    spawnTimer:
       description: Turns until item should spawn.
-      type: number?
+      type: int?
     
 Wizard:
   description: The wizard default.
@@ -134,7 +134,7 @@ Wizard:
       description: Check if a tile can be reached with a projectile spell.
       arguments:
       - name: tile
-        type: Tile
+        type: Tile!
         description: The Tile to aim the projectile toward.
       returns:
         type: boolean

@@ -36,13 +36,16 @@ class Wizard extends GameObject {
     this.effectTimes = [];
     this.effects = [];
     this.hasCast = false;
+    this.hasTeleported = false;
     this.health = 0;
     this.lastSpell = '';
     this.lastTargetTile = null;
+    this.maxHealth = 0;
     this.movementLeft = 0;
     this.owner = null;
     this.specialty = '';
     this.speed = 0;
+    this.teleportTile = null;
     this.tile = null;
 
     //<<-- Creer-Merge: init -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
@@ -152,6 +155,20 @@ class Wizard extends GameObject {
 
 
   /**
+   * Whether or not this Wizard has cast a teleport spell this turn.
+   *
+   * @type {boolean}
+   */
+  get hasTeleported() {
+    return client.gameManager.getMemberValue(this, 'hasTeleported');
+  }
+
+  set hasTeleported(value) {
+    client.gameManager.setMemberValue(this, 'hasTeleported', value);
+  }
+
+
+  /**
    * The amount of health this player has.
    *
    * @type {number}
@@ -190,6 +207,20 @@ class Wizard extends GameObject {
 
   set lastTargetTile(value) {
     client.gameManager.setMemberValue(this, 'lastTargetTile', value);
+  }
+
+
+  /**
+   * Max health of wizard.
+   *
+   * @type {number}
+   */
+  get maxHealth() {
+    return client.gameManager.getMemberValue(this, 'maxHealth');
+  }
+
+  set maxHealth(value) {
+    client.gameManager.setMemberValue(this, 'maxHealth', value);
   }
 
 
@@ -250,6 +281,20 @@ class Wizard extends GameObject {
 
 
   /**
+   * Where the wizard has a teleport rune out, undefined otherwise.
+   *
+   * @type {Magomachy.Tile}
+   */
+  get teleportTile() {
+    return client.gameManager.getMemberValue(this, 'teleportTile');
+  }
+
+  set teleportTile(value) {
+    client.gameManager.setMemberValue(this, 'teleportTile', value);
+  }
+
+
+  /**
    * The Tile that this Wizard is on.
    *
    * @type {Magomachy.Tile}
@@ -274,6 +319,19 @@ class Wizard extends GameObject {
   cast(spellName, tile) {
     return client.runOnServer(this, 'cast', {
       spellName: spellName,
+      tile: tile,
+    });
+  }
+
+
+  /**
+   * Check if a tile can be reached with a projectile spell.
+   *
+   * @param {Magomachy.Tile} tile - The Tile to aim the projectile toward.
+   * @returns {boolean} - True if Tile can be hit, false otherwise.
+   */
+  checkBressenham(tile) {
+    return client.runOnServer(this, 'checkBressenham', {
       tile: tile,
     });
   }

@@ -36,6 +36,21 @@ public class Item extends GameObject {
     public int lifetime;
 
     /**
+     * How long the item is allowed to last for.
+     */
+    public int maxLife;
+
+    /**
+     * What item spawns on this tile.
+     */
+    public String objectSpawn;
+
+    /**
+     * Turns until item should spawn.
+     */
+    public int spawnTimer;
+
+    /**
      * The Tile this Item is on.
      */
     public Tile tile;

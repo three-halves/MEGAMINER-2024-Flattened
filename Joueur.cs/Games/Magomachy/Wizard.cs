@@ -56,6 +56,11 @@ namespace Joueur.cs.Games.Magomachy
         public bool HasCast { get; protected set; }
 
         /// <summary>
+        /// Whether or not this Wizard has cast a teleport spell this turn.
+        /// </summary>
+        public bool HasTeleported { get; protected set; }
+
+        /// <summary>
         /// The amount of health this player has.
         /// </summary>
         public int Health { get; protected set; }
@@ -69,6 +74,11 @@ namespace Joueur.cs.Games.Magomachy
         /// The tile this wizard just cast to. Undefined if no tile was targeted.
         /// </summary>
         public Magomachy.Tile LastTargetTile { get; protected set; }
+
+        /// <summary>
+        /// Max health of wizard.
+        /// </summary>
+        public int MaxHealth { get; protected set; }
 
         /// <summary>
         /// How much movement the wizard has left.
@@ -89,6 +99,11 @@ namespace Joueur.cs.Games.Magomachy
         /// The speed of the player.
         /// </summary>
         public int Speed { get; protected set; }
+
+        /// <summary>
+        /// Where the wizard has a teleport rune out, undefined otherwise.
+        /// </summary>
+        public Magomachy.Tile TeleportTile { get; protected set; }
 
         /// <summary>
         /// The Tile that this Wizard is on.
@@ -122,6 +137,18 @@ namespace Joueur.cs.Games.Magomachy
         {
             return this.RunOnServer<bool>("cast", new Dictionary<string, object> {
                 {"spellName", spellName},
+                {"tile", tile}
+            });
+        }
+
+        /// <summary>
+        /// Check if a tile can be reached with a projectile spell.
+        /// </summary>
+        /// <param name="tile">The Tile to aim the projectile toward.</param>
+        /// <returns>True if Tile can be hit, false otherwise.</returns>
+        public bool CheckBressenham(Magomachy.Tile tile)
+        {
+            return this.RunOnServer<bool>("checkBressenham", new Dictionary<string, object> {
                 {"tile", tile}
             });
         }

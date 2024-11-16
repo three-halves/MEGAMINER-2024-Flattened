@@ -29,10 +29,16 @@ Item_::Item_(std::initializer_list<std::pair<std::string, Any&&>> init) :
     Game_object_{
         {"form", Any{std::decay<decltype(form)>::type{}}},
         {"lifetime", Any{std::decay<decltype(lifetime)>::type{}}},
+        {"maxLife", Any{std::decay<decltype(max_life)>::type{}}},
+        {"objectSpawn", Any{std::decay<decltype(object_spawn)>::type{}}},
+        {"spawnTimer", Any{std::decay<decltype(spawn_timer)>::type{}}},
         {"tile", Any{std::decay<decltype(tile)>::type{}}},
     },
     form(variables_["form"].as<std::decay<decltype(form)>::type>()),
     lifetime(variables_["lifetime"].as<std::decay<decltype(lifetime)>::type>()),
+    max_life(variables_["maxLife"].as<std::decay<decltype(max_life)>::type>()),
+    object_spawn(variables_["objectSpawn"].as<std::decay<decltype(object_spawn)>::type>()),
+    spawn_timer(variables_["spawnTimer"].as<std::decay<decltype(spawn_timer)>::type>()),
     tile(variables_["tile"].as<std::decay<decltype(tile)>::type>())
 {
     for(auto&& obj : init)

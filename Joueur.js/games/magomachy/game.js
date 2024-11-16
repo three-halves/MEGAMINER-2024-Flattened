@@ -45,6 +45,8 @@ class Game extends BaseGame {
     this.session = '';
     this.tiles = [];
     this.timeAddedPerTurn = 0;
+    this.wizardTileOne = null;
+    this.wizardTileTwo = null;
     this.wizards = [];
 
     //<<-- Creer-Merge: init -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
@@ -192,6 +194,34 @@ class Game extends BaseGame {
 
   set timeAddedPerTurn(value) {
     client.gameManager.setMemberValue(this, 'timeAddedPerTurn', value);
+  }
+
+
+  /**
+   * Where player 1's wizard should be placed.
+   *
+   * @type {Magomachy.Tile}
+   */
+  get wizardTileOne() {
+    return client.gameManager.getMemberValue(this, 'wizardTileOne');
+  }
+
+  set wizardTileOne(value) {
+    client.gameManager.setMemberValue(this, 'wizardTileOne', value);
+  }
+
+
+  /**
+   * Where player 2's wizard should be placed.
+   *
+   * @type {Magomachy.Tile}
+   */
+  get wizardTileTwo() {
+    return client.gameManager.getMemberValue(this, 'wizardTileTwo');
+  }
+
+  set wizardTileTwo(value) {
+    client.gameManager.setMemberValue(this, 'wizardTileTwo', value);
   }
 
 

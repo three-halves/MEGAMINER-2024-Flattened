@@ -29,6 +29,21 @@ export class Item extends GameObject {
     public readonly lifetime!: number;
 
     /**
+     * How long the item is allowed to last for.
+     */
+    public readonly maxLife!: number;
+
+    /**
+     * What item spawns on this tile.
+     */
+    public readonly objectSpawn!: string;
+
+    /**
+     * Turns until item should spawn.
+     */
+    public readonly spawnTimer!: number;
+
+    /**
      * The Tile this Item is on.
      */
     public readonly tile!: Tile;

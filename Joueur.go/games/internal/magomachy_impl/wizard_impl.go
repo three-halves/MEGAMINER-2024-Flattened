@@ -18,13 +18,16 @@ type WizardImpl struct {
 	effectTimesImpl    []int64
 	effectsImpl        []string
 	hasCastImpl        bool
+	hasTeleportedImpl  bool
 	healthImpl         int64
 	lastSpellImpl      string
 	lastTargetTileImpl magomachy.Tile
+	maxHealthImpl      int64
 	movementLeftImpl   int64
 	ownerImpl          magomachy.Player
 	specialtyImpl      string
 	speedImpl          int64
+	teleportTileImpl   magomachy.Tile
 	tileImpl           magomachy.Tile
 }
 
@@ -64,6 +67,12 @@ func (wizardImpl *WizardImpl) HasCast() bool {
 	return wizardImpl.hasCastImpl
 }
 
+// HasTeleported returns whether or not this Wizard has cast a teleport
+// spell this turn.
+func (wizardImpl *WizardImpl) HasTeleported() bool {
+	return wizardImpl.hasTeleportedImpl
+}
+
 // Health returns the amount of health this player has.
 func (wizardImpl *WizardImpl) Health() int64 {
 	return wizardImpl.healthImpl
@@ -83,6 +92,11 @@ func (wizardImpl *WizardImpl) LastSpell() string {
 // Value can be returned as a nil pointer.
 func (wizardImpl *WizardImpl) LastTargetTile() magomachy.Tile {
 	return wizardImpl.lastTargetTileImpl
+}
+
+// MaxHealth returns max health of wizard.
+func (wizardImpl *WizardImpl) MaxHealth() int64 {
+	return wizardImpl.maxHealthImpl
 }
 
 // MovementLeft returns how much movement the wizard has left.
@@ -110,6 +124,14 @@ func (wizardImpl *WizardImpl) Speed() int64 {
 	return wizardImpl.speedImpl
 }
 
+// TeleportTile returns where the wizard has a teleport rune out, undefined
+// otherwise.
+//
+// Value can be returned as a nil pointer.
+func (wizardImpl *WizardImpl) TeleportTile() magomachy.Tile {
+	return wizardImpl.teleportTileImpl
+}
+
 // Tile returns the Tile that this Wizard is on.
 //
 // Value can be returned as a nil pointer.
@@ -122,6 +144,14 @@ func (wizardImpl *WizardImpl) Cast(spellName string, tile magomachy.Tile) bool {
 	return wizardImpl.RunOnServer("cast", map[string]interface{}{
 		"spellName": spellName,
 		"tile":      tile,
+	}).(bool)
+}
+
+// CheckBressenham runs logic that check if a tile can be reached with a
+// projectile spell.
+func (wizardImpl *WizardImpl) CheckBressenham(tile magomachy.Tile) bool {
+	return wizardImpl.RunOnServer("checkBressenham", map[string]interface{}{
+		"tile": tile,
 	}).(bool)
 }
 
@@ -144,13 +174,16 @@ func (wizardImpl *WizardImpl) InitImplDefaults() {
 	wizardImpl.effectTimesImpl = []int64{}
 	wizardImpl.effectsImpl = []string{}
 	wizardImpl.hasCastImpl = true
+	wizardImpl.hasTeleportedImpl = true
 	wizardImpl.healthImpl = 0
 	wizardImpl.lastSpellImpl = ""
 	wizardImpl.lastTargetTileImpl = nil
+	wizardImpl.maxHealthImpl = 0
 	wizardImpl.movementLeftImpl = 0
 	wizardImpl.ownerImpl = nil
 	wizardImpl.specialtyImpl = ""
 	wizardImpl.speedImpl = 0
+	wizardImpl.teleportTileImpl = nil
 	wizardImpl.tileImpl = nil
 }
 
@@ -199,6 +232,9 @@ func (wizardImpl *WizardImpl) DeltaMerge(
 	case "hasCast":
 		wizardImpl.hasCastImpl = magomachyDeltaMerge.Boolean(delta)
 		return true, nil
+	case "hasTeleported":
+		wizardImpl.hasTeleportedImpl = magomachyDeltaMerge.Boolean(delta)
+		return true, nil
 	case "health":
 		wizardImpl.healthImpl = magomachyDeltaMerge.Int(delta)
 		return true, nil
@@ -207,6 +243,9 @@ func (wizardImpl *WizardImpl) DeltaMerge(
 		return true, nil
 	case "lastTargetTile":
 		wizardImpl.lastTargetTileImpl = magomachyDeltaMerge.Tile(delta)
+		return true, nil
+	case "maxHealth":
+		wizardImpl.maxHealthImpl = magomachyDeltaMerge.Int(delta)
 		return true, nil
 	case "movementLeft":
 		wizardImpl.movementLeftImpl = magomachyDeltaMerge.Int(delta)
@@ -219,6 +258,9 @@ func (wizardImpl *WizardImpl) DeltaMerge(
 		return true, nil
 	case "speed":
 		wizardImpl.speedImpl = magomachyDeltaMerge.Int(delta)
+		return true, nil
+	case "teleportTile":
+		wizardImpl.teleportTileImpl = magomachyDeltaMerge.Tile(delta)
 		return true, nil
 	case "tile":
 		wizardImpl.tileImpl = magomachyDeltaMerge.Tile(delta)

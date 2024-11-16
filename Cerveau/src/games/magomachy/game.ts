@@ -5,7 +5,6 @@ import { GameObject } from "./game-object";
 import { MagomachyGameSettingsManager } from "./game-settings";
 import { Player } from "./player";
 import { Tile } from "./tile";
-import { Mutable } from "@cadre/ts-utils";
 
 // <<-- Creer-Merge: imports -->>
 // any additional imports you want can be placed here safely between creer runs
@@ -75,6 +74,16 @@ export class MagomachyGame extends BaseClasses.Game {
      * turn.
      */
     public readonly timeAddedPerTurn!: number;
+
+    /**
+     * Where player 1's wizard should be placed.
+     */
+    public wizardTileOne: Tile;
+
+    /**
+     * Where player 2's wizard should be placed.
+     */
+    public wizardTileTwo: Tile;
 
     /**
      * List of wizard choices.

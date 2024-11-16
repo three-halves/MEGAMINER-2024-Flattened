@@ -30,13 +30,16 @@ class Wizard(GameObject):
         self._effect_times = []
         self._effects = []
         self._has_cast = False
+        self._has_teleported = False
         self._health = 0
         self._last_spell = ""
         self._last_target_tile = None
+        self._max_health = 0
         self._movement_left = 0
         self._owner = None
         self._specialty = ""
         self._speed = 0
+        self._teleport_tile = None
         self._tile = None
 
     @property
@@ -82,6 +85,12 @@ class Wizard(GameObject):
         return self._has_cast
 
     @property
+    def has_teleported(self) -> bool:
+        """bool: Whether or not this Wizard has cast a teleport spell this turn.
+        """
+        return self._has_teleported
+
+    @property
     def health(self) -> int:
         """int: The amount of health this player has.
         """
@@ -98,6 +107,12 @@ class Wizard(GameObject):
         """games.magomachy.tile.Tile or None: The tile this wizard just cast to. Undefined if no tile was targeted.
         """
         return self._last_target_tile
+
+    @property
+    def max_health(self) -> int:
+        """int: Max health of wizard.
+        """
+        return self._max_health
 
     @property
     def movement_left(self) -> int:
@@ -124,6 +139,12 @@ class Wizard(GameObject):
         return self._speed
 
     @property
+    def teleport_tile(self) -> Optional['games.magomachy.tile.Tile']:
+        """games.magomachy.tile.Tile or None: Where the wizard has a teleport rune out, undefined otherwise.
+        """
+        return self._teleport_tile
+
+    @property
     def tile(self) -> Optional['games.magomachy.tile.Tile']:
         """games.magomachy.tile.Tile or None: The Tile that this Wizard is on.
         """
@@ -141,6 +162,19 @@ class Wizard(GameObject):
         """
         return self._run_on_server('cast', {
             'spellName': spell_name,
+            'tile': tile
+        })
+
+    def check_bressenham(self, tile: 'games.magomachy.tile.Tile') -> bool:
+        """Check if a tile can be reached with a projectile spell.
+
+        Args:
+            tile (games.magomachy.tile.Tile): The Tile to aim the projectile toward.
+
+        Returns:
+            bool: True if Tile can be hit, False otherwise.
+        """
+        return self._run_on_server('checkBressenham', {
             'tile': tile
         })
 

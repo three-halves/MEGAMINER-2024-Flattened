@@ -35,12 +35,16 @@ function Wizard:init(...)
     self.effects = Table()
     --- Whether or not this Wizard has cast a spell this turn.
     self.hasCast = false
+    --- Whether or not this Wizard has cast a teleport spell this turn.
+    self.hasTeleported = false
     --- The amount of health this player has.
     self.health = 0
     --- The spell this wizard just casted. Undefined if no spell was cast.
     self.lastSpell = ""
     --- The tile this wizard just cast to. Undefined if no tile was targeted.
     self.lastTargetTile = nil
+    --- Max health of wizard.
+    self.maxHealth = 0
     --- How much movement the wizard has left.
     self.movementLeft = 0
     --- The Player that owns and can control this Unit, or nil if the Unit is neutral.
@@ -49,6 +53,8 @@ function Wizard:init(...)
     self.specialty = ""
     --- The speed of the player.
     self.speed = 0
+    --- Where the wizard has a teleport rune out, undefined otherwise.
+    self.teleportTile = nil
     --- The Tile that this Wizard is on.
     self.tile = nil
 
@@ -74,6 +80,15 @@ end
 function Wizard:cast(spellName, tile)
     return not not (self:_runOnServer("cast", {
         spellName = spellName,
+        tile = tile,
+    }))
+end
+
+--- Check if a tile can be reached with a projectile spell.
+-- @tparam Tile tile The Tile to aim the projectile toward.
+-- @treturn bool True if Tile can be hit, false otherwise.
+function Wizard:checkBressenham(tile)
+    return not not (self:_runOnServer("checkBressenham", {
         tile = tile,
     }))
 end

@@ -11,9 +11,12 @@ import (
 type ItemImpl struct {
 	GameObjectImpl
 
-	formImpl     string
-	lifetimeImpl int64
-	tileImpl     magomachy.Tile
+	formImpl        string
+	lifetimeImpl    int64
+	maxLifeImpl     int64
+	objectSpawnImpl string
+	spawnTimerImpl  int64
+	tileImpl        magomachy.Tile
 }
 
 // Form returns the type of Item this is.
@@ -24,6 +27,27 @@ func (itemImpl *ItemImpl) Form() string {
 // Lifetime returns how many turns this item has existed for.
 func (itemImpl *ItemImpl) Lifetime() int64 {
 	return itemImpl.lifetimeImpl
+}
+
+// MaxLife returns how long the item is allowed to last for.
+//
+// Value can be returned as a nil pointer.
+func (itemImpl *ItemImpl) MaxLife() int64 {
+	return itemImpl.maxLifeImpl
+}
+
+// ObjectSpawn returns what item spawns on this tile.
+//
+// Value can be returned as a nil pointer.
+func (itemImpl *ItemImpl) ObjectSpawn() string {
+	return itemImpl.objectSpawnImpl
+}
+
+// SpawnTimer returns turns until item should spawn.
+//
+// Value can be returned as a nil pointer.
+func (itemImpl *ItemImpl) SpawnTimer() int64 {
+	return itemImpl.spawnTimerImpl
 }
 
 // Tile returns the Tile this Item is on.
@@ -37,6 +61,9 @@ func (itemImpl *ItemImpl) InitImplDefaults() {
 
 	itemImpl.formImpl = ""
 	itemImpl.lifetimeImpl = 0
+	itemImpl.maxLifeImpl = 0
+	itemImpl.objectSpawnImpl = ""
+	itemImpl.spawnTimerImpl = 0
 	itemImpl.tileImpl = nil
 }
 
@@ -69,6 +96,15 @@ func (itemImpl *ItemImpl) DeltaMerge(
 		return true, nil
 	case "lifetime":
 		itemImpl.lifetimeImpl = magomachyDeltaMerge.Int(delta)
+		return true, nil
+	case "maxLife":
+		itemImpl.maxLifeImpl = magomachyDeltaMerge.Int(delta)
+		return true, nil
+	case "objectSpawn":
+		itemImpl.objectSpawnImpl = magomachyDeltaMerge.String(delta)
+		return true, nil
+	case "spawnTimer":
+		itemImpl.spawnTimerImpl = magomachyDeltaMerge.Int(delta)
 		return true, nil
 	case "tile":
 		itemImpl.tileImpl = magomachyDeltaMerge.Tile(delta)

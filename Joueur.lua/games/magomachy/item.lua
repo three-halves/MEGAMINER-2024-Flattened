@@ -25,6 +25,12 @@ function Item:init(...)
     self.form = ""
     --- How many turns this item has existed for.
     self.lifetime = 0
+    --- How long the item is allowed to last for.
+    self.maxLife = 0
+    --- What item spawns on this tile.
+    self.objectSpawn = ""
+    --- Turns until item should spawn.
+    self.spawnTimer = 0
     --- The Tile this Item is on.
     self.tile = nil
 

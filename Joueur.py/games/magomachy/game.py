@@ -40,6 +40,8 @@ class Game(BaseGame):
         self._session = ""
         self._tiles = []
         self._time_added_per_turn = 0
+        self._wizard_tile_one = None
+        self._wizard_tile_two = None
         self._wizards = []
 
         self.name = "Magomachy"
@@ -111,6 +113,18 @@ class Game(BaseGame):
         """float: The amount of time (in nano-seconds) added after each player performs a turn.
         """
         return self._time_added_per_turn
+
+    @property
+    def wizard_tile_one(self) -> 'games.magomachy.tile.Tile':
+        """games.magomachy.tile.Tile: Where player 1's wizard should be placed.
+        """
+        return self._wizard_tile_one
+
+    @property
+    def wizard_tile_two(self) -> 'games.magomachy.tile.Tile':
+        """games.magomachy.tile.Tile: Where player 2's wizard should be placed.
+        """
+        return self._wizard_tile_two
 
     @property
     def wizards(self) -> List[str]:

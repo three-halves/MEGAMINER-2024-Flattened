@@ -74,6 +74,11 @@ public:
     const bool& has_cast;
 
     /// <summary>
+    /// Whether or not this Wizard has cast a teleport spell this turn.
+    /// </summary>
+    const bool& has_teleported;
+
+    /// <summary>
     /// The amount of health this player has.
     /// </summary>
     const int& health;
@@ -87,6 +92,11 @@ public:
     /// The tile this wizard just cast to. Undefined if no tile was targeted.
     /// </summary>
     const Tile& last_target_tile;
+
+    /// <summary>
+    /// Max health of wizard.
+    /// </summary>
+    const int& max_health;
 
     /// <summary>
     /// How much movement the wizard has left.
@@ -109,6 +119,11 @@ public:
     const int& speed;
 
     /// <summary>
+    /// Where the wizard has a teleport rune out, undefined otherwise.
+    /// </summary>
+    const Tile& teleport_tile;
+
+    /// <summary>
     /// The Tile that this Wizard is on.
     /// </summary>
     const Tile& tile;
@@ -124,6 +139,12 @@ public:
     /// <param name="spell_name"> The name of the spell to cast. </param>
     /// <param name="tile"> The Tile to aim the spell toward. </param>
     bool cast(const std::string& spell_name, const Tile& tile);
+
+    /// <summary>
+    /// check if a tile can be reached with a projectile spell.
+    /// </summary>
+    /// <param name="tile"> The Tile to aim the projectile toward. </param>
+    bool check_bressenham(const Tile& tile);
 
     /// <summary>
     /// moves this _wizard from its current _tile to another empty _tile.

@@ -1,9 +1,14 @@
 import { BaseGameObjectRequiredData } from "~/core/game";
-import { WizardCastArgs, WizardConstructorArgs, WizardMoveArgs } from "./";
+import {
+    WizardCastArgs,
+    WizardCheckBressenhamArgs,
+    WizardConstructorArgs,
+    WizardMoveArgs,
+} from "./";
 import { GameObject } from "./game-object";
 import { Player } from "./player";
 import { Tile } from "./tile";
-import { Item } from "./item"
+
 // <<-- Creer-Merge: imports -->>
 // any additional imports you want can be placed here safely between creer runs
 // <<-- /Creer-Merge: imports -->>
@@ -57,6 +62,11 @@ export class Wizard extends GameObject {
     public hasCast!: boolean;
 
     /**
+     * Whether or not this Wizard has cast a teleport spell this turn.
+     */
+    public hasTeleported!: boolean;
+
+    /**
      * The amount of health this player has.
      */
     public health!: number;
@@ -70,6 +80,11 @@ export class Wizard extends GameObject {
      * The tile this wizard just cast to. Undefined if no tile was targeted.
      */
     public lastTargetTile?: Tile;
+
+    /**
+     * Max health of wizard.
+     */
+    public maxHealth!: number;
 
     /**
      * How much movement the wizard has left.
@@ -95,6 +110,11 @@ export class Wizard extends GameObject {
      * The speed of the player.
      */
     public speed!: number;
+
+    /**
+     * Where the wizard has a teleport rune out, undefined otherwise.
+     */
+    public teleportTile?: Tile;
 
     /**
      * The Tile that this Wizard is on.
@@ -831,6 +851,53 @@ export class Wizard extends GameObject {
         return true;
 
         // <<-- /Creer-Merge: cast -->>
+    }
+
+    /**
+     * Invalidation function for checkBressenham. Try to find a reason why the
+     * passed in parameters are invalid, and return a human readable string
+     * telling them why it is invalid.
+     *
+     * @param player - The player that called this.
+     * @param tile - The Tile to aim the projectile toward.
+     * @returns If the arguments are invalid, return a string explaining to
+     * human players why it is invalid. If it is valid return nothing, or an
+     * object with new arguments to use in the actual function.
+     */
+    protected invalidateCheckBressenham(
+        player: Player,
+        tile: Tile,
+    ): void | string | WizardCheckBressenhamArgs {
+        // <<-- Creer-Merge: invalidate-checkBressenham -->>
+
+        // Check all the arguments for checkBressenham here and try to
+        // return a string explaining why the input is wrong.
+        // If you need to change an argument for the real function, then
+        // changing its value in this scope is enough.
+        return undefined; // means nothing could be found that was ivalid.
+
+        // <<-- /Creer-Merge: invalidate-checkBressenham -->>
+    }
+
+    /**
+     * Check if a tile can be reached with a projectile spell.
+     *
+     * @param player - The player that called this.
+     * @param tile - The Tile to aim the projectile toward.
+     * @returns True if Tile can be hit, false otherwise.
+     */
+    protected async checkBressenham(
+        player: Player,
+        tile: Tile,
+    ): Promise<boolean> {
+        // <<-- Creer-Merge: checkBressenham -->>
+
+        // Add logic here for checkBressenham.
+
+        // TODO: replace this with actual logic
+        return false;
+
+        // <<-- /Creer-Merge: checkBressenham -->>
     }
 
     /**

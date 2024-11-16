@@ -75,6 +75,16 @@ export class Game extends BaseGame {
     public readonly timeAddedPerTurn!: number;
 
     /**
+     * Where player 1's wizard should be placed.
+     */
+    public readonly wizardTileOne!: Tile;
+
+    /**
+     * Where player 2's wizard should be placed.
+     */
+    public readonly wizardTileTwo!: Tile;
+
+    /**
      * List of wizard choices.
      */
     public readonly wizards!: string[];

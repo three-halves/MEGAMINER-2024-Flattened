@@ -30,6 +30,10 @@ type Wizard interface {
 	// turn.
 	HasCast() bool
 
+	// HasTeleported is whether or not this Wizard has cast a teleport
+	// spell this turn.
+	HasTeleported() bool
+
 	// Health is the amount of health this player has.
 	Health() int64
 
@@ -44,6 +48,9 @@ type Wizard interface {
 	//
 	// Value can be returned as a nil pointer.
 	LastTargetTile() Tile
+
+	// MaxHealth is max health of wizard.
+	MaxHealth() int64
 
 	// MovementLeft is how much movement the wizard has left.
 	MovementLeft() int64
@@ -63,6 +70,12 @@ type Wizard interface {
 	// Speed is the speed of the player.
 	Speed() int64
 
+	// TeleportTile is where the wizard has a teleport rune out,
+	// undefined otherwise.
+	//
+	// Value can be returned as a nil pointer.
+	TeleportTile() Tile
+
 	// Tile is the Tile that this Wizard is on.
 	//
 	// Value can be returned as a nil pointer.
@@ -72,6 +85,10 @@ type Wizard interface {
 
 	// Cast casts a spell on a Tile in range.
 	Cast(string, Tile) bool
+
+	// CheckBressenham check if a tile can be reached with a
+	// projectile spell.
+	CheckBressenham(Tile) bool
 
 	// Move moves this Wizard from its current Tile to another empty
 	// Tile.

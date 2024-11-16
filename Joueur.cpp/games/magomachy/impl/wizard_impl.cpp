@@ -54,6 +54,34 @@ bool Wizard_::cast(const std::string& spell_name, const Tile& tile)
     return to_return.as<bool>();
 }
 
+bool Wizard_::check_bressenham(const Tile& tile)
+{
+    std::string order = R"({"event": "run", "data": {"functionName": "checkBressenham", "caller": {"id": ")";
+    order += this->id + R"("}, "args": {)";
+
+    order += std::string("\"tile\":") + (tile ? (std::string("{\"id\":\"") + tile->id + "\"}") : std::string("null"));
+
+    order += "}}}";
+    Magomachy::instance()->send(order);
+    //Go until not a delta
+    std::unique_ptr<Any> info;
+    //until a not bool is seen (i.e., the delta has been processed)
+    do
+    {
+        info = Magomachy::instance()->handle_response();
+    } while(info->type() == typeid(bool));
+    auto doc = info->as<rapidjson::Document*>();
+    auto loc = doc->FindMember("data");
+    if(loc == doc->MemberEnd())
+    {
+       return {};
+    }
+    auto& val = loc->value;
+    Any to_return;
+    morph_any(to_return, val);
+    return to_return.as<bool>();
+}
+
 bool Wizard_::move(const Tile& tile)
 {
     std::string order = R"({"event": "run", "data": {"functionName": "move", "caller": {"id": ")";
@@ -92,13 +120,16 @@ Wizard_::Wizard_(std::initializer_list<std::pair<std::string, Any&&>> init) :
         {"effectTimes", Any{std::decay<decltype(effect_times)>::type{}}},
         {"effects", Any{std::decay<decltype(effects)>::type{}}},
         {"hasCast", Any{std::decay<decltype(has_cast)>::type{}}},
+        {"hasTeleported", Any{std::decay<decltype(has_teleported)>::type{}}},
         {"health", Any{std::decay<decltype(health)>::type{}}},
         {"lastSpell", Any{std::decay<decltype(last_spell)>::type{}}},
         {"lastTargetTile", Any{std::decay<decltype(last_target_tile)>::type{}}},
+        {"maxHealth", Any{std::decay<decltype(max_health)>::type{}}},
         {"movementLeft", Any{std::decay<decltype(movement_left)>::type{}}},
         {"owner", Any{std::decay<decltype(owner)>::type{}}},
         {"specialty", Any{std::decay<decltype(specialty)>::type{}}},
         {"speed", Any{std::decay<decltype(speed)>::type{}}},
+        {"teleportTile", Any{std::decay<decltype(teleport_tile)>::type{}}},
         {"tile", Any{std::decay<decltype(tile)>::type{}}},
     },
     aether(variables_["aether"].as<std::decay<decltype(aether)>::type>()),
@@ -108,13 +139,16 @@ Wizard_::Wizard_(std::initializer_list<std::pair<std::string, Any&&>> init) :
     effect_times(variables_["effectTimes"].as<std::decay<decltype(effect_times)>::type>()),
     effects(variables_["effects"].as<std::decay<decltype(effects)>::type>()),
     has_cast(variables_["hasCast"].as<std::decay<decltype(has_cast)>::type>()),
+    has_teleported(variables_["hasTeleported"].as<std::decay<decltype(has_teleported)>::type>()),
     health(variables_["health"].as<std::decay<decltype(health)>::type>()),
     last_spell(variables_["lastSpell"].as<std::decay<decltype(last_spell)>::type>()),
     last_target_tile(variables_["lastTargetTile"].as<std::decay<decltype(last_target_tile)>::type>()),
+    max_health(variables_["maxHealth"].as<std::decay<decltype(max_health)>::type>()),
     movement_left(variables_["movementLeft"].as<std::decay<decltype(movement_left)>::type>()),
     owner(variables_["owner"].as<std::decay<decltype(owner)>::type>()),
     specialty(variables_["specialty"].as<std::decay<decltype(specialty)>::type>()),
     speed(variables_["speed"].as<std::decay<decltype(speed)>::type>()),
+    teleport_tile(variables_["teleportTile"].as<std::decay<decltype(teleport_tile)>::type>()),
     tile(variables_["tile"].as<std::decay<decltype(tile)>::type>())
 {
     for(auto&& obj : init)
@@ -220,6 +254,11 @@ void Wizard_::rebind_by_name(Any* to_change, const std::string& member, std::sha
    if(member == "owner")
    { 
       to_change->as<Player>() = std::static_pointer_cast<Player_>(ref);
+      return;
+   }
+   if(member == "teleportTile")
+   { 
+      to_change->as<Tile>() = std::static_pointer_cast<Tile_>(ref);
       return;
    }
    if(member == "tile")

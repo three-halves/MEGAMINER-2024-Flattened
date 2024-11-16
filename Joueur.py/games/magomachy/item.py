@@ -4,6 +4,7 @@
 # Never try to directly create an instance of this class, or modify its member variables.
 # Instead, you should only be reading its variables and calling its functions.
 
+from typing import Optional
 from games.magomachy.game_object import GameObject
 
 # <<-- Creer-Merge: imports -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
@@ -24,6 +25,9 @@ class Item(GameObject):
         # private attributes to hold the properties so they appear read only
         self._form = ""
         self._lifetime = 0
+        self._max_life = 0
+        self._object_spawn = ""
+        self._spawn_timer = 0
         self._tile = None
 
     @property
@@ -37,6 +41,24 @@ class Item(GameObject):
         """int: How many turns this item has existed for.
         """
         return self._lifetime
+
+    @property
+    def max_life(self) -> int:
+        """int: How long the item is allowed to last for.
+        """
+        return self._max_life
+
+    @property
+    def object_spawn(self) -> str:
+        """str: What item spawns on this tile.
+        """
+        return self._object_spawn
+
+    @property
+    def spawn_timer(self) -> int:
+        """int: Turns until item should spawn.
+        """
+        return self._spawn_timer
 
     @property
     def tile(self) -> 'games.magomachy.tile.Tile':

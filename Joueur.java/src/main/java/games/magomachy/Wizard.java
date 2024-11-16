@@ -61,6 +61,11 @@ public class Wizard extends GameObject {
     public boolean hasCast;
 
     /**
+     * Whether or not this Wizard has cast a teleport spell this turn.
+     */
+    public boolean hasTeleported;
+
+    /**
      * The amount of health this player has.
      */
     public int health;
@@ -74,6 +79,11 @@ public class Wizard extends GameObject {
      * The tile this wizard just cast to. Undefined if no tile was targeted.
      */
     public Tile lastTargetTile;
+
+    /**
+     * Max health of wizard.
+     */
+    public int maxHealth;
 
     /**
      * How much movement the wizard has left.
@@ -94,6 +104,11 @@ public class Wizard extends GameObject {
      * The speed of the player.
      */
     public int speed;
+
+    /**
+     * Where the wizard has a teleport rune out, undefined otherwise.
+     */
+    public Tile teleportTile;
 
     /**
      * The Tile that this Wizard is on.
@@ -127,6 +142,18 @@ public class Wizard extends GameObject {
         args.put("spellName", Client.getInstance().gameManager.serializeSafe(spellName));
         args.put("tile", Client.getInstance().gameManager.serializeSafe(tile));
         return (boolean)this.runOnServer("cast", args);
+    }
+
+    /**
+     * Check if a tile can be reached with a projectile spell.
+     *
+     * @param   tile  The Tile to aim the projectile toward.
+     * @return True if Tile can be hit, false otherwise.
+     */
+    public boolean checkBressenham(Tile tile) {
+        JSONObject args = new JSONObject();
+        args.put("tile", Client.getInstance().gameManager.serializeSafe(tile));
+        return (boolean)this.runOnServer("checkBressenham", args);
     }
 
     /**

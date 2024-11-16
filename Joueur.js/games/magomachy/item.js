@@ -31,6 +31,9 @@ class Item extends GameObject {
     // default values for private member values
     this.form = '';
     this.lifetime = 0;
+    this.maxLife = 0;
+    this.objectSpawn = '';
+    this.spawnTimer = 0;
     this.tile = null;
 
     //<<-- Creer-Merge: init -->> - Code you add between this comment and the end comment will be preserved between Creer re-runs.
@@ -66,6 +69,48 @@ class Item extends GameObject {
 
   set lifetime(value) {
     client.gameManager.setMemberValue(this, 'lifetime', value);
+  }
+
+
+  /**
+   * How long the item is allowed to last for.
+   *
+   * @type {number}
+   */
+  get maxLife() {
+    return client.gameManager.getMemberValue(this, 'maxLife');
+  }
+
+  set maxLife(value) {
+    client.gameManager.setMemberValue(this, 'maxLife', value);
+  }
+
+
+  /**
+   * What item spawns on this tile.
+   *
+   * @type {string}
+   */
+  get objectSpawn() {
+    return client.gameManager.getMemberValue(this, 'objectSpawn');
+  }
+
+  set objectSpawn(value) {
+    client.gameManager.setMemberValue(this, 'objectSpawn', value);
+  }
+
+
+  /**
+   * Turns until item should spawn.
+   *
+   * @type {number}
+   */
+  get spawnTimer() {
+    return client.gameManager.getMemberValue(this, 'spawnTimer');
+  }
+
+  set spawnTimer(value) {
+    client.gameManager.setMemberValue(this, 'spawnTimer', value);
   }
 
 

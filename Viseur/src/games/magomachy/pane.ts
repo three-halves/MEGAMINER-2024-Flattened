@@ -3,8 +3,6 @@ import { Viseur } from "src/viseur";
 import { BasePane, PaneStat } from "src/viseur/game";
 import { Game } from "./game";
 import { GameState, PlayerState } from "./state-interfaces";
-import { Player } from "./player";
-import { get } from "store";
 
 // <<-- Creer-Merge: imports -->>
 // Add additional imports you need here

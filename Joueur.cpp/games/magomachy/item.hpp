@@ -49,6 +49,21 @@ public:
     const int& lifetime;
 
     /// <summary>
+    /// How long the item is allowed to last for.
+    /// </summary>
+    const int& max_life;
+
+    /// <summary>
+    /// What item spawns on this tile.
+    /// </summary>
+    const std::string& object_spawn;
+
+    /// <summary>
+    /// Turns until item should spawn.
+    /// </summary>
+    const int& spawn_timer;
+
+    /// <summary>
     /// The Tile this Item is on.
     /// </summary>
     const Tile& tile;

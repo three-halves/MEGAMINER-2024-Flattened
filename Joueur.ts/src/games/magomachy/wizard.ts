@@ -55,6 +55,11 @@ export class Wizard extends GameObject {
     public readonly hasCast!: boolean;
 
     /**
+     * Whether or not this Wizard has cast a teleport spell this turn.
+     */
+    public readonly hasTeleported!: boolean;
+
+    /**
      * The amount of health this player has.
      */
     public readonly health!: number;
@@ -68,6 +73,11 @@ export class Wizard extends GameObject {
      * The tile this wizard just cast to. Undefined if no tile was targeted.
      */
     public readonly lastTargetTile!: Tile | undefined;
+
+    /**
+     * Max health of wizard.
+     */
+    public readonly maxHealth!: number;
 
     /**
      * How much movement the wizard has left.
@@ -91,6 +101,11 @@ export class Wizard extends GameObject {
     public readonly speed!: number;
 
     /**
+     * Where the wizard has a teleport rune out, undefined otherwise.
+     */
+    public readonly teleportTile!: Tile | undefined;
+
+    /**
      * The Tile that this Wizard is on.
      */
     public readonly tile!: Tile | undefined;
@@ -104,6 +119,17 @@ export class Wizard extends GameObject {
     public async cast(spellName: string, tile: Tile): Promise<boolean> {
         return this.runOnServer("cast", {
             spellName,
+            tile,
+        });
+    }
+
+    /**
+     * Check if a tile can be reached with a projectile spell.
+     * @param tile The Tile to aim the projectile toward.
+     * @returns True if Tile can be hit, false otherwise.
+     */
+    public async checkBressenham(tile: Tile): Promise<boolean> {
+        return this.runOnServer("checkBressenham", {
             tile,
         });
     }

@@ -25,7 +25,7 @@ namespace Joueur.cs.Games.Magomachy
         /// <summary>
         /// The game version hash, used to compare if we are playing the same version on the server.
         /// </summary>
-        new protected static string GameVersion = "65acc66b7843108091108f5cbd212836c6c154d3b2bc4c5e186d4a36d35e5257";
+        new protected static string GameVersion = "3a46f9aec2408eb04871642e3f1f986ce612791807a5dc2fcf3289ce462669ae";
 
         #region Properties
         /// <summary>
@@ -72,6 +72,16 @@ namespace Joueur.cs.Games.Magomachy
         /// The amount of time (in nano-seconds) added after each player performs a turn.
         /// </summary>
         public double TimeAddedPerTurn { get; protected set; }
+
+        /// <summary>
+        /// Where player 1's wizard should be placed.
+        /// </summary>
+        public Magomachy.Tile WizardTileOne { get; protected set; }
+
+        /// <summary>
+        /// Where player 2's wizard should be placed.
+        /// </summary>
+        public Magomachy.Tile WizardTileTwo { get; protected set; }
 
         /// <summary>
         /// List of wizard choices.

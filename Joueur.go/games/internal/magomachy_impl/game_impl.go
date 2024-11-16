@@ -21,6 +21,8 @@ type GameImpl struct {
 	sessionImpl          string
 	tilesImpl            []magomachy.Tile
 	timeAddedPerTurnImpl float64
+	wizardTileOneImpl    magomachy.Tile
+	wizardTileTwoImpl    magomachy.Tile
 	wizardsImpl          []string
 }
 
@@ -84,6 +86,16 @@ func (gameImpl *GameImpl) TimeAddedPerTurn() float64 {
 	return gameImpl.timeAddedPerTurnImpl
 }
 
+// WizardTileOne returns where player 1's wizard should be placed.
+func (gameImpl *GameImpl) WizardTileOne() magomachy.Tile {
+	return gameImpl.wizardTileOneImpl
+}
+
+// WizardTileTwo returns where player 2's wizard should be placed.
+func (gameImpl *GameImpl) WizardTileTwo() magomachy.Tile {
+	return gameImpl.wizardTileTwoImpl
+}
+
 // Wizards returns array of wizard choices.
 func (gameImpl *GameImpl) Wizards() []string {
 	return gameImpl.wizardsImpl
@@ -103,6 +115,8 @@ func (gameImpl *GameImpl) InitImplDefaults() {
 	gameImpl.sessionImpl = ""
 	gameImpl.tilesImpl = []magomachy.Tile{}
 	gameImpl.timeAddedPerTurnImpl = 0
+	gameImpl.wizardTileOneImpl = nil
+	gameImpl.wizardTileTwoImpl = nil
 	gameImpl.wizardsImpl = []string{}
 }
 
@@ -159,6 +173,12 @@ func (gameImpl *GameImpl) DeltaMerge(
 		return true, nil
 	case "timeAddedPerTurn":
 		gameImpl.timeAddedPerTurnImpl = magomachyDeltaMerge.Float(delta)
+		return true, nil
+	case "wizardTileOne":
+		gameImpl.wizardTileOneImpl = magomachyDeltaMerge.Tile(delta)
+		return true, nil
+	case "wizardTileTwo":
+		gameImpl.wizardTileTwoImpl = magomachyDeltaMerge.Tile(delta)
 		return true, nil
 	case "wizards":
 		gameImpl.wizardsImpl = magomachyDeltaMerge.ArrayOfString(&gameImpl.wizardsImpl, delta)

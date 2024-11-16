@@ -37,6 +37,8 @@ Game_::Game_(std::initializer_list<std::pair<std::string, Any&&>> init) :
         {"session", Any{std::decay<decltype(session)>::type{}}},
         {"tiles", Any{std::decay<decltype(tiles)>::type{}}},
         {"timeAddedPerTurn", Any{std::decay<decltype(time_added_per_turn)>::type{}}},
+        {"wizardTileOne", Any{std::decay<decltype(wizard_tile_one)>::type{}}},
+        {"wizardTileTwo", Any{std::decay<decltype(wizard_tile_two)>::type{}}},
         {"wizards", Any{std::decay<decltype(wizards)>::type{}}},
     },
     current_player(variables_["currentPlayer"].as<std::decay<decltype(current_player)>::type>()),
@@ -49,6 +51,8 @@ Game_::Game_(std::initializer_list<std::pair<std::string, Any&&>> init) :
     session(variables_["session"].as<std::decay<decltype(session)>::type>()),
     tiles(variables_["tiles"].as<std::decay<decltype(tiles)>::type>()),
     time_added_per_turn(variables_["timeAddedPerTurn"].as<std::decay<decltype(time_added_per_turn)>::type>()),
+    wizard_tile_one(variables_["wizardTileOne"].as<std::decay<decltype(wizard_tile_one)>::type>()),
+    wizard_tile_two(variables_["wizardTileTwo"].as<std::decay<decltype(wizard_tile_two)>::type>()),
     wizards(variables_["wizards"].as<std::decay<decltype(wizards)>::type>())
 {
     for(auto&& obj : init)
@@ -160,6 +164,16 @@ void Game_::rebind_by_name(Any* to_change, const std::string& member, std::share
    if(member == "currentPlayer")
    { 
       to_change->as<Player>() = std::static_pointer_cast<Player_>(ref);
+      return;
+   }
+   if(member == "wizardTileOne")
+   { 
+      to_change->as<Tile>() = std::static_pointer_cast<Tile_>(ref);
+      return;
+   }
+   if(member == "wizardTileTwo")
+   { 
+      to_change->as<Tile>() = std::static_pointer_cast<Tile_>(ref);
       return;
    }
    throw Bad_manipulation(member + " in Game treated as a reference, but it is not a reference.");

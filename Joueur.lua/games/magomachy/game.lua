@@ -43,6 +43,10 @@ function Game:init(...)
     self.tiles = Table()
     --- The amount of time (in nano-seconds) added after each player performs a turn.
     self.timeAddedPerTurn = 0
+    --- Where player 1's wizard should be placed.
+    self.wizardTileOne = nil
+    --- Where player 2's wizard should be placed.
+    self.wizardTileTwo = nil
     --- List of wizard choices.
     self.wizards = Table()
 
@@ -50,7 +54,7 @@ function Game:init(...)
 
     self.name = "Magomachy"
 
-    self._gameVersion = "65acc66b7843108091108f5cbd212836c6c154d3b2bc4c5e186d4a36d35e5257"
+    self._gameVersion = "3a46f9aec2408eb04871642e3f1f986ce612791807a5dc2fcf3289ce462669ae"
     self._gameObjectClasses = {
         GameObject = require("games.magomachy.gameObject"),
         Item = require("games.magomachy.item"),

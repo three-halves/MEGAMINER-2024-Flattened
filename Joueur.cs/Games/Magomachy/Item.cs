@@ -31,6 +31,21 @@ namespace Joueur.cs.Games.Magomachy
         public int Lifetime { get; protected set; }
 
         /// <summary>
+        /// How long the item is allowed to last for.
+        /// </summary>
+        public int MaxLife { get; protected set; }
+
+        /// <summary>
+        /// What item spawns on this tile.
+        /// </summary>
+        public string ObjectSpawn { get; protected set; }
+
+        /// <summary>
+        /// Turns until item should spawn.
+        /// </summary>
+        public int SpawnTimer { get; protected set; }
+
+        /// <summary>
         /// The Tile this Item is on.
         /// </summary>
         public Magomachy.Tile Tile { get; protected set; }

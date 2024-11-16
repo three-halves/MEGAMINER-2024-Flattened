@@ -84,6 +84,18 @@ export interface GameState extends BaseGame {
     timeAddedPerTurn: number;
 
     /**
+     * Where player 1's wizard should be placed.
+     *
+     */
+    wizardTileOne: TileState;
+
+    /**
+     * Where player 2's wizard should be placed.
+     *
+     */
+    wizardTileTwo: TileState;
+
+    /**
      * List of wizard choices.
      *
      */
@@ -135,6 +147,24 @@ export interface ItemState extends GameObjectState {
      *
      */
     lifetime: number;
+
+    /**
+     * How long the item is allowed to last for.
+     *
+     */
+    maxLife: number;
+
+    /**
+     * What item spawns on this tile.
+     *
+     */
+    objectSpawn: string;
+
+    /**
+     * Turns until item should spawn.
+     *
+     */
+    spawnTimer: number;
 
     /**
      * The Tile this Item is on.
@@ -316,6 +346,12 @@ export interface WizardState extends GameObjectState {
     hasCast: boolean;
 
     /**
+     * Whether or not this Wizard has cast a teleport spell this turn.
+     *
+     */
+    hasTeleported: boolean;
+
+    /**
      * The amount of health this player has.
      *
      */
@@ -332,6 +368,12 @@ export interface WizardState extends GameObjectState {
      *
      */
     lastTargetTile: TileState;
+
+    /**
+     * Max health of wizard.
+     *
+     */
+    maxHealth: number;
 
     /**
      * How much movement the wizard has left.
@@ -357,6 +399,12 @@ export interface WizardState extends GameObjectState {
      *
      */
     speed: number;
+
+    /**
+     * Where the wizard has a teleport rune out, undefined otherwise.
+     *
+     */
+    teleportTile: TileState;
 
     /**
      * The Tile that this Wizard is on.
@@ -484,6 +532,46 @@ export type WizardCastRanDelta = RanDelta & {
 
         /**
          * True if successfully cast, false otherwise.
+         *
+         */
+        returned: boolean;
+    };
+};
+
+/**
+ * The delta about what happened when a 'Wizard' ran their 'checkBressenham'
+ * function.
+ *
+ */
+export type WizardCheckBressenhamRanDelta = RanDelta & {
+    /** Data about why the run/ran occurred. */
+    data: {
+        /** The player that requested this game logic be ran. */
+        player: GameObjectInstance<PlayerState>;
+
+        /** The data about what was requested be run. */
+        run: {
+            /** The reference to the game object requesting a function to be run. */
+            caller: GameObjectInstance<WizardState>;
+
+            /** The name of the function of the caller to run. */
+            functionName: "checkBressenham";
+
+            /**
+             * The arguments to Wizard.checkBressenham,
+             * as a map of the argument name to its value.
+             */
+            args: {
+                /**
+                 * The Tile to aim the projectile toward.
+                 *
+                 */
+                tile: GameObjectInstance<TileState>;
+            };
+        };
+
+        /**
+         * True if Tile can be hit, false otherwise.
          *
          */
         returned: boolean;
@@ -637,6 +725,7 @@ export type MagomachySpecificDelta =
     | GameObjectLogRanDelta
     | PlayerChooseWizardRanDelta
     | WizardCastRanDelta
+    | WizardCheckBressenhamRanDelta
     | WizardMoveRanDelta
     | AIActionFinishedDelta
     | AIMoveFinishedDelta
