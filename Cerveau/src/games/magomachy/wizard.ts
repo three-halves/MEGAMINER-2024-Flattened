@@ -711,7 +711,7 @@ export class Wizard extends GameObject {
                     if (this.health < this.maxHealth!) {
                 	this.health += 1;
                     }
-		}
+				}
                 break;
             }
             case "Teleport": {
@@ -916,11 +916,13 @@ export class Wizard extends GameObject {
         let nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, this.tile!)
 		
         while (nextTile && nextTile.type === "floor" && nextTile!.wizard !== this.owner!.opponent.wizard && !(nextTile.object?.form === "stone")) {
-            distLeft--;
             prevTile = nextTile;
             path.push(prevTile);
             nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, prevTile);
         }
+		if (nextTile && nextTile.wizard) {
+			path.push(nextTile);
+		}
         
         return path;
 
@@ -1068,6 +1070,33 @@ export class Wizard extends GameObject {
         // return a string explaining why the input is wrong.
         // If you need to change an argument for the real function, then
         // changing its value in this scope is enough.
+		// Same generic invalidates as cast
+        const reason = this.invalidate(player);
+        if (reason) {
+            return reason;
+        }
+
+		// Gotta make seperate cases for each arg...
+		if (!tileZero.x || !tileZero.y ||
+	    	tileZero.x < 0 || tileZero.y < 0 || 
+	    	tileZero.x >= this.game.mapWidth || tileZero.y >= this.game.mapHeight) {
+	    		return `WHOA! That first Tile's not on the map! Did you forget to send a reference?`;
+		}
+		if (!tileOne.x || !tileOne.y ||
+	    	tileOne.x < 0 || tileOne.y < 0 || 
+	    	tileOne.x >= this.game.mapWidth || tileOne.y >= this.game.mapHeight) {
+	    		return `WHOA! That second Tile's not on the map! Did you forget to send a reference?`;
+		}
+		if (!current.x || !current.y ||
+	    	current.x < 0 || current.y < 0 || 
+	    	current.x >= this.game.mapWidth || current.y >= this.game.mapHeight) {
+	    		return `WHOA! That Tile's not on the map! Did you forget to send a reference?`;
+		}
+	
+		// So clients don't hack into Tiles	
+		tileZero = this.game.getTile(Math.round(tileZero.x), Math.round(tileZero.y))!;
+		tileOne = this.game.getTile(Math.round(tileOne.x), Math.round(tileOne.y))!;
+		current = this.game.getTile(Math.round(current.x), Math.round(current.y))!;
         return undefined; // means nothing could be found that was ivalid.
 
         // <<-- /Creer-Merge: invalidate-simpleBressenham -->>
@@ -1091,9 +1120,7 @@ export class Wizard extends GameObject {
         // <<-- Creer-Merge: simpleBressenham -->>
 
         // Add logic here for simpleBressenham.
-
-        // TODO: replace this with actual logic
-        return undefined;
+        return this.bressenham(tileZero.x,tileZero.y,tileOne.x,tileOne.y,current);
 
         // <<-- /Creer-Merge: simpleBressenham -->>
     }
