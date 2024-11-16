@@ -21,6 +21,8 @@ Otherwise:
 3. A random player wins.
 4. There is also a fourth, secret win condition involving a specific wizard!
 
+Additionally, after 200 turns (cumulative between both wizards), the game automatically ends and picks a winner based on the above comditions.
+
 ## How to Play
 To play the game, you must create an AI using the Joueur program provided in this repo. To do this, select a Joueur folder corresponding to the programming language you'd like to use and then navigate to the Magomachy folder. Edit the name function to return your team's name, and then put your acual logic in the runTurn function. (The other functions are either basic accessors or optional skeletons to help organize your code). 
 
