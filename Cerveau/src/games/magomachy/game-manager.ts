@@ -51,6 +51,7 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
             // Give Spells
             this.game.currentPlayer.wizard!.hasCast = false;
 	    	this.game.currentPlayer.wizard!.hasTeleported = false;
+			this.game.currentPlayer.wizard!.hasTeleported = false;
 
 	    	// Regen 1 aether
 	    	if (this.game.currentPlayer.wizard!.aether < this.game.currentPlayer.wizard!.maxAether) {
@@ -121,6 +122,7 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
 			// And here's where items get respawned
 			else if (this.game.tiles[i].object_spawn && !this.game.tiles[i].wizard) {
 				this.game.tiles[i].spawn_timer! -= 1;
+				this.game.tiles[i].spawnTimer! -= 1;
 				if (this.game.tiles[i].spawn_timer! === 0) {
 					this.game.tiles[i].object = this.create.item({
                     	form: this.game.tiles[i].object_spawn!,
@@ -128,6 +130,7 @@ export class MagomachyGameManager extends BaseClasses.GameManager {
                     	tile: this.game.tiles[i],
                 	});
 					this.game.tiles[i].spawn_timer = 7;
+					this.game.tiles[i].spawnTimer = 7;
 				}
 			}
         }
