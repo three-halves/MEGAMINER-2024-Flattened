@@ -11,6 +11,7 @@ import { Tile } from "./tile";
 
 // <<-- Creer-Merge: imports -->>
 // any additional imports you want can be placed here safely between creer runs
+import { Item } from "./item"
 // <<-- /Creer-Merge: imports -->>
 
 /**
@@ -859,7 +860,27 @@ export class Wizard extends GameObject {
         // return a string explaining why the input is wrong.
         // If you need to change an argument for the real function, then
         // changing its value in this scope is enough.
-        return undefined; // means nothing could be found that was ivalid.
+
+		
+		// Same generic invalidates as cast
+        const reason = this.invalidate(player);
+        if (reason) {
+            return reason;
+        }
+
+        if (!this.tile) {
+            throw new Error('${this} has no Tile!');
+        }
+
+		if (!tile.x || !tile.y ||
+	    	tile.x < 0 || tile.y < 0 || 
+	    	tile.x >= this.game.mapWidth || tile.y >= this.game.mapHeight) {
+	    		return `WHOA! That Tile's not on the map! Did you forget to send a reference?`;
+		}
+	
+		// So clients don't hack into Tiles	
+		tile = this.game.getTile(Math.round(tile.x), Math.round(tile.y))!;    
+		return undefined; // means nothing could be found that was ivalid.
 
         // <<-- /Creer-Merge: invalidate-checkBressenham -->>
     }
@@ -878,9 +899,19 @@ export class Wizard extends GameObject {
         // <<-- Creer-Merge: checkBressenham -->>
 
         // Add logic here for checkBressenham.
-
-        // TODO: replace this with actual logic
-        return false;
+		// First we have to find the path to use
+		let path: Tile[] = [];
+        let prevTile = this.tile;
+        let nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, this.tile!)
+		
+        while (nextTile && nextTile.type === "floor" && nextTile!.wizard !== this.owner!.opponent.wizard && !(nextTile.object?.form === "stone")) {
+            distLeft--;
+            prevTile = nextTile;
+            path.push(prevTile);
+            nextTile = this.bressenham(this.tile!.x, this.tile!.y, tile.x, tile.y, prevTile);
+        }
+        
+        return path;
 
         // <<-- /Creer-Merge: checkBressenham -->>
     }
