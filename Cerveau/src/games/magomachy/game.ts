@@ -5,6 +5,7 @@ import { GameObject } from "./game-object";
 import { MagomachyGameSettingsManager } from "./game-settings";
 import { Player } from "./player";
 import { Tile } from "./tile";
+import { Mutable } from "@cadre/ts-utils";
 
 // <<-- Creer-Merge: imports -->>
 // any additional imports you want can be placed here safely between creer runs
@@ -181,10 +182,12 @@ export class MagomachyGame extends BaseClasses.Game {
             else if (mark === "1") {
                 // MARK WIZARD 1 LOCATION
                 this.wizard1_tile = tile;
+				this.wizardTileOne = tile;
             }
             else if (mark === "2") {
                 // MARK WIZARD 2 LOCATION
                 this.wizard2_tile = tile;
+				this.wizardTileTwo = tile;
             }
         }
         // <<-- /Creer-Merge: constructor -->>
