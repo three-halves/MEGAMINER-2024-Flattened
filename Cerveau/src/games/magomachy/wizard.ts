@@ -128,24 +128,9 @@ export class Wizard extends GameObject {
     // in the creer file.
 
     /**
-     * Where the wizard has a teleport rune out, undefined otherwise. ADD TO CREER
-     */
-    public teleportTile?: Tile;
-
-    /**
-     * Max health of wizard.
-     */
-    public maxHealth!: number;
-
-    /**
      * Max aether of wizard.
      */
     public maxAether!: number;
-
-    /**
-     * Whether or not this Wizard has cast a teleport spell this turn.
-     */
-    public hasTeleported!: boolean;
 
     // <<-- /Creer-Merge: attributes -->>
 
