@@ -75,6 +75,7 @@ export class Item extends GameObject {
         // setup any thing you need here
         if (args.max_life && args.max_life > 0) {
             this.max_life = args.max_life;
+			this.maxLife = this.max_life;
         }
         // <<-- /Creer-Merge: constructor -->>
     }
