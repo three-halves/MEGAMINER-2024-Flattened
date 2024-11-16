@@ -166,7 +166,9 @@ export class MagomachyGame extends BaseClasses.Game {
                     tile: tile
                 });
 				tile.object_spawn = "aether flask";
+				tile.objectSpawn = "aether flask";
 				tile.spawn_timer = 10;
+				tile.spawnTimer = 10;
             }
             else if (mark === "h") {
                 tile.object = this.manager.create.item({
@@ -175,7 +177,9 @@ export class MagomachyGame extends BaseClasses.Game {
                     tile: tile,
                 });
 				tile.object_spawn = "health flask";
+				tile.objectSpawn = "health flask";
 				tile.spawn_timer = 10;
+				tile.spawnTimer = 10;
             }
 
 			// Mark where to spawn wizards
