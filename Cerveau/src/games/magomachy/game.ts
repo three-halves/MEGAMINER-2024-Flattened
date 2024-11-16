@@ -8,6 +8,7 @@ import { Tile } from "./tile";
 
 // <<-- Creer-Merge: imports -->>
 // any additional imports you want can be placed here safely between creer runs
+import { Mutable } from "@cadre/ts-utils";
 type MutableTile = Mutable<Tile>;
 // <<-- /Creer-Merge: imports -->>
 
