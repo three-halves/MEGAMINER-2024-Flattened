@@ -11,6 +11,7 @@ import { Wizard } from "./wizard";
 
 // <<-- Creer-Merge: imports -->>
 // any additional imports you want can be placed here safely between creer runs
+import { WizardSpecialty} from "./wizard";
 // <<-- /Creer-Merge: imports -->>
 
 /**
@@ -210,10 +211,10 @@ export class Player extends GameObject implements BaseMagomachyPlayer {
                             tilemap.push("s");
                         }
                     }
-                    else if (tile === this.game.wizard1_tile) {
+                    else if (tile === this.game.wizard1_tile && !this.game.players[0].wizard) {
                         tilemap.push("x");
                     }
-                    else if (tile === this.game.wizard2_tile) {
+                    else if (tile === this.game.wizard2_tile && !this.game.players[1].wizard) {
                         tilemap.push("y");
                     }
                     else
