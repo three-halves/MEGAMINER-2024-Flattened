@@ -134,11 +134,6 @@ export class Wizard extends GameObject {
     // NOTE: They will not be sent to the AIs, those must be defined
     // in the creer file.
 
-    /**
-     * Max aether of wizard.
-     */
-    public maxAether!: number;
-
     // <<-- /Creer-Merge: attributes -->>
 
     /**
