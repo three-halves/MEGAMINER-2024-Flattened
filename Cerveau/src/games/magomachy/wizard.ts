@@ -425,6 +425,12 @@ export class Wizard extends GameObject {
 				if (this.tile === tile) {
 		    		return `You cannot aim this at your own Tile`;
 				}
+				// Ensure there's a path to follow
+				let path: Tile[] = this.checkBressenham(player,tile);
+				if (path.length == 0 || !path.at(-1).wizard) {
+					return `No path to the enemy wizard found!`
+				}
+                
                 // Please no i spent so much time on implementing bressenham
                 // if (dx != 0 && dy != 0) {
                 //    return `This only goes in a straight line`;
@@ -533,6 +539,10 @@ export class Wizard extends GameObject {
                 }
 				if (this.tile === tile) {
 		    		return `You cannot aim this at your own Tile`;
+				}
+				let path: Tile[] = this.checkBressenham(player,tile);
+				if (path.length == 0 || !path.at(-1).wizard) {
+					return `No path to the enemy wizard found!`
 				}
                 break;
             }
