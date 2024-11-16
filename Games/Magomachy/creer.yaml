@@ -140,22 +140,22 @@ Wizard:
         type: Tile[]
         description: True if Tile can be hit, false otherwise.
         invalidValue: []
-		simpleBressenham:
-			description: Check the next tile along a line defined by two other tiles.
-			arguments:
-			- name: tile0
-				type1: Tile!
-				description: First Tile to define line.
-			- name: tile1
-				type1: Tile!
-				description: Second Tile to define line.
-			- name: current
-				type1: Tile!
-				description: Current Tile in approximate path.
-			returns:
-				type: Tile
-				description: Next tile in Bressenham path.
-				invalidValue: undefined
+    simpleBressenham:
+      description: Check the next tile along a line defined by two other tiles.
+      arguments:
+      - name: tile0
+        type: Tile!
+        description: Starting point of line.
+      - name: tile1
+        type: Tile!
+        description: Ending point of line.
+      - name: current
+        type: Tile!
+        description: The last Tile used to approximate line.
+      returns:
+        type: Tile
+        description: Next tile that approximates line
+        invalidValue: None
     cast:
       description: Casts a spell on a Tile in range.
       arguments:
