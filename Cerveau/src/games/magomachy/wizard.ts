@@ -883,6 +883,10 @@ export class Wizard extends GameObject {
             throw new Error('${this} has no Tile!');
         }
 
+		if (!tile) {
+            throw new Error('The Tile passed in is undefined!');
+        }
+
 		if (!tile.x || !tile.y ||
 	    	tile.x < 0 || tile.y < 0 || 
 	    	tile.x >= this.game.mapWidth || tile.y >= this.game.mapHeight) {
