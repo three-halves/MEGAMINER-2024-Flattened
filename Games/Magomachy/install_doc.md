@@ -7,7 +7,7 @@ This game uses the Flattened version of the siggame repository, therefore it wor
 ### Step 0. Making sure you have the right environment.
 
 Of course, make sure you have the corresponding language you are coding in for your AI's. 
-Have Javascript as well as Node.js installed. 
+Have Javascript as well as Node.js installed (specifically version 15.6.0).
 Be sure you are able to use npm and nvm as they are necessary for this setup.
 
 ### Step 1. Going into Cerveau.
